@@ -1,4 +1,4 @@
-import { PageProps } from "@/.next/types/app/page";
+import { PageProps } from "@/.next/types/app/layout";
 
 export default function Page({ params }: PageProps) {
     return (
