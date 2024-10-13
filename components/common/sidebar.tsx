@@ -20,10 +20,10 @@ const routes = [
         description: "Encuestas",
     },
     {
-        label: "Productos",
+        label: "Hubs",
         icon: Package,
-        href: "/surveys/products",
-        description: "Productos",
+        href: "/surveys/hubs",
+        description: "Hubs",
     },
     {
         label: "Clientes",
@@ -41,7 +41,6 @@ const routes = [
 
 export default function SidebarItems() {
     const pathname = usePathname();
-
     return (
         <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
             {routes.map((route) => {
