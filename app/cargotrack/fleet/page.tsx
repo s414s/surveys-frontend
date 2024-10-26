@@ -6,6 +6,7 @@ export default function Page() {
     return (
         <div className="flex w-full flex-col bg-muted/40">
             Hola desde fleet
+            {trucks.map(x => <div key={x.plate}>{x.plate}</div>)}
         </div>
     );
 }

@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/tabs";
 import DeliveriesTable from "@/components/deliveriesTable";
 import { mockShifts, Shift, ShiftStatus } from "@/appTypes";
+import Link from "next/link";
 
 export default function Page() {
     const shifts: Shift[] = mockShifts;
@@ -41,11 +42,13 @@ export default function Page() {
                                 Exportar
                             </span>
                         </Button>
-                        <Button size="sm" className="h-8 gap-1">
-                            <PlusCircle className="h-3.5 w-3.5" />
-                            <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                                Crear Envio
-                            </span>
+                        <Button size="sm" className="h-8 gap-1" asChild>
+                            <Link href={"/cargotrack/deliveries/new"}>
+                                <PlusCircle className="h-3.5 w-3.5" />
+                                <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+                                    Crear Envio
+                                </span>
+                            </Link>
                         </Button>
                     </div>
                 </div>

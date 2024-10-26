@@ -5,32 +5,32 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
 
-const driverRoutes = [
-    {
-        label: "Ruta Actual",
-        href: "/cargotrack/currentroute",
-        icon: LineChart,
-        description: "Ruta Actual",
-    },
-    {
-        label: "Historial",
-        icon: Package,
-        href: "/cargotrack/history",
-        description: "Historial",
-    },
-    {
-        label: "Documentos",
-        icon: LineChart,
-        href: "/cargotrack/documents",
-        description: "Documentos",
-    },
-    {
-        label: "Chat",
-        icon: Package,
-        href: "/cargotrack/chat",
-        description: "Chat",
-    },
-];
+// const driverRoutes = [
+//     {
+//         label: "Ruta Actual",
+//         href: "/cargotrack/currentroute",
+//         icon: LineChart,
+//         description: "Ruta Actual",
+//     },
+//     {
+//         label: "Historial",
+//         icon: Package,
+//         href: "/cargotrack/history",
+//         description: "Historial",
+//     },
+//     {
+//         label: "Documentos",
+//         icon: LineChart,
+//         href: "/cargotrack/documents",
+//         description: "Documentos",
+//     },
+//     {
+//         label: "Chat",
+//         icon: Package,
+//         href: "/cargotrack/chat",
+//         description: "Chat",
+//     },
+// ];
 
 const routes = [
     {
