@@ -1,181 +1,319 @@
-export type QuestionType = 'multiple-choice' | 'text' | 'rating' | 'boolean';
-
-export interface ChoiceOption {
-    id: string;
-    text: string;
-}
-
-export interface SurveyQuestionBase {
-    id: string;
-    questionText: string;
-    required: boolean;
-    type: QuestionType;
-}
-
-export interface MultipleChoiceQuestion extends SurveyQuestionBase {
-    type: 'multiple-choice';
-    options: ChoiceOption[];
-}
-
-export interface TextQuestion extends SurveyQuestionBase {
-    type: 'text';
-    placeholder?: string; // optional placeholder text for input field
-}
-
-export interface RatingQuestion extends SurveyQuestionBase {
-    type: 'rating';
-    minRating: number;
-    maxRating: number;
-}
-
-export interface BooleanQuestion extends SurveyQuestionBase {
-    type: 'boolean';
-}
-
-export type SurveyQuestion = MultipleChoiceQuestion | TextQuestion | RatingQuestion | BooleanQuestion;
-
-export interface Survey {
-    id: string;
-    title: string;
-    description: string;
-    createdAt: Date;
-    updatedAt: Date;
-    endsAt: Date;
-    createdBy: string; // User ID of the creator
-    questions: SurveyQuestion[];
-    isActive: boolean;
-}
-
-export interface MultipleChoiceResponse {
-    questionId: string;
-    selectedOptionId: string; // Refers to the ID of the selected choice
-}
-
-// Response to a text question
-export interface TextResponse {
-    questionId: string;
-    answer: string;
-}
-
-export interface RatingResponse {
-    questionId: string;
-    rating: number; // Rating value within the specified range
-}
-
-export interface BooleanResponse {
-    questionId: string;
-    answer: boolean;
-}
-
-export type SurveyResponse = MultipleChoiceResponse | TextResponse | RatingResponse | BooleanResponse;
-
-// Collection of responses by a single user
-export interface UserSurveyResponse {
-    userId: string;
-    surveyId: string;
-    responses: SurveyResponse[];
-    completedAt: Date;
-}
-
 export interface User {
-    id: string;
+    id: number;
     name: string;
     email: string;
-    role: 'user' | 'admin';
-    createdAt: Date;
+    role: 'user' | 'admin' | 'driver';
 }
 
-// State for a list of surveys
-interface SurveyState {
-    surveys: Survey[];
-    loading: boolean;
-    error?: string;
-}
-
-// State for responses to a survey
-interface SurveyResponseState {
-    responses: UserSurveyResponse[];
-    submitting: boolean;
-    error?: string;
-}
-
-export interface AppState {
-    user: User | null; // Currently authenticated user
-    surveyState: SurveyState;
-    surveyResponseState: SurveyResponseState;
-}
-
-export interface CreateSurveyRequest {
-    title: string;
-    description: string;
-    questions: SurveyQuestion[];
-    createdBy: string;
-}
-
-export interface SubmitSurveyResponseRequest {
-    surveyId: string;
-    userId: string;
-    responses: SurveyResponse[];
-}
-
-export interface FetchSurveyResponse {
-    survey: Survey;
-}
-
-export interface SubmitSurveyResponse {
-    success: boolean;
-    message: string;
-}
-
-export interface SurveyAnalytics {
-    surveyId: string;
-    totalResponses: number;
-    questionAnalytics: QuestionAnalytics[];
-}
-
-export interface QuestionAnalytics {
-    questionId: string;
-    totalResponses: number;
-    breakdown: {
-        [optionId: string]: number; // Number of responses for each option (for multiple-choice)
-    };
-}
-
-interface ValidationError {
-    questionId: string;
-    message: string;
-}
-
-export interface SurveyValidationResult {
-    isValid: boolean;
-    errors: ValidationError[];
-}
-
-// Mock data
-export const survey: Survey = {
-    id: 'survey123',
-    title: 'Customer Satisfaction Survey',
-    description: 'We would like to know your feedback!',
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    endsAt: new Date(),
-    createdBy: 'admin123',
-    questions: [
-        {
-            id: 'q1',
-            questionText: 'How would you rate our service?',
-            required: true,
-            type: 'rating',
-            minRating: 1,
-            maxRating: 5,
-        },
-        {
-            id: 'q2',
-            questionText: 'What could we improve?',
-            required: false,
-            type: 'text',
-            placeholder: 'Your feedback...',
-        },
-    ],
-    isActive: true,
+export type PaginatedResult<T> = {
+    data: T[];
+    currentPage: number;
+    totalPages: number;
+    totalItems: number;
+    itemsPerPage: number;
+    hasNextPage: boolean;
+    hasPreviousPage: boolean;
 };
+
+export interface Pallet {
+    length: number;
+    width: number;
+    height: number;
+    weight: number;
+    code: string;
+}
+
+export interface Truck {
+    plate: string;
+    maxWeight: number;
+    consumption: number; // litter per km
+    consumptionPerKg: number; // litter per km per kilo of load
+    numberAxles: number;
+}
+
+// https://www.sertrans.es/peso-maximo-autorizado-en-camiones/#:~:text=Para%20tr%C3%A1ilers%20o%20remolques%20con,l%C3%ADmite%20es%20de%2040%20toneladas.
+// https://app.croneri.co.uk/topics/vehicle-weights-and-weight-limits/indepth?topic=4461#:~:text=Determining%20Maximum%20Authorised%20Weight,laid%20down%20in%20the%20regulations.
+
+export interface Trailer {
+    length: string;
+    width: string;
+    height: string;
+    plate: string;
+    load: Pallet[];
+    totalWeight: number;
+    maxWeight: number; // 36 toneladas para 2 ejes
+}
+
+export enum TrailerType {
+    Trailer,
+    SemiTrailer,
+}
+
+export enum ShiftStatus {
+    Planned,
+    Ongoing,
+    Completed,
+}
+
+export interface Driver {
+    name: string;
+    surname: string;
+    birthdate: Date;
+
+    lastShiftEnd: Date;
+}
+
+export interface Shift {
+    id: number;
+    totalDistance: number;
+    expectedDuration: number; // Unix
+    startDate: Date;
+    expectedFinishTime: Date;
+    routes: Route[];
+    pilot: Driver;
+    status: ShiftStatus;
+    copilot: Driver;
+}
+
+export interface WareHouse {
+    lat: number;
+    lon: number;
+    name: string;
+    unloadTime: number;
+}
+
+export interface City {
+    lat: number;
+    lon: number;
+    name: string;
+    country: string;
+}
+
+export interface Route {
+    distance: number;
+    code: number;
+    avgSpeed: number;
+    origin: City;
+    destination: City;
+
+    points: IGeographicCoordiantes[];
+}
+
+export interface IGeographicCoordiantes {
+    lat: number;
+    lon: number;
+}
+
+// c's algorithm
+// export class ShortestPathFinder {
+//     private visitedCities: Set<string> = new Set();
+//     private distances: { [city: string]: number; } = {};
+//     private previousCities: { [city: string]: City | null; } = {};
+
+//     constructor(private origin: City, private destination: City, private allRoutes: Route[]) {
+//         // Initialize distances to all cities as Infinity except for the origin city
+//         this.allRoutes.forEach(route => {
+//             if (!this.distances[route.origin.name]) {
+//                 this.distances[route.origin.name] = Infinity;
+//             }
+//             if (!this.distances[route.destination.name]) {
+//                 this.distances[route.destination.name] = Infinity;
+//             }
+//         });
+//         this.distances[this.origin.name] = 0; // Distance to the origin city is 0
+//     }
+
+//     public findShortestPath(): { path: Route[], totalDistance: number; } {
+//         const unvisitedCities: Set<string> = new Set(Object.keys(this.distances));
+
+//         while (unvisitedCities.size > 0) {
+//             // Find the unvisited city with the smallest distance
+//             const currentCity = this.getClosestUnvisitedCity(unvisitedCities);
+
+//             // If the closest city is the destination, we can stop
+//             if (currentCity === this.destination.name) {
+//                 break;
+//             }
+
+//             // Mark the current city as visited
+//             this.visitedCities.add(currentCity);
+//             unvisitedCities.delete(currentCity);
+
+//             // Update distances to neighboring cities
+//             this.updateNeighboringCities(currentCity);
+//         }
+
+//         // Reconstruct the shortest path
+//         return this.constructPath();
+//     }
+
+//     private getClosestUnvisitedCity(unvisitedCities: Set<string>): string {
+//         let closestCity = '';
+//         let smallestDistance = Infinity;
+
+//         unvisitedCities.forEach(city => {
+//             if (this.distances[city] < smallestDistance) {
+//                 smallestDistance = this.distances[city];
+//                 closestCity = city;
+//             }
+//         });
+
+//         return closestCity;
+//     }
+
+//     private updateNeighboringCities(currentCityName: string) {
+//         this.allRoutes.forEach(route => {
+//             const { origin, destination, distance } = route;
+
+//             if (origin.name === currentCityName && !this.visitedCities.has(destination.name)) {
+//                 const newDistance = this.distances[origin.name] + distance;
+//                 if (newDistance < this.distances[destination.name]) {
+//                     this.distances[destination.name] = newDistance;
+//                     this.previousCities[destination.name] = origin;
+//                 }
+//             }
+
+//             if (destination.name === currentCityName && !this.visitedCities.has(origin.name)) {
+//                 const newDistance = this.distances[destination.name] + distance;
+//                 if (newDistance < this.distances[origin.name]) {
+//                     this.distances[origin.name] = newDistance;
+//                     this.previousCities[origin.name] = destination;
+//                 }
+//             }
+//         });
+//     }
+
+//     private constructPath(): { path: City[], distance: number; } {
+//         const path: City[] = [];
+//         let currentCity: City | null = this.destination;
+
+//         while (currentCity) {
+//             path.unshift(currentCity);
+//             currentCity = this.previousCities[currentCity.name] || null;
+//         }
+
+//         return { path, distance: this.distances[this.destination.name] };
+//     }
+// }
+
+// =============== mock data ==============
+
+export const mockUsers = [
+    { "id": 1, "name": "Alice Smith", "email": "alice@example.com", "role": "admin" },
+    { "id": 2, "name": "Bob Jones", "email": "bob@example.com", "role": "driver" },
+    { "id": 3, "name": "Charlie Brown", "email": "charlie@example.com", "role": "user" }
+];
+
+export const mockPallets = [
+    { "length": 1.2, "width": 0.8, "height": 1.5, "weight": 500, "code": "P12345" },
+    { "length": 1.2, "width": 0.8, "height": 1.5, "weight": 450, "code": "P67890" }
+];
+
+export const mockTrucks = [
+    { "plate": "ABC123", "maxWeight": 20000, "consumption": 0.3, "consumptionPerKg": 0.00002, "numberAxles": 4 },
+    { "plate": "XYZ789", "maxWeight": 25000, "consumption": 0.32, "consumptionPerKg": 0.000022, "numberAxles": 5 }
+];
+
+export const mockDrivers = [
+    {
+        "name": "John",
+        "surname": "Doe",
+        "birthdate": "1985-05-14T00:00:00.000Z",
+        "lastShiftEnd": "2024-10-25T23:35:39.662Z"
+    },
+    {
+        "name": "Jane",
+        "surname": "Smith",
+        "birthdate": "1990-08-25T00:00:00.000Z",
+        "lastShiftEnd": "2024-10-25T09:35:39.662Z"
+    }
+];
+
+export const mockWarehouses = [
+    { "lat": 40.7128, "lon": -74.0060, "name": "NYC Warehouse", "unloadTime": 120 },
+    { "lat": 34.0522, "lon": -118.2437, "name": "LA Warehouse", "unloadTime": 90 }
+];
+
+export const mockCities = [
+    { "lat": 40.7128, "lon": -74.0060, "name": "New York", "country": "USA" },
+    { "lat": 34.0522, "lon": -118.2437, "name": "Los Angeles", "country": "USA" }
+];
+
+export const routes = [
+    {
+        "distance": 4500,
+        "code": 101,
+        "avgSpeed": 80,
+        "origin": { "lat": 40.7128, "lon": -74.0060, "name": "New York", "country": "USA" },
+        "destination": { "lat": 34.0522, "lon": -118.2437, "name": "Los Angeles", "country": "USA" },
+        "points": [
+            { "lat": 39.0997, "lon": -94.5786 },
+            { "lat": 36.1627, "lon": -86.7816 }
+        ]
+    }
+];
+
+export const mockShifts: Shift[] = [
+    {
+        "id": 1,
+        "status": ShiftStatus.Completed,
+        "totalDistance": 4500,
+        "expectedDuration": 162000,
+        "startDate": new Date("2024-10-26T09:35:39.662Z"),
+        "expectedFinishTime": new Date("2024-10-28T09:35:39.662Z"),
+        "routes": [
+            {
+                "distance": 4500,
+                "code": 101,
+                "avgSpeed": 80,
+                "origin": { "lat": 40.7128, "lon": -74.0060, "name": "New York", "country": "USA" },
+                "destination": { "lat": 34.0522, "lon": -118.2437, "name": "Los Angeles", "country": "USA" },
+                "points": [
+                    { "lat": 39.0997, "lon": -94.5786 },
+                    { "lat": 36.1627, "lon": -86.7816 }
+                ]
+            }
+        ],
+        "pilot": {
+            "name": "John",
+            "surname": "Doe",
+            "birthdate": new Date("1985-05-14T00:00:00.000Z"),
+            "lastShiftEnd": new Date("2024-10-25T23:35:39.662Z")
+        },
+        "copilot": {
+            "name": "Jane",
+            "surname": "Smith",
+            "birthdate": new Date("1990-08-25T00:00:00.000Z"),
+            "lastShiftEnd": new Date("2024-10-25T09:35:39.662Z"),
+        }
+    }
+];
+
+export const mockPaginatedUsers = {
+    "data": [
+        { "id": 1, "name": "Alice Smith", "email": "alice@example.com", "role": "admin" },
+        { "id": 2, "name": "Bob Jones", "email": "bob@example.com", "role": "driver" },
+        { "id": 3, "name": "Charlie Brown", "email": "charlie@example.com", "role": "user" }
+    ],
+    "currentPage": 1,
+    "totalPages": 1,
+    "totalItems": 3,
+    "itemsPerPage": 10,
+    "hasNextPage": false,
+    "hasPreviousPage": false,
+};
+
+export const mockTrailers = [
+    {
+        "length": "13.6m",
+        "width": "2.5m",
+        "height": "2.7m",
+        "plate": "TR123",
+        "load": [
+            { "length": 1.2, "width": 0.8, "height": 1.5, "weight": 500, "code": "P12345" },
+            { "length": 1.2, "width": 0.8, "height": 1.5, "weight": 450, "code": "P67890" }
+        ],
+        "totalWeight": 950,
+        "maxWeight": 36000
+    }
+];

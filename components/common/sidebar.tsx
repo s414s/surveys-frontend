@@ -1,46 +1,80 @@
 "use client";
 
-import { Home, LineChart, Package, ShoppingCart, Users } from "lucide-react";
+import { LineChart, Package, ShoppingCart, Users } from "lucide-react";
 import Link from "next/link";
-import { Badge } from "../ui/badge";
+// import { Badge } from "../ui/badge";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
 
-const routes = [
+const driveRoutes = [
     {
-        label: "Dashboard",
-        href: "/surveys/dashboard",
-        icon: Home,
-        description: "Dashboard",
+        label: "Ruta Actual",
+        href: "/cargotrack/currentroute",
+        icon: LineChart,
+        description: "Ruta Actual",
     },
     {
         label: "Encuestas",
         icon: ShoppingCart,
-        href: "/surveys/encuestas",
+        href: "/cargotrack/list",
         description: "Encuestas",
     },
     {
-        label: "Hubs",
+        label: "Historial",
         icon: Package,
-        href: "/surveys/hubs",
-        description: "Hubs",
+        href: "/cargotrack/history",
+        description: "Historial",
     },
     {
         label: "Clientes",
         icon: Users,
-        href: "/viewer/clientes",
+        href: "/cargotrack/clientes",
+        description: "Clientes",
+    },
+    {
+        label: "Documentos",
+        icon: LineChart,
+        href: "/cargotrack/docs",
+        description: "Documentos",
+    },
+];
+
+const routes = [
+    {
+        label: "Dashboard",
+        href: "/cargotrack/dashboard",
+        icon: LineChart,
+        description: "Dashboard",
+    },
+    {
+        label: "Gestión de flota",
+        icon: ShoppingCart,
+        href: "/cargotrack/fleet",
+        description: "fleet",
+    },
+    {
+        label: "Envios",
+        icon: Package,
+        href: "/cargotrack/deliveries",
+        description: "Envios",
+    },
+    {
+        label: "Clientes",
+        icon: Users,
+        href: "/cargotrack/clientes",
         description: "Clientes",
     },
     {
         label: "Analytics",
         icon: LineChart,
-        href: "/viewer/analytics",
+        href: "/cargotrack/analytics",
         description: "Analytics",
     },
 ];
 
 export default function SidebarItems() {
     const pathname = usePathname();
+
     return (
         <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
             {routes.map((route) => {
@@ -57,9 +91,9 @@ export default function SidebarItems() {
                         {route.label}
                         <span className="sr-only">{route.label}</span>
 
-                        <Badge className="ml-auto flex h-6 w-6 shrink-0 items-center justify-center rounded-full">
+                        {/* <Badge className="ml-auto flex h-6 w-6 shrink-0 items-center justify-center rounded-full">
                             6
-                        </Badge>
+                        </Badge> */}
                     </Link>
                 );
             })}
