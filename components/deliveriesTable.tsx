@@ -1,6 +1,12 @@
-import { type Shift } from "@/appTypes";
+import { ShiftStatus, type Shift } from "@/appTypes";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "./ui/table";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "./ui/dropdown-menu";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuTrigger
+} from "./ui/dropdown-menu";
 import { Button } from "./ui/button";
 import { MoreHorizontal } from "lucide-react";
 import StatusBadge from "./statusBadge";
@@ -64,9 +70,19 @@ export default function DeliveriesTable({ shifts }: { shifts: Shift[]; }) {
                                         </Button>
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent align="end">
-                                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                        <DropdownMenuItem>Edit</DropdownMenuItem>
-                                        <DropdownMenuItem>Delete</DropdownMenuItem>
+                                        <DropdownMenuLabel>
+                                            Acciones
+                                        </DropdownMenuLabel>
+                                        <DropdownMenuItem
+                                            disabled={x.status === ShiftStatus.Planned}
+                                        >
+                                            Editar
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem
+                                            disabled={x.status === ShiftStatus.Planned}
+                                        >
+                                            Cancelar
+                                        </DropdownMenuItem>
                                     </DropdownMenuContent>
                                 </DropdownMenu>
                             </TableCell>

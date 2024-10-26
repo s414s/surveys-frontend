@@ -2,22 +2,15 @@
 
 import { LineChart, Package, ShoppingCart, Users } from "lucide-react";
 import Link from "next/link";
-// import { Badge } from "../ui/badge";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
 
-const driveRoutes = [
+const driverRoutes = [
     {
         label: "Ruta Actual",
         href: "/cargotrack/currentroute",
         icon: LineChart,
         description: "Ruta Actual",
-    },
-    {
-        label: "Encuestas",
-        icon: ShoppingCart,
-        href: "/cargotrack/list",
-        description: "Encuestas",
     },
     {
         label: "Historial",
@@ -26,16 +19,16 @@ const driveRoutes = [
         description: "Historial",
     },
     {
-        label: "Clientes",
-        icon: Users,
-        href: "/cargotrack/clientes",
-        description: "Clientes",
-    },
-    {
         label: "Documentos",
         icon: LineChart,
-        href: "/cargotrack/docs",
+        href: "/cargotrack/documents",
         description: "Documentos",
+    },
+    {
+        label: "Chat",
+        icon: Package,
+        href: "/cargotrack/chat",
+        description: "Chat",
     },
 ];
 
@@ -64,12 +57,6 @@ const routes = [
         href: "/cargotrack/clientes",
         description: "Clientes",
     },
-    {
-        label: "Analytics",
-        icon: LineChart,
-        href: "/cargotrack/analytics",
-        description: "Analytics",
-    },
 ];
 
 export default function SidebarItems() {
@@ -90,10 +77,6 @@ export default function SidebarItems() {
                         <route.icon className="h-4 w-4" />
                         {route.label}
                         <span className="sr-only">{route.label}</span>
-
-                        {/* <Badge className="ml-auto flex h-6 w-6 shrink-0 items-center justify-center rounded-full">
-                            6
-                        </Badge> */}
                     </Link>
                 );
             })}

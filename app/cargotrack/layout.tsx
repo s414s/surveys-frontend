@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Package2, } from "lucide-react";
 import Header from "@/components/common/header";
 import SidebarItems from "@/components/common/sidebar";
+import { Toaster } from "@/components/ui/toaster";
 
 // https://nextjs.org/docs/app/api-reference/functions/use-selected-layout-segment
 export default function ViewerLayout({ children, }: Readonly<{ children: React.ReactNode; }>) {
@@ -28,6 +29,7 @@ export default function ViewerLayout({ children, }: Readonly<{ children: React.R
                 <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
                     {children}
                 </main>
+                <Toaster />
             </div>
         </div>
     );

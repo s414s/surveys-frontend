@@ -1,4 +1,3 @@
-// import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
     Card,
@@ -43,20 +42,7 @@ export default function LoginForm() {
                         <Button type="submit" className="w-full">
                             Login
                         </Button>
-
-                        {/* <Button variant="outline" className="w-full">
-                        Login con Google
-                    </Button> */}
-
                     </div>
-
-                    {/* <div className="mt-4 text-center text-sm">
-                        ¿Aún no tienes una cuenta?{" "}
-                        <Link href="#" className="underline">
-                            Regístrate
-                        </Link>
-                    </div> */}
-
                 </CardContent>
             </Card>
         </div>
