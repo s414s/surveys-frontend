@@ -14,11 +14,15 @@ export default function Page() {
     const { data, error, loading } = useFetch<ResponseDTO>("GET", "/dashboard");
 
     if (loading) {
-        <div>Cargando...</div>;
+        return (<div>Cargando...</div>);
     }
 
     if (error) {
-        <div>Error...</div>;
+        return (<div>{error.message}...</div>);
+    }
+
+    if (data) {
+        return (<div>Data...</div>);
     }
 
     return (

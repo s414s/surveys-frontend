@@ -1,14 +1,18 @@
+type UserRoles = 'admin' | 'driver';
+
 export interface User {
     id: number;
     name: string;
     email: string;
-    role: UserRole;
-    // role: 'user' | 'admin' | 'driver';
+    role: UserRoles;
 }
 
-export enum UserRole {
-    Admin,
-    Driver,
+export interface PaginatedRequestDto {
+    pageNumber?: number;
+    pageSize?: number;
+    searchTerm?: string; // search term for filtering results
+    sortBy?: string; // Field by which to sort the results
+    sortOrder?: "asc" | "desc";
 }
 
 export type PaginatedResult<T> = {
@@ -34,11 +38,12 @@ export interface Pallet {
 }
 
 export interface Truck {
+    id: number;
     plate: string;
-    maxWeight: number;
+    mileage: number;
     consumption: number; // litter per km
-    consumptionPerKg: number; // litter per km per kilo of load
-    numberAxles: number;
+    manufactoringDateUnix: number;
+    lastMaintenenceDateUnix: number;
 }
 
 // https://www.sertrans.es/peso-maximo-autorizado-en-camiones/#:~:text=Para%20tr%C3%A1ilers%20o%20remolques%20con,l%C3%ADmite%20es%20de%2040%20toneladas.
@@ -115,54 +120,54 @@ export interface IGeographicCoordiantes {
 
 // =============== mock data ==============
 
-export const mockUsers = [
+export const mockUsers: User[] = [
     { "id": 1, "name": "Alice Smith", "email": "alice@example.com", "role": "admin" },
     { "id": 2, "name": "Bob Jones", "email": "bob@example.com", "role": "driver" },
-    { "id": 3, "name": "Charlie Brown", "email": "charlie@example.com", "role": "user" }
+    { "id": 3, "name": "Charlie Brown", "email": "charlie@example.com", "role": "admin" }
 ];
 
-export const mockPallets = [
-    { "length": 1.2, "width": 0.8, "height": 1.5, "weight": 500, "code": "P12345" },
-    { "length": 1.2, "width": 0.8, "height": 1.5, "weight": 450, "code": "P67890" }
+export const mockPallets: Pallet[] = [
+    { "length": 1.2, "width": 0.8, "height": 1.5, "weight": 500, "code": "P12345", "origin": "MAD", "destination": "BCN", "id": 1, "dueDate": new Date() },
+    { "length": 1.2, "width": 0.8, "height": 1.5, "weight": 450, "code": "P67890", "origin": "MAD", "destination": "BCN", "id": 1, "dueDate": new Date() }
 ];
 
-export const mockTrucks = [
-    { "plate": "ABC123", "maxWeight": 20000, "consumption": 0.3, "consumptionPerKg": 0.00002, "numberAxles": 4 },
-    { "plate": "XYZ789", "maxWeight": 25000, "consumption": 0.32, "consumptionPerKg": 0.000022, "numberAxles": 5 }
-];
+// export const mockTrucks: Truck[] = [
+//     { "plate": "ABC123", "consumption": 0.3, "id": 1 },
+//     { "plate": "XYZ789", "consumption": 0.32, "id": 2 }
+// ];
 
-export const mockDrivers = [
+export const mockDrivers: Driver[] = [
     {
         "name": "John",
         "surname": "Doe",
-        "birthdate": "1985-05-14T00:00:00.000Z",
-        "lastShiftEnd": "2024-10-25T23:35:39.662Z"
+        "birthdate": new Date(),
+        "lastShiftEnd": new Date(),
     },
     {
         "name": "Jane",
         "surname": "Smith",
-        "birthdate": "1990-08-25T00:00:00.000Z",
-        "lastShiftEnd": "2024-10-25T09:35:39.662Z"
+        "birthdate": new Date(),
+        "lastShiftEnd": new Date(),
     }
 ];
 
-export const mockWarehouses = [
+export const mockWarehouses: WareHouse[] = [
     { "lat": 40.7128, "lon": -74.0060, "name": "NYC Warehouse", "unloadTime": 120 },
     { "lat": 34.0522, "lon": -118.2437, "name": "LA Warehouse", "unloadTime": 90 }
 ];
 
-export const mockCities = [
-    { "lat": 40.7128, "lon": -74.0060, "name": "New York", "country": "USA" },
-    { "lat": 34.0522, "lon": -118.2437, "name": "Los Angeles", "country": "USA" }
+export const mockCities: City[] = [
+    { "lat": 40.7128, "lon": -74.0060, "name": "New York", "code": "NYC" },
+    { "lat": 34.0522, "lon": -118.2437, "name": "Los Angeles", "code": "LAX" }
 ];
 
-export const routes = [
+export const routes: Route[] = [
     {
         "distance": 4500,
         "code": 101,
         "avgSpeed": 80,
-        "origin": { "lat": 40.7128, "lon": -74.0060, "name": "New York", "country": "USA" },
-        "destination": { "lat": 34.0522, "lon": -118.2437, "name": "Los Angeles", "country": "USA" },
+        "origin": { "lat": 40.7128, "lon": -74.0060, "name": "New York", "code": "NYC" },
+        "destination": { "lat": 34.0522, "lon": -118.2437, "name": "Los Angeles", "code": "LAX" },
         "points": [
             { "lat": 39.0997, "lon": -94.5786 },
             { "lat": 36.1627, "lon": -86.7816 }
@@ -214,16 +219,13 @@ export const mockPaginatedUsers = {
     "hasPreviousPage": false,
 };
 
-export const mockTrailers = [
+export const mockTrailers: Trailer[] = [
     {
         "length": "13.6m",
         "width": "2.5m",
         "height": "2.7m",
         "plate": "TR123",
-        "load": [
-            { "length": 1.2, "width": 0.8, "height": 1.5, "weight": 500, "code": "P12345" },
-            { "length": 1.2, "width": 0.8, "height": 1.5, "weight": 450, "code": "P67890" }
-        ],
+        "load": mockPallets,
         "totalWeight": 950,
         "maxWeight": 36000
     }

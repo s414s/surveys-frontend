@@ -1,12 +1,26 @@
-import { mockTrucks, Truck } from "@/appTypes";
+"use client";
+
+import { Truck } from "@/appTypes";
+import { useFetch } from "@/hooks/useFetch";
 
 export default function Page() {
-    const trucks: Truck[] = mockTrucks;
+    const { data, error, loading } = useFetch<Truck[]>("GET", "/trucks");
+
+    if (loading) {
+        return (<div>Cargando...</div>);
+    }
+
+    if (error) {
+        return (<div>{error.message}...</div>);
+    }
 
     return (
         <div className="flex w-full flex-col">
             <h2>Hola desde fleet</h2>
-            {trucks.map(x => <div key={x.plate}>{x.plate}</div>)}
+            {
+                data?.map(x => (
+                    <div key={x.id}>{x.plate}</div>))
+            }
         </div>
     );
 }

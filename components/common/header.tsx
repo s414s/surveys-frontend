@@ -7,7 +7,7 @@ import {
     Menu,
     Package,
     Package2,
-    Search,
+    // Search,
     ShoppingCart,
     Users,
 } from "lucide-react";
@@ -28,7 +28,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
+// import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 export default function Header() {
@@ -114,8 +114,7 @@ export default function Header() {
                 </SheetContent>
             </Sheet>
 
-
-            <div className="w-full flex-1">
+            {/* <div className="w-full flex-1">
                 <form>
                     <div className="relative">
                         <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -126,7 +125,7 @@ export default function Header() {
                         />
                     </div>
                 </form>
-            </div>
+            </div> */}
 
             <Button variant="outline" size="icon" className="ml-auto h-8 w-8">
                 <Bell className="h-4 w-4" />

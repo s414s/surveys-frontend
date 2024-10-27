@@ -1,15 +1,11 @@
 import { useEffect, useState } from "react";
 
-const BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3000/api';
-const TIMEOUT = 10_000; // milliseconds timeout
-
+const BASE_URL = process.env.API_URL || 'http://localhost:5097';
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
+// const TIMEOUT = 10_000; // milliseconds timeout
 
-type RequestOptions = {
-    headers?: HeadersInit;
-    params?: Record<string, string>;
-    body?: any;
-};
+// type QueryParams = Record<string, unknown> | null;
+type QueryParams = Record<string, string | number | boolean | undefined> | null;
 
 type Data<T> = T | null;
 type ErrorType = Error | null;
@@ -22,65 +18,86 @@ interface Params<T> {
 
 export const useFetch = <T>(
     method: HttpMethod,
-    slug: string,
-    body: any = null
+    endpoint: string,
+    queryParams: QueryParams = null,
+    body: unknown = null
 ): Params<T> => {
     const [data, setData] = useState<T | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<ErrorType>(null);
 
     useEffect(() => {
-        let controller = new AbortController();
+        // const controller = new AbortController();
 
         // Set timeout to abort the request
-        const timeoutId = setTimeout(() => {
-            controller.abort();
-        }, TIMEOUT);
+        // const timeoutId = setTimeout(() => {
+        //     controller.abort();
+        // }, TIMEOUT);
 
-        const requestOptions = {
+        // Map queryParams to URL if provided
+        const queryString = queryParams ? mapQueryParams(queryParams) : "";
+        // const fullUrl = `${url}${queryString}`;
+
+        const requestOptions: RequestInit = {
             method,
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
             },
             body: body ? JSON.stringify(body) : undefined,
-            signal: controller.signal, // Attach the AbortSignal to the request
-            credentials: 'include', // Includes cookies in the request
+            // signal: controller.signal, // Attach the AbortSignal to the request
+            // credentials: 'include', // Includes cookies in the request
         };
 
         setLoading(true);
 
         const fetchData = async () => {
             try {
-                const response = await fetch(BASE_URL + slug, controller);
+                // const response = await fetch(BASE_URL + endpoint, controller);
+                const response = await fetch(`${BASE_URL}${endpoint}${queryString}`, requestOptions);
 
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
 
                 const jsonData: T = await response.json();
+                // console.dir(jsonData);
                 setData(jsonData);
                 setError(null);
             } catch (err) {
+                console.error(err);
                 const error = err instanceof Error ? err : new Error('An unknown error occurred');
-                if (error.name === 'AbortError') {
-                    throw new Error('Request timed out');
-                }
+                // if (error.name === 'AbortError') {
+                //     throw new Error('Request timed out');
+                // }
 
                 setError(error);
             } finally {
-                clearTimeout(timeoutId);
+                // clearTimeout(timeoutId);
                 setLoading(false);
             }
         };
 
         fetchData();
 
-        return () => {
-            controller.abort();
-        };
+        // return () => { controller.abort(); };
 
-    }, [slug, method, body]);
+    }, [endpoint, method, body, queryParams]);
 
     return { data, loading, error };
+};
+
+const mapQueryParams = (params?: QueryParams): string => {
+    if (!params) return "";
+
+    const queryString = Object.entries(params)
+        .filter(([key, value]) => key && value !== undefined) // Remove undefined values
+        .map(
+            ([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(String(value))}`
+        )
+        .join("&");
+
+    return queryString
+        ? `?${queryString}`
+        : "";
 };
