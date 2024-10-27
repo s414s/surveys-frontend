@@ -2,7 +2,13 @@ export interface User {
     id: number;
     name: string;
     email: string;
-    role: 'user' | 'admin' | 'driver';
+    role: UserRole;
+    // role: 'user' | 'admin' | 'driver';
+}
+
+export enum UserRole {
+    Admin,
+    Driver,
 }
 
 export type PaginatedResult<T> = {
@@ -16,11 +22,15 @@ export type PaginatedResult<T> = {
 };
 
 export interface Pallet {
+    id: number;
     length: number;
     width: number;
     height: number;
     weight: number;
     code: string;
+    origin: string;
+    destination: string;
+    dueDate: Date;
 }
 
 export interface Truck {
@@ -66,13 +76,12 @@ export interface Driver {
 export interface Shift {
     id: number;
     totalDistance: number;
-    expectedDuration: number; // Unix
+    expectedDuration: number; // Unix ms
     startDate: Date;
     expectedFinishTime: Date;
     routes: Route[];
     pilot: Driver;
     status: ShiftStatus;
-    copilot: Driver;
 }
 
 export interface WareHouse {
@@ -86,7 +95,7 @@ export interface City {
     lat: number;
     lon: number;
     name: string;
-    country: string;
+    code: string;
 }
 
 export interface Route {
@@ -103,98 +112,6 @@ export interface IGeographicCoordiantes {
     lat: number;
     lon: number;
 }
-
-// c's algorithm
-// export class ShortestPathFinder {
-//     private visitedCities: Set<string> = new Set();
-//     private distances: { [city: string]: number; } = {};
-//     private previousCities: { [city: string]: City | null; } = {};
-
-//     constructor(private origin: City, private destination: City, private allRoutes: Route[]) {
-//         // Initialize distances to all cities as Infinity except for the origin city
-//         this.allRoutes.forEach(route => {
-//             if (!this.distances[route.origin.name]) {
-//                 this.distances[route.origin.name] = Infinity;
-//             }
-//             if (!this.distances[route.destination.name]) {
-//                 this.distances[route.destination.name] = Infinity;
-//             }
-//         });
-//         this.distances[this.origin.name] = 0; // Distance to the origin city is 0
-//     }
-
-//     public findShortestPath(): { path: Route[], totalDistance: number; } {
-//         const unvisitedCities: Set<string> = new Set(Object.keys(this.distances));
-
-//         while (unvisitedCities.size > 0) {
-//             // Find the unvisited city with the smallest distance
-//             const currentCity = this.getClosestUnvisitedCity(unvisitedCities);
-
-//             // If the closest city is the destination, we can stop
-//             if (currentCity === this.destination.name) {
-//                 break;
-//             }
-
-//             // Mark the current city as visited
-//             this.visitedCities.add(currentCity);
-//             unvisitedCities.delete(currentCity);
-
-//             // Update distances to neighboring cities
-//             this.updateNeighboringCities(currentCity);
-//         }
-
-//         // Reconstruct the shortest path
-//         return this.constructPath();
-//     }
-
-//     private getClosestUnvisitedCity(unvisitedCities: Set<string>): string {
-//         let closestCity = '';
-//         let smallestDistance = Infinity;
-
-//         unvisitedCities.forEach(city => {
-//             if (this.distances[city] < smallestDistance) {
-//                 smallestDistance = this.distances[city];
-//                 closestCity = city;
-//             }
-//         });
-
-//         return closestCity;
-//     }
-
-//     private updateNeighboringCities(currentCityName: string) {
-//         this.allRoutes.forEach(route => {
-//             const { origin, destination, distance } = route;
-
-//             if (origin.name === currentCityName && !this.visitedCities.has(destination.name)) {
-//                 const newDistance = this.distances[origin.name] + distance;
-//                 if (newDistance < this.distances[destination.name]) {
-//                     this.distances[destination.name] = newDistance;
-//                     this.previousCities[destination.name] = origin;
-//                 }
-//             }
-
-//             if (destination.name === currentCityName && !this.visitedCities.has(origin.name)) {
-//                 const newDistance = this.distances[destination.name] + distance;
-//                 if (newDistance < this.distances[origin.name]) {
-//                     this.distances[origin.name] = newDistance;
-//                     this.previousCities[origin.name] = destination;
-//                 }
-//             }
-//         });
-//     }
-
-//     private constructPath(): { path: City[], distance: number; } {
-//         const path: City[] = [];
-//         let currentCity: City | null = this.destination;
-
-//         while (currentCity) {
-//             path.unshift(currentCity);
-//             currentCity = this.previousCities[currentCity.name] || null;
-//         }
-
-//         return { path, distance: this.distances[this.destination.name] };
-//     }
-// }
 
 // =============== mock data ==============
 
@@ -266,8 +183,8 @@ export const mockShifts: Shift[] = [
                 "distance": 4500,
                 "code": 101,
                 "avgSpeed": 80,
-                "origin": { "lat": 40.7128, "lon": -74.0060, "name": "New York", "country": "USA" },
-                "destination": { "lat": 34.0522, "lon": -118.2437, "name": "Los Angeles", "country": "USA" },
+                "origin": { "lat": 40.7128, "lon": -74.0060, "name": "Valencia", "code": "VLC" },
+                "destination": { "lat": 34.0522, "lon": -118.2437, "name": "Madrid", "code": "MAD" },
                 "points": [
                     { "lat": 39.0997, "lon": -94.5786 },
                     { "lat": 36.1627, "lon": -86.7816 }
@@ -280,12 +197,6 @@ export const mockShifts: Shift[] = [
             "birthdate": new Date("1985-05-14T00:00:00.000Z"),
             "lastShiftEnd": new Date("2024-10-25T23:35:39.662Z")
         },
-        "copilot": {
-            "name": "Jane",
-            "surname": "Smith",
-            "birthdate": new Date("1990-08-25T00:00:00.000Z"),
-            "lastShiftEnd": new Date("2024-10-25T09:35:39.662Z"),
-        }
     }
 ];
 

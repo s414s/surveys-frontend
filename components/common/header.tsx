@@ -143,7 +143,11 @@ export default function Header() {
                 <DropdownMenuContent align="end">
                     <DropdownMenuLabel>Mi Cuenta</DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem>Settings</DropdownMenuItem>
+                    <DropdownMenuItem>
+                        <Link href={'/cargotrack/me'}>
+                            Mi Perfil
+                        </Link>
+                    </DropdownMenuItem>
                     <DropdownMenuItem>Soporte</DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem>Logout</DropdownMenuItem>

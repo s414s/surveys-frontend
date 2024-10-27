@@ -35,7 +35,7 @@ export default function LoginForm() {
                                 <Label htmlFor="password">Contraseña</Label>
                                 {/* <Link href="#" className="ml-auto inline-block text-sm underline">
                                 ¿Olvidate tu contraseña?
-                            </Link> */}
+                                </Link> */}
                             </div>
                             <Input id="password" type="password" required />
                         </div>

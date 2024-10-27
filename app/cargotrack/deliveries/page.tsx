@@ -28,12 +28,12 @@ export default function Page() {
             <Tabs defaultValue="active">
                 <div className="flex items-center">
                     <TabsList>
-                        <TabsTrigger value="active">Activas</TabsTrigger>
-                        <TabsTrigger value="draft">Borradores</TabsTrigger>
-                        <TabsTrigger value="archived" className="hidden sm:flex">
-                            Archivadas
+                        <TabsTrigger value="active">Activos</TabsTrigger>
+                        <TabsTrigger value="planned">Planificados</TabsTrigger>
+                        <TabsTrigger value="completed" className="hidden sm:flex">
+                            Completados
                         </TabsTrigger>
-                        <TabsTrigger value="all">Todas</TabsTrigger>
+                        <TabsTrigger value="all">Todos</TabsTrigger>
                     </TabsList>
                     <div className="ml-auto flex items-center gap-2">
                         <Button size="sm" variant="outline" className="h-8 gap-1">
@@ -69,10 +69,10 @@ export default function Page() {
                     </Card>
                 </TabsContent>
 
-                <TabsContent value="draft">
+                <TabsContent value="planned">
                     <Card x-chunk="dashboard-06-chunk-0">
                         <CardHeader>
-                            <CardTitle>Envios Borrador</CardTitle>
+                            <CardTitle>Envios Planificados</CardTitle>
                         </CardHeader>
                         <CardContent>
                             <DeliveriesTable shifts={shifts.filter(x => x.status === ShiftStatus.Ongoing) ?? []} />
@@ -85,10 +85,10 @@ export default function Page() {
                     </Card>
                 </TabsContent>
 
-                <TabsContent value="archived">
+                <TabsContent value="completed">
                     <Card x-chunk="dashboard-06-chunk-0">
                         <CardHeader>
-                            <CardTitle>Envios Activos</CardTitle>
+                            <CardTitle>Envios Completados</CardTitle>
                         </CardHeader>
                         <CardContent>
                             <DeliveriesTable shifts={shifts.filter(x => x.status === ShiftStatus.Ongoing) ?? []} />
@@ -104,7 +104,7 @@ export default function Page() {
                 <TabsContent value="active">
                     <Card x-chunk="dashboard-06-chunk-0">
                         <CardHeader>
-                            <CardTitle>Envios Completos</CardTitle>
+                            <CardTitle>Envios Activos</CardTitle>
                         </CardHeader>
                         <CardContent>
                             <DeliveriesTable shifts={shifts.filter(x => x.status === ShiftStatus.Completed) ?? []} />
@@ -116,6 +116,7 @@ export default function Page() {
                         </CardFooter>
                     </Card>
                 </TabsContent>
+
             </Tabs>
             {/* </main> */}
             {/* </div> */}

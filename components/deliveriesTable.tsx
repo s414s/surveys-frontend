@@ -22,13 +22,16 @@ export default function DeliveriesTable({ shifts }: { shifts: Shift[]; }) {
         <Table>
             <TableHeader>
                 <TableRow>
-                    <TableHead>Nombre</TableHead>
+                    <TableHead>Id</TableHead>
                     <TableHead>Estado</TableHead>
                     <TableHead className="hidden md:table-cell">
                         Conductor
                     </TableHead>
                     <TableHead className="hidden md:table-cell">
-                        Acompañante
+                        Distancia
+                    </TableHead>
+                    <TableHead className="hidden md:table-cell">
+                        Duración
                     </TableHead>
                     <TableHead className="hidden md:table-cell">
                         Fecha Creación
@@ -52,7 +55,10 @@ export default function DeliveriesTable({ shifts }: { shifts: Shift[]; }) {
                                 {x.pilot.name}
                             </TableCell>
                             <TableCell className="hidden md:table-cell">
-                                {x.copilot.name}
+                                {x.totalDistance} Km
+                            </TableCell>
+                            <TableCell className="hidden md:table-cell">
+                                {x.expectedDuration} Hr
                             </TableCell>
                             <TableCell className="hidden md:table-cell">
                                 {dateFormatter.format(x.expectedFinishTime)}
@@ -74,12 +80,12 @@ export default function DeliveriesTable({ shifts }: { shifts: Shift[]; }) {
                                             Acciones
                                         </DropdownMenuLabel>
                                         <DropdownMenuItem
-                                            disabled={x.status === ShiftStatus.Planned}
+                                            disabled={x.status !== ShiftStatus.Planned}
                                         >
                                             Editar
                                         </DropdownMenuItem>
                                         <DropdownMenuItem
-                                            disabled={x.status === ShiftStatus.Planned}
+                                            disabled={x.status !== ShiftStatus.Planned}
                                         >
                                             Cancelar
                                         </DropdownMenuItem>

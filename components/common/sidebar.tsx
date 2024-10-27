@@ -1,6 +1,6 @@
 "use client";
 
-import { LineChart, Package, ShoppingCart, Users } from "lucide-react";
+import { LineChart, Package, Truck, Users } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
@@ -40,8 +40,8 @@ const routes = [
         description: "Dashboard",
     },
     {
-        label: "Gestión de flota",
-        icon: ShoppingCart,
+        label: "Flota",
+        icon: Truck,
         href: "/cargotrack/fleet",
         description: "fleet",
     },
