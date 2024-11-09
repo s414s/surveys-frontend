@@ -1,5 +1,6 @@
 'use client';
 
+import LoadingComponent from "@/components/common/loader";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useFetch } from "@/hooks/useFetch";
 import { AlertCircle, Truck, User, MapPin } from 'lucide-react';
@@ -13,16 +14,16 @@ interface ResponseDTO {
 export default function Page() {
     const { data, error, loading } = useFetch<ResponseDTO>("GET", "/dashboard");
 
-    if (loading) {
-        return (<div>Cargando...</div>);
-    }
+    if (loading) { return <LoadingComponent />; }
 
     if (error) {
-        return (<div>{error.message}...</div>);
+        // return (<div>{error.message}...</div>);
+        console.log("error");
     }
 
     if (data) {
-        return (<div>Data...</div>);
+        // return (<div>Data...</div>);
+        console.log("data");
     }
 
     return (
@@ -88,9 +89,9 @@ export default function Page() {
                         </p>
                     </CardContent>
                 </Card>
-
                 {/* <div className="aspect-video rounded-xl bg-muted/50"> </div> */}
             </div>
+
             <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min aspect-video">
             </div>
         </div>

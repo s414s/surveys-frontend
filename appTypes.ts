@@ -15,12 +15,12 @@ export interface PaginatedRequestDto {
     sortOrder?: "asc" | "desc";
 }
 
-export type PaginatedResult<T> = {
+export type PagedResult<T> = {
     data: T[];
-    currentPage: number;
+    pageIndex: number;
+    pageSize: number;
+    totalResults: number;
     totalPages: number;
-    totalItems: number;
-    itemsPerPage: number;
     hasNextPage: boolean;
     hasPreviousPage: boolean;
 };

@@ -1,25 +1,16 @@
 import { File, PlusCircle, } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
-    Card,
-    CardContent,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card";
-import {
     Tabs,
     TabsContent,
     TabsList,
     TabsTrigger,
 } from "@/components/ui/tabs";
-import DeliveriesTable from "@/components/deliveriesTable";
-import { mockShifts, Shift, ShiftStatus } from "@/appTypes";
+import { ShiftStatus } from "@/appTypes";
 import Link from "next/link";
+import ShiftCardContent from "@/components/shiftCardContent";
 
 export default function Page() {
-    const shifts: Shift[] = mockShifts;
-
     return (
         // <div className="flex min-h-screen w-full flex-col bg-muted/40">
         <div className="flex w-full flex-col bg-muted/40">
@@ -54,72 +45,18 @@ export default function Page() {
                 </div>
 
                 <TabsContent value="all">
-                    <Card x-chunk="dashboard-06-chunk-0">
-                        <CardHeader>
-                            <CardTitle>Envios</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <DeliveriesTable shifts={shifts} />
-                        </CardContent>
-                        <CardFooter>
-                            <div className="text-xs text-muted-foreground">
-                                Mostrando <strong>1-10</strong> de <strong>32</strong>{" "}envios
-                            </div>
-                        </CardFooter>
-                    </Card>
+                    <ShiftCardContent shiftStatus={null} />
                 </TabsContent>
-
                 <TabsContent value="planned">
-                    <Card x-chunk="dashboard-06-chunk-0">
-                        <CardHeader>
-                            <CardTitle>Envios Planificados</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <DeliveriesTable shifts={shifts.filter(x => x.status === ShiftStatus.Ongoing) ?? []} />
-                        </CardContent>
-                        <CardFooter>
-                            <div className="text-xs text-muted-foreground">
-                                Mostrando <strong>1-10</strong> de <strong>32</strong>{" "}envios
-                            </div>
-                        </CardFooter>
-                    </Card>
+                    <ShiftCardContent shiftStatus={ShiftStatus.Planned} />
                 </TabsContent>
-
                 <TabsContent value="completed">
-                    <Card x-chunk="dashboard-06-chunk-0">
-                        <CardHeader>
-                            <CardTitle>Envios Completados</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <DeliveriesTable shifts={shifts.filter(x => x.status === ShiftStatus.Ongoing) ?? []} />
-                        </CardContent>
-                        <CardFooter>
-                            <div className="text-xs text-muted-foreground">
-                                Mostrando <strong>1-10</strong> de <strong>32</strong>{" "}envios
-                            </div>
-                        </CardFooter>
-                    </Card>
+                    <ShiftCardContent shiftStatus={ShiftStatus.Completed} />
                 </TabsContent>
-
                 <TabsContent value="active">
-                    <Card x-chunk="dashboard-06-chunk-0">
-                        <CardHeader>
-                            <CardTitle>Envios Activos</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <DeliveriesTable shifts={shifts.filter(x => x.status === ShiftStatus.Completed) ?? []} />
-                        </CardContent>
-                        <CardFooter>
-                            <div className="text-xs text-muted-foreground">
-                                Mostrando <strong>1-10</strong> de <strong>32</strong>{" "}envios
-                            </div>
-                        </CardFooter>
-                    </Card>
+                    <ShiftCardContent shiftStatus={ShiftStatus.Ongoing} />
                 </TabsContent>
-
             </Tabs>
-            {/* </main> */}
-            {/* </div> */}
         </div>
     );
 }

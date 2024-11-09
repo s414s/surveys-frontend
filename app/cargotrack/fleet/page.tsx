@@ -1,25 +1,24 @@
 "use client";
 
-import { Truck } from "@/appTypes";
+import { PagedResult, Truck } from "@/appTypes";
+import LoadingComponent from "@/components/common/loader";
 import { useFetch } from "@/hooks/useFetch";
 
 export default function Page() {
-    const { data, error, loading } = useFetch<Truck[]>("GET", "/trucks");
+    const { data, error, loading } = useFetch<PagedResult<Truck>>("GET", "/trucks");
 
-    if (loading) {
-        return (<div>Cargando...</div>);
-    }
-
-    if (error) {
-        return (<div>{error.message}...</div>);
-    }
+    if (error) { return (<div>{error.message}</div>); }
 
     return (
         <div className="flex w-full flex-col">
-            <h2>Hola desde fleet</h2>
+            <h2 className="text-3xl font-bold tracking-tight">Flota</h2>
+            {loading && <LoadingComponent />}
+
             {
-                data?.map(x => (
-                    <div key={x.id}>{x.plate}</div>))
+                data?.data && data.data?.map(x => (
+                    <div key={x.id}>
+                        {x.id}-{x.plate}-{x.mileage}
+                    </div>))
             }
         </div>
     );
