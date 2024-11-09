@@ -6,9 +6,10 @@ import {
     TabsList,
     TabsTrigger,
 } from "@/components/ui/tabs";
-import { ShiftStatus } from "@/appTypes";
 import Link from "next/link";
-import ShiftCardContent from "@/components/shiftCardContent";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import DeliveriesTable from "@/components/deliveriesTable";
+import { ShiftStatus } from "@/appTypes";
 
 export default function Page() {
     return (
@@ -45,16 +46,49 @@ export default function Page() {
                 </div>
 
                 <TabsContent value="all">
-                    <ShiftCardContent shiftStatus={null} />
+                    {/* <ShiftCardContent shiftStatus={null} /> */}
+                    <Card x-chunk="dashboard-06-chunk-0">
+                        <CardHeader>
+                            <CardTitle>Envios</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <DeliveriesTable shiftStatus={null} />
+                        </CardContent>
+                        <CardFooter></CardFooter>
+                    </Card>
                 </TabsContent>
                 <TabsContent value="planned">
-                    <ShiftCardContent shiftStatus={ShiftStatus.Planned} />
+                    <Card x-chunk="dashboard-06-chunk-0">
+                        <CardHeader>
+                            <CardTitle>Envios Planificados</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <DeliveriesTable shiftStatus={ShiftStatus.Planned} />
+                        </CardContent>
+                        <CardFooter></CardFooter>
+                    </Card>
                 </TabsContent>
                 <TabsContent value="completed">
-                    <ShiftCardContent shiftStatus={ShiftStatus.Completed} />
+                    <Card x-chunk="dashboard-06-chunk-0">
+                        <CardHeader>
+                            <CardTitle>Envios Completados</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <DeliveriesTable shiftStatus={ShiftStatus.Completed} />
+                        </CardContent>
+                        <CardFooter></CardFooter>
+                    </Card>
                 </TabsContent>
                 <TabsContent value="active">
-                    <ShiftCardContent shiftStatus={ShiftStatus.Ongoing} />
+                    <Card x-chunk="dashboard-06-chunk-0">
+                        <CardHeader>
+                            <CardTitle>Envios Activos</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <DeliveriesTable shiftStatus={ShiftStatus.Ongoing} />
+                        </CardContent>
+                        <CardFooter></CardFooter>
+                    </Card>
                 </TabsContent>
             </Tabs>
         </div>

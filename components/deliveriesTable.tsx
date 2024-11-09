@@ -1,5 +1,7 @@
-import { ShiftStatus, type Shift } from "@/appTypes";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "./ui/table";
+"use client";
+
+import { PagedResult, ShiftStatus, type Shift } from "@/appTypes";
+import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from "./ui/table";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -10,13 +12,20 @@ import {
 import { Button } from "./ui/button";
 import { MoreHorizontal } from "lucide-react";
 import StatusBadge from "./statusBadge";
+import { useFetch } from "@/hooks/useFetch";
+import LoadingComponent from "./common/loader";
 
-export default function DeliveriesTable({ shifts }: { shifts: Shift[]; }) {
+export default function DeliveriesTable({ shiftStatus }: { shiftStatus: ShiftStatus | null; }) {
     const dateFormatter = new Intl.DateTimeFormat('en-GB', {
         day: '2-digit',
         month: '2-digit',
         year: 'numeric'
     });
+
+    const { data, error, loading } = useFetch<PagedResult<Shift>>("GET", `/shifts?shiftStatus=${shiftStatus}`);
+
+    if (error) { return (<div>{error.message}</div>); }
+    if (loading) return <LoadingComponent />;
 
     return (
         <Table>
@@ -42,7 +51,7 @@ export default function DeliveriesTable({ shifts }: { shifts: Shift[]; }) {
                 </TableRow>
             </TableHeader>
             <TableBody>
-                {shifts.map(x => {
+                {data?.data.map(x => {
                     return (
                         <TableRow key={x.id}>
                             <TableCell className="font-medium">
@@ -96,6 +105,21 @@ export default function DeliveriesTable({ shifts }: { shifts: Shift[]; }) {
                     );
                 })}
             </TableBody>
+            <TableFooter>
+                {/* <div className="text-xs text-muted-foreground">
+                    Mostrando <strong>1-10</strong> de <strong>32</strong>{" "}envios
+                </div> */}
+
+                {
+                    data &&
+                    <div className="text-xs text-muted-foreground">
+                        Mostrando <strong>
+                            {((data.pageIndex - 1) * data.pageSize + 1)}-
+                            {Math.min(data.pageIndex * data.pageSize, data.totalResults)}
+                        </strong> de <strong>{data.totalResults ?? 0}</strong>{" "}envios
+                    </div>
+                }
+            </TableFooter>
         </Table>
     );
 }

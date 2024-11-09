@@ -68,6 +68,7 @@ export enum ShiftStatus {
     Planned,
     Ongoing,
     Completed,
+    Canceled,
 }
 
 export interface Driver {
