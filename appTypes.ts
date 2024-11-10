@@ -41,6 +41,7 @@ export interface Truck {
     id: number;
     plate: string;
     mileage: number;
+    driverName: string;
     consumption: number; // litter per km
     manufactoringDateUnix: number;
     lastMaintenenceDateUnix: number;

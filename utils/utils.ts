@@ -5,3 +5,7 @@ export function rangeArray(min: number, max: number): number[] {
 
     return Array.from({ length: max - min + 1 }, (_, index) => min + index);
 }
+
+export const capitalizeWord = (word: string) => {
+    return word.charAt(0).toUpperCase() + word.slice(1);
+};

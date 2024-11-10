@@ -1,19 +1,19 @@
 "use client";
 
 import { PagedResult, ShiftStatus, type Shift } from "@/appTypes";
-import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from "./ui/table";
+import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from "../ui/table";
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuLabel,
     DropdownMenuTrigger
-} from "./ui/dropdown-menu";
-import { Button } from "./ui/button";
+} from "../ui/dropdown-menu";
+import { Button } from "../ui/button";
 import { MoreHorizontal } from "lucide-react";
-import StatusBadge from "./statusBadge";
+import StatusBadge from "../statusBadge";
 import { useFetch } from "@/hooks/useFetch";
-import LoadingComponent from "./common/loader";
+import LoadingComponent from "../common/loader";
 
 export default function DeliveriesTable({ shiftStatus }: { shiftStatus: ShiftStatus | null; }) {
     const dateFormatter = new Intl.DateTimeFormat('en-GB', {

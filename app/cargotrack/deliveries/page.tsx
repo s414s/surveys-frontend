@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/tabs";
 import Link from "next/link";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import DeliveriesTable from "@/components/deliveriesTable";
+import DeliveriesTable from "@/components/tables/deliveriesTable";
 import { ShiftStatus } from "@/appTypes";
 
 export default function Page() {
