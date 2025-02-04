@@ -1,7 +1,7 @@
 "use client";
 
 import { PageProps } from "@/.next/types/app/layout";
-import { PagedResult, type Truck } from "@/appTypes";
+import { type PagedResult, type Truck } from "@/appTypes";
 import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from "../ui/table";
 import {
     DropdownMenu,
@@ -14,17 +14,11 @@ import { Button } from "../ui/button";
 import { ArrowLeft, ArrowRight, MoreHorizontal } from "lucide-react";
 import { useFetch } from "@/hooks/useFetch";
 import LoadingComponent from "../common/loader";
-import { capitalizeWord } from "@/utils/utils";
+import { capitalizeWord, dateFormatter, numberFormatter } from "@/utils/utils";
 import { useState } from "react";
 
 export default function TrucksTable(props: PageProps) {
-    const dateFormatter = new Intl.DateTimeFormat('en-GB', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric'
-    });
-
-    const [pageIndex, setPageIndex] = useState<number>(props.searchParams?.get("pageIndex") ?? 1);
+    const [pageIndex, setPageIndex] = useState<number>(props.searchParams?.pageIndex ?? 1);
     const { data, error, loading } = useFetch<PagedResult<Truck>>("GET", `/trucks?pageIndex=${pageIndex}`);
 
     return (
@@ -60,10 +54,10 @@ export default function TrucksTable(props: PageProps) {
                                 {x.plate}
                             </TableCell>
                             <TableCell className="hidden md:table-cell">
-                                {x.mileage}
+                                {numberFormatter(0, 0).format(x.mileage)}
                             </TableCell>
                             <TableCell className="hidden md:table-cell">
-                                {x.consumption}
+                                {numberFormatter(2, 2).format(x.consumption)}
                             </TableCell>
                             <TableCell className="hidden md:table-cell">
                                 {capitalizeWord(x.driverName)}

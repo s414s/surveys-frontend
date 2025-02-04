@@ -6,7 +6,6 @@ import { Toaster } from "@/components/ui/toaster";
 
 // https://nextjs.org/docs/app/api-reference/functions/use-selected-layout-segment
 export default function ViewerLayout({ children, }: Readonly<{ children: React.ReactNode; }>) {
-
     return (
         <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
 

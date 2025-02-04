@@ -54,7 +54,7 @@ const routes = [
     {
         label: "Clientes",
         icon: Users,
-        href: "/cargotrack/clientes",
+        href: "/cargotrack/clients",
         description: "Clientes",
     },
 ];
