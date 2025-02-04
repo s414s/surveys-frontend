@@ -1,15 +1,51 @@
 'use client';
 
+import "ol/ol.css";
 import Map from "ol/map";
 import View from "ol/View";
 import TileLayer from "ol/layer/tile";
 import { OSM } from "ol/source";
-import "ol/ol.css";
 import { defaults as defaultControls, ScaleLine } from 'ol/control';
 import { useEffect } from "react";
+import Feature from "ol/Feature";
+import Point from "ol/geom/Point";
+import { Circle as CircleStyle, Fill, Stroke, Style } from 'ol/style';
+import VectorSource from "ol/source/Vector";
+import { Vector as VectorLayer } from 'ol/layer';
 
 export default function Page() {
     useEffect(() => {
+        // Create a feature for the red dot at coordinate [0, 0]
+        const redDotFeature = new Feature({
+            geometry: new Point([0, 0]), // Coordinates in EPSG:3857
+            name: "myName",
+            // style: myOwnCircleStyle,
+        });
+
+        // Apply a red circle style to the feature
+        redDotFeature.setStyle(
+            new Style({
+                image: new CircleStyle({
+                    radius: 4,
+                    // fill: new Fill({ color: 'red' }),
+                    fill: new Fill({
+                        color: 'rgba(255, 0, 0, 0.8)',
+                    }),
+                    stroke: new Stroke({ color: 'black', width: 1 }),
+                }),
+            })
+        );
+
+        // Create a vector source and add the red dot feature to it
+        const vectorSource = new VectorSource({
+            features: [redDotFeature],
+        });
+
+        // Create a vector layer from the vector source
+        const vectorLayer = new VectorLayer({
+            source: vectorSource,
+        });
+
         const map = new Map({
             target: "map",
             controls: defaultControls().extend([
@@ -22,6 +58,7 @@ export default function Page() {
                 new TileLayer({
                     source: new OSM(),
                 }),
+                vectorLayer
             ],
             view: new View({
                 center: [0, 0],
