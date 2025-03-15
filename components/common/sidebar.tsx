@@ -1,38 +1,11 @@
 "use client";
 
-import { LineChart, Package, Truck, Users } from "lucide-react";
+import { LineChart, Package, Truck, Users, MessageSquare, WaypointsIcon } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
 
-// const driverRoutes = [
-//     {
-//         label: "Ruta Actual",
-//         href: "/cargotrack/currentroute",
-//         icon: LineChart,
-//         description: "Ruta Actual",
-//     },
-//     {
-//         label: "Historial",
-//         icon: Package,
-//         href: "/cargotrack/history",
-//         description: "Historial",
-//     },
-//     {
-//         label: "Documentos",
-//         icon: LineChart,
-//         href: "/cargotrack/documents",
-//         description: "Documentos",
-//     },
-//     {
-//         label: "Chat",
-//         icon: Package,
-//         href: "/cargotrack/chat",
-//         description: "Chat",
-//     },
-// ];
-
-const routes = [
+const adminRoutes = [
     {
         label: "Dashboard",
         href: "/cargotrack/dashboard",
@@ -59,12 +32,28 @@ const routes = [
     },
 ];
 
+const driverRoutes = [
+    {
+        label: "Routes",
+        href: "/cargotrack/routes",
+        icon: WaypointsIcon,
+        description: "Routes",
+    },
+    {
+        label: "Messages",
+        icon: MessageSquare,
+        href: "/cargotrack/messages",
+        description: "Messages",
+    },
+];
+
 export default function SidebarItems() {
     const pathname = usePathname();
+    const menuItems = true ? adminRoutes : driverRoutes;
 
     return (
         <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
-            {routes.map((route) => {
+            {menuItems.map((route) => {
                 return (
                     <Link
                         prefetch={true}

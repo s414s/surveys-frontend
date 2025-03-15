@@ -1,4 +1,9 @@
+'use client';
+
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import LoadingComponent from "@/components/common/loader";
 import {
     Card,
     CardContent,
@@ -6,10 +11,44 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { useState } from "react";
+
+export type LoginDTO = {
+    name: string;
+    password: string;
+};
+
+const BASE_URL = process.env.API_URL || 'http://localhost:5097';
 
 export default function LoginForm() {
+    const [err, setError] = useState<string | null>(null);
+    const [email, setEmail] = useState<string>("");
+    const [pwd, setPwd] = useState<string>("");
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+
+    const handleSubmit = async () => {
+        setIsLoading(true);
+        setError(null);
+
+        const requestOptions: RequestInit = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({ user: email, password: pwd }),
+            // credentials: 'include', // Includes cookies in the request
+        };
+
+        const response = await fetch(`${BASE_URL}/login`, requestOptions);
+
+        if (!response.ok) {
+            setError("user or password incorrect");
+        }
+
+        setIsLoading(false);
+    };
+
     return (
         <div className="flex items-center min-h-screen max-h-screen">
             <Card className="mx-auto max-w-sm w-full">
@@ -22,26 +61,52 @@ export default function LoginForm() {
                 <CardContent>
                     <div className="grid gap-4">
                         <div className="grid gap-2">
-                            <Label htmlFor="email">Email</Label>
+                            <Label htmlFor="email">
+                                Email
+                            </Label>
                             <Input
                                 id="email"
                                 type="email"
-                                placeholder="tuemail@cargotrack.com"
+                                placeholder="tu_email@cargotrack.com"
                                 required
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
                             />
                         </div>
                         <div className="grid gap-2">
                             <div className="flex items-center">
-                                <Label htmlFor="password">Contraseña</Label>
-                                {/* <Link href="#" className="ml-auto inline-block text-sm underline">
-                                ¿Olvidate tu contraseña?
-                                </Link> */}
+                                <Label htmlFor="password">
+                                    Contraseña
+                                </Label>
+                                {/*
+                                <Link href="#" className="ml-auto inline-block text-sm underline">
+                                    ¿Olvidate tu contraseña?
+                                </Link>
+                                */}
                             </div>
-                            <Input id="password" type="password" required />
+                            <Input
+                                id="password"
+                                type="password"
+                                required
+                                value={pwd}
+                                onChange={(e) => setPwd(e.target.value)}
+                            />
                         </div>
-                        <Button type="submit" className="w-full">
-                            Login
+
+                        <Button
+                            type="submit"
+                            className="w-full"
+                            disabled={isLoading}
+                            onClick={handleSubmit}
+                        >
+                            {isLoading ? <LoadingComponent /> : "Login"}
                         </Button>
+
+                        {err && (
+                            <div className="text-red-500 text-sm mt-2">
+                                Error al iniciar sesión. Comprueba tus credenciales.
+                            </div>
+                        )}
                     </div>
                 </CardContent>
             </Card>
