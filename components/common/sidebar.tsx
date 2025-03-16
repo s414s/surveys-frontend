@@ -4,6 +4,7 @@ import { LineChart, Package, Truck, Users, MessageSquare, WaypointsIcon } from "
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
+import { useAppStore } from "@/store/userStore";
 
 const adminRoutes = [
     {
@@ -49,7 +50,9 @@ const driverRoutes = [
 
 export default function SidebarItems() {
     const pathname = usePathname();
-    const menuItems = true ? adminRoutes : driverRoutes;
+    const isUserAdmin = useAppStore().isAdmin();
+    // console.log("isUserAdmin", isUserAdmin);
+    const menuItems = isUserAdmin ? adminRoutes : driverRoutes;
 
     return (
         <nav className="grid items-start px-2 text-sm font-medium lg:px-4">

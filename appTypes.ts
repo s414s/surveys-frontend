@@ -1,11 +1,30 @@
 type UserRoles = 'admin' | 'driver';
 
+export interface UserInfo {
+    id: number;
+    name: string;
+    surname: string;
+    email: string;
+    role: number;
+}
+
 export interface User {
     id: number;
     name: string;
     email: string;
     role: UserRoles;
 }
+
+export type EmailPreview = {
+    name: string;
+    surname: string;
+    email: string;
+    subject: string;
+    date: string;
+    teaser: string;
+    text: string;
+    isDeleted: boolean;
+};
 
 export interface PaginatedRequestDto {
     pageNumber?: number;

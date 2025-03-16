@@ -4,6 +4,8 @@ import LoadingComponent from "@/components/common/loader";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useFetch } from "@/hooks/useFetch";
 import { AlertCircle, Truck, User, MapPin } from 'lucide-react';
+import { useAppStore } from "@/store/userStore";
+import { useRouter } from "next/navigation";
 
 interface ResponseDTO {
     name: string;
@@ -12,13 +14,19 @@ interface ResponseDTO {
 }
 
 export default function Page() {
+    const router = useRouter();
+    const store = useAppStore();
+
+    if (!store.isUserLoggedIn()) { router.push("/login"); }
+    if (!store.isAdmin()) { router.push("/login"); }
+
     const { data, error, loading } = useFetch<ResponseDTO>("GET", "/dashboard");
 
-    if (loading) { return <LoadingComponent />; }
+    if (loading) return <LoadingComponent />;
 
     if (error) {
         // return (<div>{error.message}...</div>);
-        console.log("error");
+        console.log("error", error);
     }
 
     if (data) {

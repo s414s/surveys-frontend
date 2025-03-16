@@ -1,17 +1,14 @@
 import { create } from 'zustand';
 import { jwtDecode } from "jwt-decode";
-
-interface UserInfo {
-    id: number;
-    name: string;
-    surname: string;
-}
+import { UserInfo } from '@/appTypes';
 
 interface AppState {
     jwtToken?: string;
     setUser: (jwtToken?: string) => void,
     getUserInfo: () => UserInfo | undefined,
     removeUser: () => void,
+    isAdmin: () => boolean,
+    isUserLoggedIn: () => boolean,
 }
 
 export const useAppStore = create<AppState>()((set, get) => ({
@@ -19,9 +16,13 @@ export const useAppStore = create<AppState>()((set, get) => ({
     setUser: (jwtToken?: string) => { set({ jwtToken }); },
     getUserInfo: () => {
         const { jwtToken } = get();
-        if (!jwtToken) return undefined;
+
+        if (!jwtToken)
+            return undefined;
 
         return jwtDecode<UserInfo>(jwtToken);
     },
     removeUser: () => { set({ jwtToken: undefined }); },
+    isAdmin: () => get().getUserInfo()?.role === 2,
+    isUserLoggedIn: () => get().getUserInfo() !== undefined,
 }));

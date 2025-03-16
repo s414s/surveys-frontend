@@ -3,6 +3,9 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useAppStore } from "@/store/userStore";
 import LoadingComponent from "@/components/common/loader";
 import {
     Card,
@@ -11,16 +14,22 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import { useState } from "react";
 
 export type LoginDTO = {
     name: string;
     password: string;
 };
 
+export type LoginResponseDTO = {
+    token: string;
+};
+
 const BASE_URL = process.env.API_URL || 'http://localhost:5097';
 
 export default function LoginForm() {
+    const router = useRouter();
+    const store = useAppStore();
+
     const [err, setError] = useState<string | null>(null);
     const [email, setEmail] = useState<string>("");
     const [pwd, setPwd] = useState<string>("");
@@ -30,23 +39,39 @@ export default function LoginForm() {
         setIsLoading(true);
         setError(null);
 
-        const requestOptions: RequestInit = {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify({ user: email, password: pwd }),
-            // credentials: 'include', // Includes cookies in the request
-        };
+        try {
+            const requestOptions: RequestInit = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({ user: email, password: pwd }),
+                // credentials: 'include', // Includes cookies in the request
+            };
 
-        const response = await fetch(`${BASE_URL}/login`, requestOptions);
+            const response = await fetch(`${BASE_URL}/login`, requestOptions);
 
-        if (!response.ok) {
+            if (!response.ok) {
+                setError("user or password incorrect");
+                return;
+            }
+
+            const resp: LoginResponseDTO = await response.json();
+            if (!resp?.token) {
+                setError("user or password incorrect");
+                return;
+            }
+
+            store.setUser(resp.token);
+            const isUserAdmin = store.isAdmin();
+            router.push(isUserAdmin ? "/dashboard" : "/routes");
+        } catch (e) {
             setError("user or password incorrect");
+            console.log(e);
+        } finally {
+            setIsLoading(false);
         }
-
-        setIsLoading(false);
     };
 
     return (
