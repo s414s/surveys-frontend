@@ -1,11 +1,11 @@
-type UserRoles = 'admin' | 'driver';
+type UserRoles = 'Admin' | 'Driver';
 
 export interface UserInfo {
     id: number;
     name: string;
     surname: string;
     email: string;
-    role: number;
+    role: UserRoles;
 }
 
 export interface User {
@@ -15,15 +15,37 @@ export interface User {
     role: UserRoles;
 }
 
-export type EmailPreview = {
+export type Thread = {
+    id: number;
+    authorName: string;
+    authorSurname: string;
+    subject: string;
+    lastActivity: string; // Date
+    teaser: string;
+    isRead: boolean;
+};
+
+export type Message = {
+    id: number;
     name: string;
     surname: string;
     email: string;
     subject: string;
     date: string;
-    teaser: string;
+    text: string;
+    isRead: boolean;
+};
+
+export type MessagePreview = {
+    id: number;
+    name: string;
+    surname: string;
+    email: string;
+    subject: string;
+    date: string;
     text: string;
     isDeleted: boolean;
+    isRead: boolean;
 };
 
 export interface PaginatedRequestDto {
@@ -142,9 +164,9 @@ export interface IGeographicCoordiantes {
 // =============== mock data ==============
 
 export const mockUsers: User[] = [
-    { "id": 1, "name": "Alice Smith", "email": "alice@example.com", "role": "admin" },
-    { "id": 2, "name": "Bob Jones", "email": "bob@example.com", "role": "driver" },
-    { "id": 3, "name": "Charlie Brown", "email": "charlie@example.com", "role": "admin" }
+    { "id": 1, "name": "Alice Smith", "email": "alice@example.com", "role": "Admin" },
+    { "id": 2, "name": "Bob Jones", "email": "bob@example.com", "role": "Driver" },
+    { "id": 3, "name": "Charlie Brown", "email": "charlie@example.com", "role": "Admin" }
 ];
 
 export const mockPallets: Pallet[] = [

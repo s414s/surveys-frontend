@@ -23,6 +23,6 @@ export const useAppStore = create<AppState>()((set, get) => ({
         return jwtDecode<UserInfo>(jwtToken);
     },
     removeUser: () => { set({ jwtToken: undefined }); },
-    isAdmin: () => get().getUserInfo()?.role === 2,
+    isAdmin: () => get().getUserInfo()?.role === "Admin",
     isUserLoggedIn: () => get().getUserInfo() !== undefined,
 }));

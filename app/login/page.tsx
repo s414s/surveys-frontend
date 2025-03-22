@@ -46,11 +46,11 @@ export default function LoginForm() {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json'
                 },
-                body: JSON.stringify({ user: email, password: pwd }),
+                body: JSON.stringify({ email: email, password: pwd }),
                 // credentials: 'include', // Includes cookies in the request
             };
 
-            const response = await fetch(`${BASE_URL}/login`, requestOptions);
+            const response = await fetch(`${BASE_URL}/auth/login`, requestOptions);
 
             if (!response.ok) {
                 setError("user or password incorrect");
@@ -65,7 +65,13 @@ export default function LoginForm() {
 
             store.setUser(resp.token);
             const isUserAdmin = store.isAdmin();
-            router.push(isUserAdmin ? "/dashboard" : "/routes");
+
+            console.info("userInfo", store.getUserInfo());
+            console.info("userInfoRole", store.getUserInfo()?.role);
+
+            console.info("isUserAdmin", isUserAdmin);
+
+            router.push(isUserAdmin ? "cargotrack/dashboard" : "cargotrack/routes");
         } catch (e) {
             setError("user or password incorrect");
             console.log(e);

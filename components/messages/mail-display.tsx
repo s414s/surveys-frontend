@@ -1,3 +1,5 @@
+'use-client';
+
 import {
     format,
     // addDays,
@@ -15,9 +17,9 @@ import {
     TooltipTrigger,
 } from "../ui/tooltip";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { EmailPreview } from "@/appTypes";
+import { MessagePreview } from "@/appTypes";
 
-export function MailDisplay({ email }: { email: EmailPreview | null; }) {
+export function MailDisplay({ email }: { email: MessagePreview | null; }) {
     // const today = new Date();
 
     return (
