@@ -64,17 +64,10 @@ export default function LoginForm() {
             }
 
             store.setUser(resp.token);
-            const isUserAdmin = store.isAdmin();
-
-            console.info("userInfo", store.getUserInfo());
-            console.info("userInfoRole", store.getUserInfo()?.role);
-
-            console.info("isUserAdmin", isUserAdmin);
-
-            router.push(isUserAdmin ? "cargotrack/dashboard" : "cargotrack/routes");
+            router.push(store.isAdmin() ? "cargotrack/dashboard" : "cargotrack/routes");
         } catch (e) {
             setError("user or password incorrect");
-            console.log(e);
+            console.error(e);
         } finally {
             setIsLoading(false);
         }
