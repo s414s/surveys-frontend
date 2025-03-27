@@ -17,12 +17,12 @@ export interface User {
 
 export type Thread = {
     id: number;
-    authorName: string;
-    authorSurname: string;
     subject: string;
-    lastActivity: string; // Date
     teaser: string;
     isRead: boolean;
+    name: string;
+    surname: string;
+    date: string; // Date
 };
 
 export type Message = {
@@ -33,18 +33,6 @@ export type Message = {
     subject: string;
     date: string;
     text: string;
-    isRead: boolean;
-};
-
-export type MessagePreview = {
-    id: number;
-    name: string;
-    surname: string;
-    email: string;
-    subject: string;
-    date: string;
-    text: string;
-    isDeleted: boolean;
     isRead: boolean;
 };
 
@@ -82,8 +70,8 @@ export interface Truck {
     id: number;
     plate: string;
     mileage: number;
-    driverName: string;
-    consumption: number; // litter per km
+    //driverName: string;
+    consumption: number; // l/km
     manufactoringDateUnix: number;
     lastMaintenenceDateUnix: number;
 }

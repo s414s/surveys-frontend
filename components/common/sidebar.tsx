@@ -31,6 +31,12 @@ const adminRoutes = [
         href: "/cargotrack/clients",
         description: "Clientes",
     },
+    {
+        label: "Messages",
+        icon: MessageSquare,
+        href: "/cargotrack/messages",
+        description: "Messages",
+    },
 ];
 
 const driverRoutes = [

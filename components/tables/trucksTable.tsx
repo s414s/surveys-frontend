@@ -20,6 +20,7 @@ import { useState } from "react";
 export default function TrucksTable(props: PageProps) {
     const [pageIndex, setPageIndex] = useState<number>(props.searchParams?.pageIndex ?? 1);
     const { data, error, loading } = useFetch<PagedResult<Truck>>("GET", `/trucks?pageIndex=${pageIndex}`);
+    console.log(data);
 
     return (
         <Table className="w-full">
@@ -33,7 +34,7 @@ export default function TrucksTable(props: PageProps) {
                         Consumo <br /> (l/100Km)
                     </TableHead>
                     <TableHead className="hidden md:table-cell">
-                        Conductor
+                        Marca
                     </TableHead>
                     <TableHead className="hidden md:table-cell">
                         Última revisión
@@ -60,7 +61,7 @@ export default function TrucksTable(props: PageProps) {
                                 {numberFormatter(2, 2).format(x.consumption)}
                             </TableCell>
                             <TableCell className="hidden md:table-cell">
-                                {capitalizeWord(x.driverName)}
+                                {capitalizeWord("TODO - marca")}
                             </TableCell>
                             <TableCell className="hidden md:table-cell">
                                 {dateFormatter.format(x.lastMaintenenceDateUnix)}

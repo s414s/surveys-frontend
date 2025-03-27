@@ -1,3 +1,4 @@
+import { useAppStore } from "@/store/userStore";
 import { useEffect, useState } from "react";
 
 const BASE_URL = process.env.API_URL || 'http://localhost:5097';
@@ -26,8 +27,11 @@ export const useFetch = <T>(
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<ErrorType>(null);
 
+    const jwtToken = useAppStore(state => state.jwtToken);
+
     useEffect(() => {
         // const controller = new AbortController();
+        // Get the JWT token from your Zustand store
 
         // Set timeout to abort the request
         // const timeoutId = setTimeout(() => {
@@ -42,7 +46,8 @@ export const useFetch = <T>(
             method,
             headers: {
                 'Content-Type': 'application/json',
-                'Accept': 'application/json'
+                'Accept': 'application/json',
+                ...(jwtToken && { 'Authorization': `Bearer ${jwtToken}` })
             },
             body: body ? JSON.stringify(body) : undefined,
             // signal: controller.signal, // Attach the AbortSignal to the request
@@ -61,7 +66,8 @@ export const useFetch = <T>(
                 }
 
                 const jsonData: T = await response.json();
-                // console.dir(jsonData);
+                console.table(jsonData);
+
                 setData(jsonData);
                 setError(null);
             } catch (err) {
@@ -82,7 +88,7 @@ export const useFetch = <T>(
 
         // return () => { controller.abort(); };
 
-    }, [endpoint, method, body, queryParams]);
+    }, [endpoint, method, body, queryParams, jwtToken]);
 
     return { data, loading, error };
 };
