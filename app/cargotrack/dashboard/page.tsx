@@ -6,6 +6,7 @@ import { useFetch } from "@/hooks/useFetch";
 import { AlertCircle, Truck, User, MapPin } from 'lucide-react';
 import { useAppStore } from "@/store/userStore";
 import { useRouter } from "next/navigation";
+import FreightsMap from "@/components/freightsMap";
 
 interface ResponseDTO {
     name: string;
@@ -23,16 +24,8 @@ export default function Page() {
     const { data, error, loading } = useFetch<ResponseDTO>("GET", "/dashboard");
 
     if (loading) return <LoadingComponent />;
-
-    if (error) {
-        // return (<div>{error.message}...</div>);
-        console.log("error", error);
-    }
-
-    if (data) {
-        // return (<div>Data...</div>);
-        console.log("data");
-    }
+    if (error) { console.log("error", error); }
+    if (data) { console.log("data"); }
 
     return (
         <div className="flex flex-1 flex-col gap-4 px-4 ">
@@ -100,7 +93,9 @@ export default function Page() {
                 {/* <div className="aspect-video rounded-xl bg-muted/50"> </div> */}
             </div>
 
-            <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min aspect-video">
+            {/* <div className="flex flex-1 border border-red-600 rounded-xl bg-muted/50 md:min-h-min aspect-video"> */}
+            <div className="flex flex-1 border z-50 rounded-xl bg-muted/50 md:min-h-min">
+                <FreightsMap />
             </div>
         </div>
     );

@@ -161,21 +161,20 @@ const FreightsMap = () => {
     }, []);
 
     return (
-        <div className="touch-none">
-            <div
-                id="map"
-                className="h-dvh w-screen relative overflow-hidden touch-none"
-                ref={mapDivRef}
-            >
-                <div className="absolute bottom-8 right-4 z-20">
-                    <Button
-                        className="h-12 w-12 rounded-full"
-                        onClick={handleGetLocation}
-                    >
-                        <MapPinIcon />
-                    </Button>
-                </div>
-            </div>
+        <div
+            id="map"
+            className="h-full w-full relative overflow-hidden touch-none"
+            ref={mapDivRef}
+        >
+            {/* <div className="absolute bottom-8 right-4 z-20">
+                <Button
+                    className="h-12 w-12 rounded-full"
+                    onClick={handleGetLocation}
+                >
+                    <MapPinIcon />
+                </Button>
+            </div> */}
+
         </div>
     );
 };
