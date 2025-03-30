@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
 import { useAppStore } from "@/store/userStore";
 
-const adminRoutes = [
+export const adminRoutes = [
     {
         label: "Dashboard",
         href: "/cargotrack/dashboard",
@@ -39,7 +39,7 @@ const adminRoutes = [
     },
 ];
 
-const driverRoutes = [
+export const driverRoutes = [
     {
         label: "Routes",
         href: "/cargotrack/routes",
@@ -57,7 +57,6 @@ const driverRoutes = [
 export default function SidebarItems() {
     const pathname = usePathname();
     const isUserAdmin = useAppStore().isAdmin();
-    // console.log("isUserAdmin", isUserAdmin);
     const menuItems = isUserAdmin ? adminRoutes : driverRoutes;
 
     return (
@@ -68,9 +67,10 @@ export default function SidebarItems() {
                         prefetch={true}
                         key={route.href}
                         href={route.href}
-                        className={cn("flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary",
-                            pathname === route.href ? "bg-muted text-primary" : "text-muted-foreground"
-                        )}
+                        className={
+                            cn("flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary",
+                                pathname === route.href ? "bg-muted text-primary" : "text-muted-foreground"
+                            )}
                     >
                         <route.icon className="h-4 w-4" />
                         {route.label}
