@@ -16,7 +16,6 @@ import { Vector as VectorLayer } from 'ol/layer';
 export default function Page() {
 
     useEffect(() => {
-        // Create a feature for the red dot at coordinate [0, 0]
         const redDotFeature = new Feature({
             geometry: new Point([0, 0]), // Coordinates in EPSG:3857
             name: "myName",

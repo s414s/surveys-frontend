@@ -5,19 +5,18 @@ import { useEffect, useRef, useState } from "react";
 import { Map, MapBrowserEvent, View } from "ol";
 import { ScaleLine, defaults as defaultControls } from 'ol/control.js';
 import { defaults as defaultInteractions } from 'ol/interaction';
-import { MapPinIcon } from "lucide-react";
 import XYZ from "ol/source/XYZ";
 import { fromLonLat, transform } from "ol/proj";
-import { Button } from "./ui/button";
 import Point from "ol/geom/Point";
-import { Style, Circle, Fill, Stroke, Text } from 'ol/style';
+import { Style, Circle, Fill, Stroke } from 'ol/style';
 import Feature from 'ol/Feature';
 import { Vector as VectorLayer } from 'ol/layer';
 import { Vector as VectorSource } from 'ol/source';
-import { Coordinate } from "ol/coordinate";
-import { easeOut } from 'ol/easing';
+// import { Coordinate } from "ol/coordinate";
+// import { easeOut } from 'ol/easing';
 import TileLayer from "ol/layer/tile";
-// import TileLayer from "ol/layer/Tile";
+import KML from 'ol/format/KML';
+
 
 // import { Input } from "./ui/input";
 // import { Coordinate } from "ol/coordinate";
@@ -31,46 +30,9 @@ import TileLayer from "ol/layer/tile";
 const FreightsMap = () => {
     const mapDivRef = useRef<HTMLDivElement>(null);
 
-    const [olMap, setOlMap] = useState<Map>();
-    const [, setLocation] = useState<Coordinate | null>(null);
+    const [, setOlMap] = useState<Map>();
+    // const [, setLocation] = useState<Coordinate | null>(null);
     const [, setSelectedFeature] = useState<Feature | null>(null);
-
-    const handleGetLocation = () => {
-        if (!navigator.geolocation) return;
-        if (!olMap) return;
-
-        navigator.geolocation.getCurrentPosition(
-            (position) => {
-                // Transform from UTM Zone 30N (EPSG:32630) to WGS84 (EPSG:4326)
-                const coords: Coordinate = fromLonLat([position.coords.longitude, position.coords.latitude]);
-                setLocation(coords);
-                // console.log("My current position:", coords);
-
-                const myLayer = olMap?.getLayers()
-                    .getArray()
-                    .find(layer => layer.get('name') === 'myLocationLayer');
-
-                if (!myLayer) { throw new Error("layer not found"); }
-
-                const vectorSource = (myLayer as VectorLayer<VectorSource<Feature<Point>>>).getSource();
-                vectorSource?.clear(); // Removes all features from this source
-
-                const feature = new Feature({ geometry: new Point(coords) });
-                feature.setStyle(myLocationStyle);
-                vectorSource?.addFeature(feature);
-
-                // olMap?.getView().setCenter(coords);
-                olMap?.getView().animate({
-                    center: coords,
-                    zoom: 15,
-                    duration: 500,
-                    easing: easeOut // Smooth ease-in/ease-out transition
-                });
-            },
-            (error) => { console.error("Error retrieving location:", error); },
-            { maximumAge: 30_000 }
-        );
-    };
 
     useEffect(() => {
         const baseLayer = new TileLayer({
@@ -79,13 +41,48 @@ const FreightsMap = () => {
             })
         });
 
+        const kmlLayer = new VectorLayer({
+            source: new VectorSource({
+                url: '/itinerarios1.kml', // adjust the path if needed
+                format: new KML(),
+            }),
+            // Optionally, you can define a custom style for the features in the KML
+            // style: new Style({
+            //   fill: new Fill({
+            //     color: 'rgba(0, 0, 255, 0.1)',
+            //   }),
+            //   stroke: new Stroke({
+            //     color: '#0000FF',
+            //     width: 2,
+            //   }),
+            // }),
+        });
+
+        const kmlLayers = ["/itinerarios1.kml", "/itinerarios2.kml"].map(url => new VectorLayer({
+            source: new VectorSource({
+                url,
+                format: new KML({ extractStyles: false }),
+            }),
+
+            style: new Style({
+                fill: new Fill({
+                    color: 'rgba(0, 0, 255, 0.1)',
+                }),
+                stroke: new Stroke({
+                    color: '#FF00FF',
+                    width: 2,
+                }),
+            }),
+
+        }));
+
         const allFreights = freightsData?.map(x => {
             const feat = new Feature({
                 geometry: new Point(fromLonLat([x.lon, x.lat])),
                 name: x.name,
             });
 
-            feat.setStyle(treeStyle);
+            feat.setStyle(truckStyle);
             feat.setId(x.id ?? 0);
             feat.setProperties({
                 "name": x.name,
@@ -101,7 +98,7 @@ const FreightsMap = () => {
         });
 
         // Create a vector layer with styling for red dots
-        const pointsLayer = new VectorLayer({
+        const trucksLayer = new VectorLayer({
             source: vectorSource,
         });
 
@@ -121,8 +118,10 @@ const FreightsMap = () => {
             layers: [
                 // new TileLayer({ source: new OSM() })
                 baseLayer,
-                pointsLayer,
-                myLocationLayer
+                trucksLayer,
+                myLocationLayer,
+                // kmlLayer,
+                ...kmlLayers
             ],
             view: new View({
                 center: fromLonLat([-0.8891, 41.6488]), // Note: OpenLayers uses [lon, lat] order
@@ -132,7 +131,7 @@ const FreightsMap = () => {
 
         map.on("singleclick", (e: MapBrowserEvent<MouseEvent>) => {
             const toleranceInPixels = 20;
-            const vectorSource = pointsLayer.getSource();
+            const vectorSource = trucksLayer.getSource();
             if (!vectorSource) throw new Error("no points source found");
 
             // Find the closest feature to the clicked coordinate.
@@ -166,41 +165,33 @@ const FreightsMap = () => {
             className="h-full w-full relative overflow-hidden touch-none"
             ref={mapDivRef}
         >
-            <div className="absolute bottom-8 right-4 z-20">
-                <Button
-                    className="h-12 w-12 rounded-full"
-                    onClick={handleGetLocation}
-                >
-                    <MapPinIcon />
-                </Button>
-            </div>
         </div>
     );
 };
 
 export default FreightsMap;
 
-const treeStyle = new Style({
-    image: new Circle({
-        radius: 6,
-        fill: new Fill({
-            color: 'green'
-        }),
-        stroke: new Stroke({
-            color: 'white',
-            width: 2
-        })
-    }),
-    // Add text label if name is provided
-    text: new Text({
-        // text: "hola",
-        offsetY: -15,
-        fill: new Fill({ color: 'black' }),
-        stroke: new Stroke({ color: 'white', width: 3 })
-    })
-});
+// const treeStyle = new Style({
+//     image: new Circle({
+//         radius: 6,
+//         fill: new Fill({
+//             color: 'green'
+//         }),
+//         stroke: new Stroke({
+//             color: 'white',
+//             width: 2
+//         })
+//     }),
+//     // Add text label if name is provided
+//     text: new Text({
+//         // text: "hola",
+//         offsetY: -15,
+//         fill: new Fill({ color: 'black' }),
+//         stroke: new Stroke({ color: 'white', width: 3 })
+//     })
+// });
 
-const myLocationStyle = new Style({
+const truckStyle = new Style({
     image: new Circle({
         radius: 6,
         fill: new Fill({
