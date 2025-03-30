@@ -123,7 +123,7 @@ export default function LoginForm() {
                             disabled={isLoading}
                             onClick={handleSubmit}
                         >
-                            {isLoading ? <LoadingComponent /> : "Login"}
+                            {isLoading ? <LoadingComponent isAdminOnly={false} /> : "Login"}
                         </Button>
 
                         {err && (

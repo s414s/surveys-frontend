@@ -1,7 +1,7 @@
 'use client';
 
 import { PagedResult, Thread } from "@/appTypes";
-import { ThreadDisplay } from "@/components/messages/mail-display";
+import { ThreadDisplay } from "@/components/messages/threadDisplay";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { formatDistanceToNow } from "date-fns";
@@ -18,7 +18,7 @@ export default function Page() {
     const [selectedThreadId, setSelectedThreadId] = useState<number | null>(null);
     const { data, error, loading } = useFetch<PagedResult<Thread>>("GET", "/threads");
 
-    if (loading) return <LoadingComponent />;
+    if (loading) return <LoadingComponent isAdminOnly={false} />;
     if (error) { console.log("error", error); }
 
     return (

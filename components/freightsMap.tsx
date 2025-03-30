@@ -41,23 +41,6 @@ const FreightsMap = () => {
             })
         });
 
-        const kmlLayer = new VectorLayer({
-            source: new VectorSource({
-                url: '/itinerarios1.kml', // adjust the path if needed
-                format: new KML(),
-            }),
-            // Optionally, you can define a custom style for the features in the KML
-            // style: new Style({
-            //   fill: new Fill({
-            //     color: 'rgba(0, 0, 255, 0.1)',
-            //   }),
-            //   stroke: new Stroke({
-            //     color: '#0000FF',
-            //     width: 2,
-            //   }),
-            // }),
-        });
-
         const kmlLayers = ["/itinerarios1.kml", "/itinerarios2.kml"].map(url => new VectorLayer({
             source: new VectorSource({
                 url,

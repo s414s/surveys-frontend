@@ -26,9 +26,10 @@ export function ThreadDisplay({ threadId }: { threadId: number; }) {
     const [reply, setReply] = useState("");
     const { data, error, loading } = useFetch<Message[]>("GET", `/threads/${threadId}/messages`);
 
-    console.log(data);
+    console.log("FETCHING ID", threadId);
+    console.table(data);
 
-    if (loading) { <LoadingComponent />; }
+    if (loading) { <LoadingComponent isAdminOnly={false} />; }
     if (error) { console.log(error); }
 
     return (
@@ -102,22 +103,6 @@ export function ThreadDisplay({ threadId }: { threadId: number; }) {
                 </div>
 
                 <Separator orientation="vertical" className="mx-2 h-6" />
-
-                {/* <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon" disabled={!mail}>
-                            <MoreVertical className="h-4 w-4" />
-                            <span className="sr-only">More</span>
-                        </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                        <DropdownMenuItem>Mark as unread</DropdownMenuItem>
-                        <DropdownMenuItem>Star thread</DropdownMenuItem>
-                        <DropdownMenuItem>Add label</DropdownMenuItem>
-                        <DropdownMenuItem>Mute thread</DropdownMenuItem>
-                    </DropdownMenuContent>
-                </DropdownMenu> */}
-
             </div>
             <Separator />
 

@@ -25,7 +25,7 @@ export default function DeliveriesTable({ shiftStatus }: { shiftStatus: ShiftSta
     const { data, error, loading } = useFetch<PagedResult<Shift>>("GET", `/shifts?shiftStatus=${shiftStatus}`);
 
     if (error) { return (<div>{error.message}</div>); }
-    if (loading) return <LoadingComponent />;
+    if (loading) return <LoadingComponent isAdminOnly={false} />;
 
     return (
         <Table>

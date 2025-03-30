@@ -23,7 +23,7 @@ export default function Page() {
 
     const { data, error, loading } = useFetch<ResponseDTO>("GET", "/dashboard");
 
-    if (loading) return <LoadingComponent />;
+    if (loading) return <LoadingComponent isAdminOnly={false} />;
     if (error) { console.log("error", error); }
     if (data) { console.log("data"); }
 

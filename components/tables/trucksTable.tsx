@@ -45,7 +45,7 @@ export default function TrucksTable(props: PageProps) {
                 </TableRow>
             </TableHeader>
             <TableBody>
-                {loading && <LoadingComponent />}
+                {loading && <LoadingComponent isAdminOnly={false} />}
                 {error && <div className="w-full text-center">{error.message}</div>}
 
                 {data?.data.map(x => {
