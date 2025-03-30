@@ -25,6 +25,15 @@ export type Thread = {
     date: string; // Date
 };
 
+export type TruckIcon = {
+    id: number,
+    name: string,
+    plate: string,
+    speed: number,
+    lon: number,
+    lat: number,
+};
+
 export type Message = {
     id: number;
     name: string;

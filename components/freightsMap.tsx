@@ -12,27 +12,19 @@ import { Style, Circle, Fill, Stroke } from 'ol/style';
 import Feature from 'ol/Feature';
 import { Vector as VectorLayer } from 'ol/layer';
 import { Vector as VectorSource } from 'ol/source';
-// import { Coordinate } from "ol/coordinate";
-// import { easeOut } from 'ol/easing';
 import TileLayer from "ol/layer/tile";
 import KML from 'ol/format/KML';
-
-
-// import { Input } from "./ui/input";
-// import { Coordinate } from "ol/coordinate";
-// import { ScrollArea } from "@/components/ui/scroll-area";
-// import { Separator } from "./ui/separator";
-// import Geolocation from 'ol/Geolocation.js';
-// import { ApiResponse } from "./appTypes";
+import { TruckIcon } from "@/appTypes";
+import LineString from "ol/geom/LineString";
 // import OSM from "ol/source/OSM";
-// import Image from "next/image";
 
 const FreightsMap = () => {
     const mapDivRef = useRef<HTMLDivElement>(null);
 
     const [, setOlMap] = useState<Map>();
-    // const [, setLocation] = useState<Coordinate | null>(null);
     const [, setSelectedFeature] = useState<Feature | null>(null);
+    const intervalIdRef = useRef<number | null>(null);
+    // const [, setLocation] = useState<Coordinate | null>(null);
 
     useEffect(() => {
         const baseLayer = new TileLayer({
@@ -76,18 +68,10 @@ const FreightsMap = () => {
             return feat;
         });
 
-        const vectorSource = new VectorSource({
-            features: allFreights
-        });
+        const vectorSource = new VectorSource({ features: allFreights });
+        const trucksLayer = new VectorLayer({ source: vectorSource });
+        const myLocationLayer = new VectorLayer({ source: new VectorSource() });
 
-        // Create a vector layer with styling for red dots
-        const trucksLayer = new VectorLayer({
-            source: vectorSource,
-        });
-
-        const myLocationLayer = new VectorLayer({
-            source: new VectorSource(),
-        });
         myLocationLayer.set('name', 'myLocationLayer');
 
         const map = new Map({
@@ -103,7 +87,6 @@ const FreightsMap = () => {
                 baseLayer,
                 trucksLayer,
                 myLocationLayer,
-                // kmlLayer,
                 ...kmlLayers
             ],
             view: new View({
@@ -119,7 +102,7 @@ const FreightsMap = () => {
 
             // Find the closest feature to the clicked coordinate.
             const closestFeature = vectorSource.getClosestFeatureToCoordinate(e.coordinate);
-            if (!closestFeature) { return; }
+            if (!closestFeature) return;
 
             const featureCoordinate = (closestFeature.getGeometry() as Point).getCoordinates();
 
@@ -139,7 +122,37 @@ const FreightsMap = () => {
 
         setOlMap(map);
 
-        return () => map.setTarget(undefined);
+        intervalIdRef.current = window.setInterval(() => {
+            // Loop through each KML layer
+            kmlLayers.forEach(layer => {
+                // Get all features loaded from the KML
+                layer.getSource()?.getFeatures().forEach(feature => {
+                    const geometry = feature.getGeometry();
+                    if (geometry?.getType() === 'LineString') {
+                        // Cast the geometry to LineString so TypeScript knows about getCoordinates()
+                        const lineString = geometry as LineString;
+                        const coordinates = lineString.getCoordinates();
+
+                        // Map each coordinate from EPSG:3857 (default map projection) to EPSG:4326 (lon/lat)
+                        // const lonLatCoordinates = coordinates.map(coord => transform(coord, 'EPSG:3857', 'EPSG:4326'));
+
+                        // Now each element in lonLatCoordinates is in the format [longitude, latitude]
+                        // lonLatCoordinates.forEach(([lon, lat]) => { console.log('Longitude:', lon, 'Latitude:', lat); });
+
+                        console.table(transform(coordinates[0], 'EPSG:3857', 'EPSG:4326'));
+                        console.table(transform(coordinates[1], 'EPSG:3857', 'EPSG:4326'));
+                    }
+                });
+            });
+        }, 3000);
+
+        return () => {
+            if (intervalIdRef.current) {
+                clearInterval(intervalIdRef.current);
+            }
+
+            map.setTarget(undefined);
+        };
     }, []);
 
     return (
@@ -210,15 +223,6 @@ export function wgs84ToUtm(longitude: number, latitude: number) {
         northing: utmCoords[1]
     };
 }
-
-type TruckIcon = {
-    id: number,
-    name: string,
-    plate: string,
-    speed: number,
-    lon: number,
-    lat: number,
-};
 
 const freightsData: TruckIcon[] = [
     { id: 1, name: "Freightliner Cascadia", plate: "ABC123", speed: 60, lon: -122.4194, lat: 37.7749 },

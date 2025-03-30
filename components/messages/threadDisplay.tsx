@@ -28,8 +28,7 @@ export function ThreadDisplay({ threadId }: { threadId: number; }) {
 
     console.log("FETCHING ID", threadId);
     console.table(data);
-
-    if (loading) { <LoadingComponent isAdminOnly={false} />; }
+    // if (loading) { <LoadingComponent isAdminOnly={false} />; }
     if (error) { console.log(error); }
 
     return (
@@ -105,6 +104,8 @@ export function ThreadDisplay({ threadId }: { threadId: number; }) {
                 <Separator orientation="vertical" className="mx-2 h-6" />
             </div>
             <Separator />
+
+            {loading && <LoadingComponent isAdminOnly={false} />}
 
             {data?.map(x => (
                 <div key={x.id} className="flex-1 flex-col border">
