@@ -1,7 +1,7 @@
 "use client";
 
 import { PageProps } from "@/.next/types/app/layout";
-import { type PagedResult, type Truck } from "@/appTypes";
+import { type PagedResult, type User } from "@/appTypes";
 import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from "../ui/table";
 import {
     DropdownMenu,
@@ -14,58 +14,61 @@ import { Button } from "../ui/button";
 import { ArrowLeft, ArrowRight, MoreHorizontal } from "lucide-react";
 import { useFetch } from "@/hooks/useFetch";
 import LoadingComponent from "../common/loader";
-import { capitalizeWord, dateFormatter, numberFormatter } from "@/utils/utils";
+import { capitalizeWord } from "@/utils/utils";
 import { useState } from "react";
 
-export default function TrucksTable(props: PageProps) {
+export default function UsersTable(props: PageProps) {
     const [pageIndex, setPageIndex] = useState<number>(props.searchParams?.pageIndex ?? 1);
-    const { data, error, loading } = useFetch<PagedResult<Truck>>("GET", `/trucks?pageIndex=${pageIndex}&pageSize=10`);
+    const { data, error, loading } = useFetch<PagedResult<User>>("GET", `/users?pageIndex=${pageIndex}&pageSize=10`);
     console.log(data);
 
     return (
         <Table className="w-full">
             <TableHeader>
                 <TableRow>
-                    <TableHead>Matrícula</TableHead>
-                    <TableHead className="hidden md:table-cell">
-                        Mileage <br /> (Km)
-                    </TableHead>
-                    <TableHead className="hidden md:table-cell">
-                        Consumo <br /> (l/100Km)
-                    </TableHead>
-                    <TableHead className="hidden md:table-cell">
-                        Marca
-                    </TableHead>
-                    <TableHead className="hidden md:table-cell">
-                        Última revisión
-                    </TableHead>
-                    <TableHead>
-                        <span className="sr-only">Actions</span>
-                    </TableHead>
+                    <TableHead>Id</TableHead>
+                    <TableHead>Name</TableHead>
+                    <TableHead>Surname</TableHead>
+                    <TableHead>Email</TableHead>
+                    <TableHead>Role</TableHead>
+
+                    {/*
+                    <TableHead className="hidden md:table-cell"> Mileage <br /> (Km)</TableHead>
+                    <TableHead className="hidden md:table-cell"> Consumo <br /> (l/100Km)</TableHead>
+                    <TableHead className="hidden md:table-cell"> Marca </TableHead>
+                    <TableHead className="hidden md:table-cell"> Última revisión </TableHead>
+                    <TableHead> <span className="sr-only">Actions</span></TableHead>
+                    */}
                 </TableRow>
             </TableHeader>
             <TableBody>
-                {loading && <LoadingComponent isAdminOnly={false} />}
+                {loading && <LoadingComponent isAdminOnly={true} />}
                 {error && <div className="w-full text-center">{error.message}</div>}
 
                 {data?.data.map(x => {
                     return (
                         <TableRow key={x.id}>
                             <TableCell>
-                                {x.plate}
+                                {x.id}
                             </TableCell>
-                            <TableCell className="hidden md:table-cell">
-                                {numberFormatter(0, 0).format(x.mileage)}
+                            <TableCell>
+                                {capitalizeWord(x.name)}
                             </TableCell>
-                            <TableCell className="hidden md:table-cell">
-                                {numberFormatter(2, 2).format(x.consumption)}
+                            <TableCell>
+                                {capitalizeWord(x.surname)}
                             </TableCell>
-                            <TableCell className="hidden md:table-cell">
-                                {capitalizeWord("TODO - marca")}
+                            <TableCell>
+                                {x.email}
                             </TableCell>
-                            <TableCell className="hidden md:table-cell">
-                                {dateFormatter.format(x.lastMaintenenceDateUnix)}
+                            <TableCell>
+                                {x.role}
                             </TableCell>
+
+                            {/*
+                            <TableCell className="hidden md:table-cell"> {numberFormatter(2, 2).format(x.consumption)} </TableCell>
+                            <TableCell className="hidden md:table-cell"> {dateFormatter.format(x.lastMaintenenceDateUnix)} </TableCell>
+                            */}
+
                             <TableCell>
                                 <DropdownMenu>
                                     <DropdownMenuTrigger asChild>

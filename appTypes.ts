@@ -11,6 +11,7 @@ export interface UserInfo {
 export interface User {
     id: number;
     name: string;
+    surname: string;
     email: string;
     role: UserRoles;
 }
@@ -161,9 +162,9 @@ export interface IGeographicCoordiantes {
 // =============== mock data ==============
 
 export const mockUsers: User[] = [
-    { "id": 1, "name": "Alice Smith", "email": "alice@example.com", "role": "Admin" },
-    { "id": 2, "name": "Bob Jones", "email": "bob@example.com", "role": "Driver" },
-    { "id": 3, "name": "Charlie Brown", "email": "charlie@example.com", "role": "Admin" }
+    { "id": 1, "name": "Alice", "surname": "Smith", "email": "alice@example.com", "role": "Admin" },
+    { "id": 2, "name": "Bob", "surname": "Jones", "email": "bob@example.com", "role": "Driver" },
+    { "id": 3, "name": "Charlie", "surname": "Brown", "email": "charlie@example.com", "role": "Admin" }
 ];
 
 export const mockPallets: Pallet[] = [

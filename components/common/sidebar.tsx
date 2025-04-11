@@ -26,10 +26,16 @@ export const adminRoutes = [
         description: "Envios",
     },
     {
-        label: "Clientes",
+        label: "Clients",
         icon: Users,
         href: "/cargotrack/clients",
-        description: "Clientes",
+        description: "Clients",
+    },
+    {
+        label: "Users",
+        icon: Users,
+        href: "/cargotrack/users",
+        description: "Users",
     },
     {
         label: "Messages",
