@@ -39,6 +39,7 @@ export default function UsersTable(props: PageProps) {
                     <TableHead className="hidden md:table-cell"> Última revisión </TableHead>
                     <TableHead> <span className="sr-only">Actions</span></TableHead>
                     */}
+
                 </TableRow>
             </TableHeader>
             <TableBody>
@@ -48,21 +49,11 @@ export default function UsersTable(props: PageProps) {
                 {data?.data.map(x => {
                     return (
                         <TableRow key={x.id}>
-                            <TableCell>
-                                {x.id}
-                            </TableCell>
-                            <TableCell>
-                                {capitalizeWord(x.name)}
-                            </TableCell>
-                            <TableCell>
-                                {capitalizeWord(x.surname)}
-                            </TableCell>
-                            <TableCell>
-                                {x.email}
-                            </TableCell>
-                            <TableCell>
-                                {x.role}
-                            </TableCell>
+                            <TableCell>{x.id}</TableCell>
+                            <TableCell>{capitalizeWord(x.name)}</TableCell>
+                            <TableCell>{capitalizeWord(x.surname)}</TableCell>
+                            <TableCell>{x.email}</TableCell>
+                            <TableCell>{x.role}</TableCell>
 
                             {/*
                             <TableCell className="hidden md:table-cell"> {numberFormatter(2, 2).format(x.consumption)} </TableCell>
