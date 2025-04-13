@@ -104,30 +104,28 @@ export enum TrailerType {
     SemiTrailer,
 }
 
-export enum ShiftStatus {
+export enum FreightStatus {
     Planned,
     Ongoing,
     Completed,
     Canceled,
 }
 
-export interface Driver {
-    name: string;
-    surname: string;
-    birthdate: Date;
+// export interface Driver {
+//     name: string;
+//     surname: string;
+//     birthdate: Date;
+//     lastShiftEnd: Date;
+// }
 
-    lastShiftEnd: Date;
-}
-
-export interface Shift {
+export interface Freight {
     id: number;
-    totalDistance: number;
-    expectedDuration: number; // Unix ms
-    startDate: Date;
-    expectedFinishTime: Date;
-    routes: Route[];
-    pilot: Driver;
-    status: ShiftStatus;
+    status: FreightStatus;
+    origin: string;
+    destination: string;
+    dueStart: Date; // TODO
+    truck: Truck;
+    driver: User;
 }
 
 export interface WareHouse {
@@ -178,20 +176,20 @@ export const mockPallets: Pallet[] = [
 //     { "plate": "XYZ789", "consumption": 0.32, "id": 2 }
 // ];
 
-export const mockDrivers: Driver[] = [
-    {
-        "name": "John",
-        "surname": "Doe",
-        "birthdate": new Date(),
-        "lastShiftEnd": new Date(),
-    },
-    {
-        "name": "Jane",
-        "surname": "Smith",
-        "birthdate": new Date(),
-        "lastShiftEnd": new Date(),
-    }
-];
+// export const mockDrivers: Driver[] = [
+//     {
+//         "name": "John",
+//         "surname": "Doe",
+//         "birthdate": new Date(),
+//         "lastShiftEnd": new Date(),
+//     },
+//     {
+//         "name": "Jane",
+//         "surname": "Smith",
+//         "birthdate": new Date(),
+//         "lastShiftEnd": new Date(),
+//     }
+// ];
 
 export const mockWarehouses: WareHouse[] = [
     { "lat": 40.7128, "lon": -74.0060, "name": "NYC Warehouse", "unloadTime": 120 },
@@ -217,35 +215,19 @@ export const routes: Route[] = [
     }
 ];
 
-export const mockShifts: Shift[] = [
-    {
-        "id": 1,
-        "status": ShiftStatus.Completed,
-        "totalDistance": 4500,
-        "expectedDuration": 162000,
-        "startDate": new Date("2024-10-26T09:35:39.662Z"),
-        "expectedFinishTime": new Date("2024-10-28T09:35:39.662Z"),
-        "routes": [
-            {
-                "distance": 4500,
-                "code": 101,
-                "avgSpeed": 80,
-                "origin": { "id": 1, "lat": 40.7128, "lon": -74.0060, "name": "Valencia", "code": "VLC" },
-                "destination": { "id": 2, "lat": 34.0522, "lon": -118.2437, "name": "Madrid", "code": "MAD" },
-                "points": [
-                    { "lat": 39.0997, "lon": -94.5786 },
-                    { "lat": 36.1627, "lon": -86.7816 }
-                ]
-            }
-        ],
-        "pilot": {
-            "name": "John",
-            "surname": "Doe",
-            "birthdate": new Date("1985-05-14T00:00:00.000Z"),
-            "lastShiftEnd": new Date("2024-10-25T23:35:39.662Z")
-        },
-    }
-];
+// export const mockShifts: Freight[] = [
+//     {
+//         "id": 1,
+//         "status": FreightStatus.Completed,
+//         "dueStart": new Date("2024-10-26T09:35:39.662Z"),
+//         "driver": {
+//             "name": "John",
+//             "surname": "Doe",
+//             "birthdate": new Date("1985-05-14T00:00:00.000Z"),
+//             "lastShiftEnd": new Date("2024-10-25T23:35:39.662Z")
+//         },
+//     }
+// ];
 
 export const mockPaginatedUsers = {
     "data": [

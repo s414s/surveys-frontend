@@ -1,15 +1,15 @@
-import { ShiftStatus } from "@/appTypes";
+import { FreightStatus } from "@/appTypes";
 import { Badge } from "./ui/badge";
 
-export default function StatusBadge({ status }: { status: ShiftStatus; }) {
+export default function StatusBadge({ status }: { status: FreightStatus; }) {
     switch (status) {
-        case ShiftStatus.Planned:
+        case FreightStatus.Planned:
             return <Badge variant="outline">Planificado</Badge>;
 
-        case ShiftStatus.Ongoing:
+        case FreightStatus.Ongoing:
             return <Badge variant="outline">En Curso</Badge>;
 
-        case ShiftStatus.Completed:
+        case FreightStatus.Completed:
             return <Badge variant="outline">Completado</Badge>;
 
         default:

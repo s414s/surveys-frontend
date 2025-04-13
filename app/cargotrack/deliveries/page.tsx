@@ -11,7 +11,7 @@ import {
 import Link from "next/link";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import DeliveriesTable from "@/components/tables/deliveriesTable";
-import { ShiftStatus } from "@/appTypes";
+import { FreightStatus } from "@/appTypes";
 
 export default function Page() {
     return (
@@ -65,7 +65,7 @@ export default function Page() {
                             <CardTitle>Envios Planificados</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <DeliveriesTable shiftStatus={ShiftStatus.Planned} />
+                            <DeliveriesTable shiftStatus={FreightStatus.Planned} />
                         </CardContent>
                         <CardFooter></CardFooter>
                     </Card>
@@ -76,7 +76,7 @@ export default function Page() {
                             <CardTitle>Envios Completados</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <DeliveriesTable shiftStatus={ShiftStatus.Completed} />
+                            <DeliveriesTable shiftStatus={FreightStatus.Completed} />
                         </CardContent>
                         <CardFooter></CardFooter>
                     </Card>
@@ -87,7 +87,7 @@ export default function Page() {
                             <CardTitle>Envios Activos</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <DeliveriesTable shiftStatus={ShiftStatus.Ongoing} />
+                            <DeliveriesTable shiftStatus={FreightStatus.Ongoing} />
                         </CardContent>
                         <CardFooter></CardFooter>
                     </Card>

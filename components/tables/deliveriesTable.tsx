@@ -1,6 +1,6 @@
 "use client";
 
-import { PagedResult, ShiftStatus, type Shift } from "@/appTypes";
+import { PagedResult, FreightStatus, type Freight } from "@/appTypes";
 import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from "../ui/table";
 import {
     DropdownMenu,
@@ -15,14 +15,14 @@ import StatusBadge from "../statusBadge";
 import { useFetch } from "@/hooks/useFetch";
 import LoadingComponent from "../common/loader";
 
-export default function DeliveriesTable({ shiftStatus }: { shiftStatus: ShiftStatus | null; }) {
+export default function DeliveriesTable({ shiftStatus }: { shiftStatus: FreightStatus | null; }) {
     const dateFormatter = new Intl.DateTimeFormat('en-GB', {
         day: '2-digit',
         month: '2-digit',
         year: 'numeric'
     });
 
-    const { data, error, loading } = useFetch<PagedResult<Shift>>("GET", `/shifts?shiftStatus=${shiftStatus}`);
+    const { data, error, loading } = useFetch<PagedResult<Freight>>("GET", `/shifts?shiftStatus=${shiftStatus}`);
 
     if (error) { return (<div>{error.message}</div>); }
     if (loading) return <LoadingComponent isAdminOnly={false} />;
@@ -89,12 +89,12 @@ export default function DeliveriesTable({ shiftStatus }: { shiftStatus: ShiftSta
                                             Acciones
                                         </DropdownMenuLabel>
                                         <DropdownMenuItem
-                                            disabled={x.status !== ShiftStatus.Planned}
+                                            disabled={x.status !== FreightStatus.Planned}
                                         >
                                             Editar
                                         </DropdownMenuItem>
                                         <DropdownMenuItem
-                                            disabled={x.status !== ShiftStatus.Planned}
+                                            disabled={x.status !== FreightStatus.Planned}
                                         >
                                             Cancelar
                                         </DropdownMenuItem>
