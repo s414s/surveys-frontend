@@ -138,11 +138,12 @@ export interface WareHouse {
 }
 
 export interface City {
+    id: number;
     lat: number;
     lon: number;
     name: string;
     code: string;
-}
+};
 
 export interface Route {
     distance: number;
@@ -198,8 +199,8 @@ export const mockWarehouses: WareHouse[] = [
 ];
 
 export const mockCities: City[] = [
-    { "lat": 40.7128, "lon": -74.0060, "name": "New York", "code": "NYC" },
-    { "lat": 34.0522, "lon": -118.2437, "name": "Los Angeles", "code": "LAX" }
+    { "id": 1, "lat": 40.7128, "lon": -74.0060, "name": "New York", "code": "NYC" },
+    { "id": 2, "lat": 34.0522, "lon": -118.2437, "name": "Los Angeles", "code": "LAX" }
 ];
 
 export const routes: Route[] = [
@@ -207,8 +208,8 @@ export const routes: Route[] = [
         "distance": 4500,
         "code": 101,
         "avgSpeed": 80,
-        "origin": { "lat": 40.7128, "lon": -74.0060, "name": "New York", "code": "NYC" },
-        "destination": { "lat": 34.0522, "lon": -118.2437, "name": "Los Angeles", "code": "LAX" },
+        "origin": { "id": 1, "lat": 40.7128, "lon": -74.0060, "name": "New York", "code": "NYC" },
+        "destination": { "id": 2, "lat": 34.0522, "lon": -118.2437, "name": "Los Angeles", "code": "LAX" },
         "points": [
             { "lat": 39.0997, "lon": -94.5786 },
             { "lat": 36.1627, "lon": -86.7816 }
@@ -229,8 +230,8 @@ export const mockShifts: Shift[] = [
                 "distance": 4500,
                 "code": 101,
                 "avgSpeed": 80,
-                "origin": { "lat": 40.7128, "lon": -74.0060, "name": "Valencia", "code": "VLC" },
-                "destination": { "lat": 34.0522, "lon": -118.2437, "name": "Madrid", "code": "MAD" },
+                "origin": { "id": 1, "lat": 40.7128, "lon": -74.0060, "name": "Valencia", "code": "VLC" },
+                "destination": { "id": 2, "lat": 34.0522, "lon": -118.2437, "name": "Madrid", "code": "MAD" },
                 "points": [
                     { "lat": 39.0997, "lon": -94.5786 },
                     { "lat": 36.1627, "lon": -86.7816 }
