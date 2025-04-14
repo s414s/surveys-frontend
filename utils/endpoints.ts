@@ -1,5 +1,5 @@
-import { AddParcelToFreightRequest, City, Freight, PagedResult } from "@/appTypes";
-import { fetchDataGeneric } from "./fetchDataGeneric";
+import { AddParcelToFreightRequest, City, Freight, LoginRequest, LoginResponse, PagedResult } from "@/appTypes";
+import { fetchDataGeneric, QueryParams } from "./fetchDataGeneric";
 import { useAppStore } from "@/store/userStore";
 
 export const addParcelToFreight = async (freightId: number, request: AddParcelToFreightRequest): Promise<void> => {
@@ -20,13 +20,16 @@ export const addParcelToFreight = async (freightId: number, request: AddParcelTo
 export const getFreights = async (originId: number, destinationId: number): Promise<PagedResult<Freight>> => {
     try {
         const jwtToken = useAppStore.getState().jwtToken;
-        const endpoint = `/freights?status=2&originId=${originId}&destinationId=${destinationId}&pageindex=1&pagesize=100`;
-        return await fetchDataGeneric<PagedResult<Freight>>("GET", endpoint, null, null, jwtToken);
-        // Convert string dates to Date objects
-        // const freightsWithDates = response.data.map((freight) => ({
-        //     ...freight,
-        //     dueStart: new Date(freight.dueStart),
-        // }));
+        const endpoint = `/freights`;
+        const queryParams: QueryParams = {
+            status: 2,
+            originId,
+            destinationId,
+            pageIndex: 1,
+            pageSize: 10,
+        };
+
+        return await fetchDataGeneric<PagedResult<Freight>>("GET", endpoint, queryParams, null, jwtToken);
     } catch (error) {
         console.error("Error fetching freights:", error);
         throw new Error("Failed to fetch freights");
@@ -41,5 +44,15 @@ export const getCities = async (): Promise<City[]> => {
     } catch (error) {
         console.error("Error fetching cities:", error);
         throw new Error("Failed to fetch cities");
+    }
+};
+
+export const logIn = async (request: LoginRequest): Promise<LoginResponse> => {
+    try {
+        const endpoint = `/auth/login`;
+        return await fetchDataGeneric<LoginResponse>("POST", endpoint, null, request, undefined);
+    } catch (error) {
+        console.error("Error loging in:", error);
+        throw new Error("Failed to log in");
     }
 };

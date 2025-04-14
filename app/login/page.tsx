@@ -7,24 +7,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAppStore } from "@/store/userStore";
 import LoadingComponent from "@/components/common/loader";
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card";
-
-export type LoginDTO = {
-    name: string;
-    password: string;
-};
-
-export type LoginResponseDTO = {
-    token: string;
-};
-
-const BASE_URL = process.env.API_URL || 'http://localhost:5097';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, } from "@/components/ui/card";
+import { logIn } from "@/utils/endpoints";
 
 export default function LoginForm() {
     const router = useRouter();
@@ -40,30 +24,13 @@ export default function LoginForm() {
         setError(null);
 
         try {
-            const requestOptions: RequestInit = {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                },
-                body: JSON.stringify({ email: email, password: pwd }),
-                // credentials: 'include', // Includes cookies in the request
-            };
-
-            const response = await fetch(`${BASE_URL}/auth/login`, requestOptions);
-
-            if (!response.ok) {
+            const response = await logIn({ email: email, password: pwd });
+            if (!response?.token) {
                 setError("user or password incorrect");
                 return;
             }
 
-            const resp: LoginResponseDTO = await response.json();
-            if (!resp?.token) {
-                setError("user or password incorrect");
-                return;
-            }
-
-            store.setUser(resp.token);
+            store.setUser(response.token);
             router.push(store.isAdmin() ? "cargotrack/dashboard" : "cargotrack/routes");
         } catch (e) {
             setError("user or password incorrect");

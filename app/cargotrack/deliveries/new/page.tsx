@@ -12,7 +12,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Card, CardContent } from "@/components/ui/card";
-import { AddParcelToFreightRequest, City, Freight, PagedResult } from "@/appTypes";
+import { AddParcelToFreightRequest, City, Freight } from "@/appTypes";
 import { Skeleton } from "@/components/ui/skeleton";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { formatDate } from "date-fns";
@@ -182,7 +182,6 @@ export default function DeliveryForm() {
     // };
     // const freightsData = await freightsResponse.json() as PagedResult<Freight>;
     // setTimeout(() => setIsSuccess(false), 3000); // Reset success message after 3 seconds
-
   }
 
   return (
