@@ -3,10 +3,10 @@ import { Badge } from "./ui/badge";
 
 export default function StatusBadge({ status }: { status: FreightStatus; }) {
     switch (status) {
-        case FreightStatus.Planned:
+        case FreightStatus.Scheduled:
             return <Badge variant="outline">Planificado</Badge>;
 
-        case FreightStatus.Ongoing:
+        case FreightStatus.Active:
             return <Badge variant="outline">En Curso</Badge>;
 
         case FreightStatus.Completed:

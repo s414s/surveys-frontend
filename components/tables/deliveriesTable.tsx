@@ -14,15 +14,13 @@ import { MoreHorizontal } from "lucide-react";
 import StatusBadge from "../statusBadge";
 import { useFetch } from "@/hooks/useFetch";
 import LoadingComponent from "../common/loader";
+import { formatDate } from "date-fns";
+import { capitalizeWord } from "@/utils/utils";
 
-export default function DeliveriesTable({ shiftStatus }: { shiftStatus: FreightStatus | null; }) {
-    const dateFormatter = new Intl.DateTimeFormat('en-GB', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric'
-    });
-
-    const { data, error, loading } = useFetch<PagedResult<Freight>>("GET", `/shifts?shiftStatus=${shiftStatus}`);
+export default function DeliveriesTable({ freightStatus, page }: { freightStatus: FreightStatus | null; page: number; }) {
+    const url = `/freights?status=${freightStatus}&pageIndex=${page}&pageSize=10`;
+    // console.log("URL", url);
+    const { data, error, loading } = useFetch<PagedResult<Freight>>("GET", url);
 
     if (error) { return (<div>{error.message}</div>); }
     if (loading) return <LoadingComponent isAdminOnly={false} />;
@@ -32,18 +30,18 @@ export default function DeliveriesTable({ shiftStatus }: { shiftStatus: FreightS
             <TableHeader>
                 <TableRow>
                     <TableHead>Id</TableHead>
-                    <TableHead>Estado</TableHead>
+                    <TableHead>Status</TableHead>
                     <TableHead className="hidden md:table-cell">
-                        Conductor
+                        Driver
                     </TableHead>
                     <TableHead className="hidden md:table-cell">
-                        Distancia
+                        Distance
                     </TableHead>
                     <TableHead className="hidden md:table-cell">
-                        Duración
+                        Duration
                     </TableHead>
                     <TableHead className="hidden md:table-cell">
-                        Fecha Creación
+                        Date
                     </TableHead>
                     <TableHead>
                         <span className="sr-only">Actions</span>
@@ -61,16 +59,16 @@ export default function DeliveriesTable({ shiftStatus }: { shiftStatus: FreightS
                                 <StatusBadge status={x.status} />
                             </TableCell>
                             <TableCell className="hidden md:table-cell">
-                                {x.pilot.name}
+                                {capitalizeWord(x.driver.name)}
                             </TableCell>
                             <TableCell className="hidden md:table-cell">
                                 {x.totalDistance} Km
                             </TableCell>
                             <TableCell className="hidden md:table-cell">
-                                {x.expectedDuration} Hr
+                                {x.durationMinutes} Hr
                             </TableCell>
                             <TableCell className="hidden md:table-cell">
-                                {dateFormatter.format(x.expectedFinishTime)}
+                                {formatDate(x.finishTime, "dd-MM-yyyy")}
                             </TableCell>
                             <TableCell>
                                 <DropdownMenu>
@@ -89,12 +87,12 @@ export default function DeliveriesTable({ shiftStatus }: { shiftStatus: FreightS
                                             Acciones
                                         </DropdownMenuLabel>
                                         <DropdownMenuItem
-                                            disabled={x.status !== FreightStatus.Planned}
+                                            disabled={x.status !== FreightStatus.Scheduled}
                                         >
                                             Editar
                                         </DropdownMenuItem>
                                         <DropdownMenuItem
-                                            disabled={x.status !== FreightStatus.Planned}
+                                            disabled={x.status !== FreightStatus.Scheduled}
                                         >
                                             Cancelar
                                         </DropdownMenuItem>
@@ -104,8 +102,11 @@ export default function DeliveriesTable({ shiftStatus }: { shiftStatus: FreightS
                         </TableRow>
                     );
                 })}
+
             </TableBody>
+
             <TableFooter>
+
                 {/* <div className="text-xs text-muted-foreground">
                     Mostrando <strong>1-10</strong> de <strong>32</strong>{" "}envios
                 </div> */}

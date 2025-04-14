@@ -2,18 +2,17 @@
 
 import { File, PlusCircle, } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-    Tabs,
-    TabsContent,
-    TabsList,
-    TabsTrigger,
-} from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger, } from "@/components/ui/tabs";
 import Link from "next/link";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import DeliveriesTable from "@/components/tables/deliveriesTable";
 import { FreightStatus } from "@/appTypes";
+import { useState } from "react";
+// import LoadingComponent from "@/components/common/loader";
 
 export default function Page() {
+    const [page,] = useState(1);
+
     return (
         // <div className="flex min-h-screen w-full flex-col bg-muted/40">
         <div className="flex w-full flex-col bg-muted/40">
@@ -54,7 +53,7 @@ export default function Page() {
                             <CardTitle>Envios</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <DeliveriesTable shiftStatus={null} />
+                            <DeliveriesTable freightStatus={null} page={page} />
                         </CardContent>
                         <CardFooter></CardFooter>
                     </Card>
@@ -65,7 +64,7 @@ export default function Page() {
                             <CardTitle>Envios Planificados</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <DeliveriesTable shiftStatus={FreightStatus.Planned} />
+                            <DeliveriesTable freightStatus={FreightStatus.Scheduled} page={page} />
                         </CardContent>
                         <CardFooter></CardFooter>
                     </Card>
@@ -76,7 +75,7 @@ export default function Page() {
                             <CardTitle>Envios Completados</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <DeliveriesTable shiftStatus={FreightStatus.Completed} />
+                            <DeliveriesTable freightStatus={FreightStatus.Completed} page={page} />
                         </CardContent>
                         <CardFooter></CardFooter>
                     </Card>
@@ -87,12 +86,13 @@ export default function Page() {
                             <CardTitle>Envios Activos</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <DeliveriesTable shiftStatus={FreightStatus.Ongoing} />
+                            <DeliveriesTable freightStatus={FreightStatus.Active} page={page} />
                         </CardContent>
                         <CardFooter></CardFooter>
                     </Card>
                 </TabsContent>
             </Tabs>
+            {/* <DeliveriesTable freightStatus={null} page={page} /> */}
         </div>
     );
 }

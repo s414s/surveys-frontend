@@ -105,10 +105,10 @@ export enum TrailerType {
 }
 
 export enum FreightStatus {
-    Planned,
-    Ongoing,
-    Completed,
-    Canceled,
+    Scheduled = 1,
+    Active = 2,
+    Completed = 3,
+    Canceled = 4,
 }
 
 // export interface Driver {
@@ -126,6 +126,9 @@ export interface Freight {
     dueStart: Date; // TODO
     truck: Truck;
     driver: User;
+    totalDistance: number;
+    durationMinutes: number;
+    finishTime: Date;
 }
 
 export interface WareHouse {
@@ -158,6 +161,12 @@ export interface IGeographicCoordiantes {
     lon: number;
 }
 
+export interface AddParcelToFreightRequest {
+    originId: number,
+    destinationId: number,
+    parcelWeight: number,
+}
+
 // =============== mock data ==============
 
 export const mockUsers: User[] = [
@@ -170,26 +179,6 @@ export const mockPallets: Pallet[] = [
     { "length": 1.2, "width": 0.8, "height": 1.5, "weight": 500, "code": "P12345", "origin": "MAD", "destination": "BCN", "id": 1, "dueDate": new Date() },
     { "length": 1.2, "width": 0.8, "height": 1.5, "weight": 450, "code": "P67890", "origin": "MAD", "destination": "BCN", "id": 1, "dueDate": new Date() }
 ];
-
-// export const mockTrucks: Truck[] = [
-//     { "plate": "ABC123", "consumption": 0.3, "id": 1 },
-//     { "plate": "XYZ789", "consumption": 0.32, "id": 2 }
-// ];
-
-// export const mockDrivers: Driver[] = [
-//     {
-//         "name": "John",
-//         "surname": "Doe",
-//         "birthdate": new Date(),
-//         "lastShiftEnd": new Date(),
-//     },
-//     {
-//         "name": "Jane",
-//         "surname": "Smith",
-//         "birthdate": new Date(),
-//         "lastShiftEnd": new Date(),
-//     }
-// ];
 
 export const mockWarehouses: WareHouse[] = [
     { "lat": 40.7128, "lon": -74.0060, "name": "NYC Warehouse", "unloadTime": 120 },
@@ -214,20 +203,6 @@ export const routes: Route[] = [
         ]
     }
 ];
-
-// export const mockShifts: Freight[] = [
-//     {
-//         "id": 1,
-//         "status": FreightStatus.Completed,
-//         "dueStart": new Date("2024-10-26T09:35:39.662Z"),
-//         "driver": {
-//             "name": "John",
-//             "surname": "Doe",
-//             "birthdate": new Date("1985-05-14T00:00:00.000Z"),
-//             "lastShiftEnd": new Date("2024-10-25T23:35:39.662Z")
-//         },
-//     }
-// ];
 
 export const mockPaginatedUsers = {
     "data": [

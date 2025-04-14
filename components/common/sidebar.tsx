@@ -20,10 +20,10 @@ export const adminRoutes = [
         description: "fleet",
     },
     {
-        label: "Envios",
+        label: "Deliveries",
         icon: Package,
         href: "/cargotrack/deliveries",
-        description: "Envios",
+        description: "Deliveries",
     },
     {
         label: "Clients",

@@ -12,11 +12,12 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Card, CardContent } from "@/components/ui/card";
-import { City, Freight, PagedResult } from "@/appTypes";
+import { AddParcelToFreightRequest, City, Freight, PagedResult } from "@/appTypes";
 import { Skeleton } from "@/components/ui/skeleton";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { formatDate } from "date-fns";
 import { capitalizeWord } from "@/utils/utils";
+import { addParcelToFreight, getCities, getFreights } from "@/utils/endpoints";
 
 const formSchema = z.object({
   origin: z.string().min(1, {
@@ -57,11 +58,8 @@ export default function DeliveryForm() {
   const [fetchError, setFetchError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
-
   const [freights, setFreights] = useState<Freight[]>([]);
-  // const [selectedFreightId, setSelectedFreightId] = useState(0);
   const [isLoadingFreights, setIsLoadingFreights] = useState(false);
-  // const [isLoadingRoutes, setIsLoadingRoutes] = useState(false);
   const [freightError, setFreightError] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -71,7 +69,6 @@ export default function DeliveryForm() {
     },
   });
 
-  // Watch for origin and destination changes
   const origin = form.watch("origin");
   const destination = form.watch("destination");
 
@@ -81,14 +78,8 @@ export default function DeliveryForm() {
       try {
         setIsLoadingCities(true);
 
-        const BASE_URL = process.env.API_URL || 'http://localhost:5097';
-        const citiesResponse = await fetch(`${BASE_URL}/cities`);
-        if (!citiesResponse.ok) {
-          throw new Error("Failed to fetch origins");
-        }
-
-        const originsData = await citiesResponse.json();
-        setCities(originsData);
+        const citiesData = await getCities();
+        setCities(citiesData);
         setIsLoadingCities(false);
       } catch (error) {
         console.error("Error fetching locations:", error);
@@ -112,20 +103,16 @@ export default function DeliveryForm() {
       // Only fetch if both origin and destination are set and different
       if (origin && destination && origin !== destination) {
         setIsLoadingFreights(true);
+
         try {
-          const BASE_URL = process.env.API_URL || 'http://localhost:5097';
-          const url = `${BASE_URL}/freights?status=2&originId=${cities.find(x => x.name === origin)?.id}&destinationId=${cities.find(x => x.name === destination)?.id}&pageindex=1&pagesize=100`;
+          const originId = cities.find(x => x.name === origin)?.id;
+          const destinationId = cities.find(x => x.name === destination)?.id;
 
-          console.log("URL", url);
+          if (!originId || !destinationId)
+            return;
 
-          const response = await fetch(url);
-          if (!response.ok) {
-            throw new Error("Failed to fetch freights");
-          }
-          const responseData = await response.json() as PagedResult<Freight>;
-          console.log("responseData", responseData);
+          const responseData = await getFreights(originId, destinationId);
 
-          // Convert string dates to Date objects
           const freightsWithDates = responseData.data.map((freight) => ({
             ...freight,
             dueStart: new Date(freight.dueStart),
@@ -165,56 +152,38 @@ export default function DeliveryForm() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true);
+    const selectedFreightId = values.freightId;
+    const originId = cities.find(x => x.name === values.origin)?.id;
+    const destinationId = cities.find(x => x.name === values.destination)?.id;
 
-    // Simulate API call
-    console.log("Form values:", values);
+    if (!originId || !destinationId || !selectedFreightId)
+      throw new Error();
 
-    const fetchFreights = async () => {
-      try {
-        setIsLoadingCities(true);
-
-        const BASE_URL = process.env.API_URL || 'http://localhost:5097';
-        // const addParcelToFreightResponse = await fetch(`${BASE_URL}/freights?status=1&originId=${values.origin}&destinationId=${values.destination}&pageindex=1&pagesize=100`);
-
-        const url = `${BASE_URL}/freights?status=2&originId=${values.origin}&destinationId=${values.destination}&pageindex=1&pagesize=100`;
-
-        console.log("URL", url);
-
-        const freightsResponse = await fetch(url);
-        if (!freightsResponse.ok) {
-          throw new Error("Failed to fetch origins");
-        }
-
-        const freightsData = await freightsResponse.json() as PagedResult<Freight>;
-        setFreights(freightsData.data);
-
-        setIsLoadingCities(false);
-      } catch (error) {
-        console.error("Error fetching locations:", error);
-        setFetchError(error instanceof Error ? error.message : "Failed to fetch locations");
-      } finally {
-        setIsLoadingCities(false);
-      }
+    const request: AddParcelToFreightRequest = {
+      originId: originId,
+      destinationId: destinationId,
+      parcelWeight: values.weight === "" ? 0 : Number(values.weight),
     };
 
-    fetchFreights();
-    // await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    setIsSubmitting(false);
-    setIsSuccess(true);
+    try {
+      await addParcelToFreight(Number(selectedFreightId), request);
+      setIsSuccess(true);
+    } catch (error) {
+      setFetchError(error instanceof Error ? error.message : "Failed to fetch locations");
+      setIsSuccess(false);
+    } finally {
+      setIsSubmitting(false);
+    }
+    // Convert weight to number for submission
+    // const formData = {
+    //   ...values,
+    //   weight: values.weight === "" ? 0 : Number(values.weight),
+    //   freight: selectedFreight,
+    // };
+    // const freightsData = await freightsResponse.json() as PagedResult<Freight>;
     // setTimeout(() => setIsSuccess(false), 3000); // Reset success message after 3 seconds
+
   }
-
-  // async function handleAddParcelToFreight(routeId: number) {
-  //   setIsSubmitting(true);
-
-  //   await new Promise((resolve) => setTimeout(resolve, 1000));
-  //   setIsSubmitting(false);
-  //   setIsSuccess(true);
-
-  //   // Reset success message after 3 seconds
-  //   setTimeout(() => setIsSuccess(false), 3000);
-  // }
 
   return (
     <Card>
@@ -370,12 +339,6 @@ export default function DeliveryForm() {
               )}
             />
 
-            {/*
-              <Button type="submit" className="w-full" disabled={isSubmitting}>
-                {isSubmitting ? "Looking For Freights..." : "Search Freights"}
-              </Button>
-            */}
-
             {/* Freights Section */}
             {origin && destination && origin !== destination && (
               <div className="mt-6">
@@ -435,11 +398,9 @@ export default function DeliveryForm() {
               </div>
             )}
 
-            {
-              isSuccess && (
-                <div className="bg-green-100 text-green-800 p-3 rounded-md">Delivery created successfully!</div>
-              )
-            }
+            {isSuccess && (
+              <div className="bg-green-100 text-green-800 p-3 rounded-md">Delivery created successfully!</div>
+            )}
 
             <Button type="submit" className="w-full" disabled={isSubmitting}>
               {isSubmitting ? "Creating..." : "Create Delivery"}
