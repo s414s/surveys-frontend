@@ -8,7 +8,7 @@ import { useAppStore } from "@/store/userStore";
 import { useRouter } from "next/navigation";
 import FreightsMap from "@/components/freightsMap";
 
-interface ResponseDTO {
+interface DashboardResponse {
     name: string;
     surname: string;
     age: number;
@@ -21,7 +21,7 @@ export default function Page() {
     if (!store.isUserLoggedIn()) { router.push("/login"); }
     if (!store.isAdmin()) { router.push("/login"); }
 
-    const { data, error, loading } = useFetch<ResponseDTO>("GET", "/dashboard");
+    const { data, error, loading } = useFetch<DashboardResponse>("GET", "/dashboard");
 
     if (loading) return <LoadingComponent isAdminOnly={false} />;
     if (error) { console.log("error", error); }

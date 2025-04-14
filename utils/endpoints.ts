@@ -5,10 +5,6 @@ import { useAppStore } from "@/store/userStore";
 export const addParcelToFreight = async (freightId: number, request: AddParcelToFreightRequest): Promise<void> => {
     try {
         const jwtToken = useAppStore.getState().jwtToken;
-        console.log("JWT-TOKEN ->", jwtToken);
-        console.log("FREIGHT-ID ->", freightId);
-        console.log("REQUEST ->", request);
-
         const endpoint = `/freights/${freightId}/parcels`;
         await fetchDataGeneric<boolean>("POST", endpoint, null, request, jwtToken);
     } catch (error) {
