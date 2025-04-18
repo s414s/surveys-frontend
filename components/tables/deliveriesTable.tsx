@@ -16,6 +16,7 @@ import { useFetch } from "@/hooks/useFetch";
 import LoadingComponent from "../common/loader";
 import { formatDate } from "date-fns";
 import { capitalizeWord } from "@/utils/utils";
+import Link from "next/link";
 
 export default function DeliveriesTable({ freightStatus, page }: { freightStatus: FreightStatus | null; page: number; }) {
     const url = `/freights?status=${freightStatus}&pageIndex=${page}&pageSize=10`;
@@ -83,17 +84,22 @@ export default function DeliveriesTable({ freightStatus, page }: { freightStatus
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent align="end">
                                         <DropdownMenuLabel>
-                                            Acciones
+                                            Actions
                                         </DropdownMenuLabel>
-                                        <DropdownMenuItem
-                                            disabled={x.status !== FreightStatus.Scheduled}
-                                        >
-                                            Editar
+                                        {/* <DropdownMenuItem disabled={x.status !== FreightStatus.Scheduled}> */}
+                                        <DropdownMenuItem>
+                                            Edit
                                         </DropdownMenuItem>
-                                        <DropdownMenuItem
-                                            disabled={x.status !== FreightStatus.Scheduled}
-                                        >
-                                            Cancelar
+                                        {/* <DropdownMenuItem disabled={x.status !== FreightStatus.Scheduled}> */}
+                                        <DropdownMenuItem>
+                                            Cancel
+                                        </DropdownMenuItem>
+                                        {/* <DropdownMenuItem disabled={x.status !== FreightStatus.Scheduled}> */}
+                                        <DropdownMenuItem>
+                                            {/* <Link href="/cargotrack" target="_blank" rel="noreferrer"> */}
+                                            <Link href={`/cargotrack/deliveries/${x.id}`}>
+                                                Details
+                                            </Link>
                                         </DropdownMenuItem>
                                     </DropdownMenuContent>
                                 </DropdownMenu>

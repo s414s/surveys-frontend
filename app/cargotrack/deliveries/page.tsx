@@ -48,7 +48,7 @@ export default function Page() {
                 <TabsContent value="all">
                     <Card x-chunk="dashboard-06-chunk-0">
                         <CardHeader>
-                            <CardTitle>Envios</CardTitle>
+                            <CardTitle>Deliveries</CardTitle>
                         </CardHeader>
                         <CardContent>
                             <DeliveriesTable freightStatus={null} page={page} />
@@ -59,34 +59,34 @@ export default function Page() {
                 <TabsContent value="planned">
                     <Card x-chunk="dashboard-06-chunk-0">
                         <CardHeader>
-                            <CardTitle>Envios Planificados</CardTitle>
+                            <CardTitle>Planned Deliveries</CardTitle>
                         </CardHeader>
                         <CardContent>
                             <DeliveriesTable freightStatus={FreightStatus.Scheduled} page={page} />
                         </CardContent>
-                        <CardFooter></CardFooter>
+                        {/* <CardFooter></CardFooter> */}
                     </Card>
                 </TabsContent>
                 <TabsContent value="completed">
                     <Card x-chunk="dashboard-06-chunk-0">
                         <CardHeader>
-                            <CardTitle>Envios Completados</CardTitle>
+                            <CardTitle>Completed Deliveries</CardTitle>
                         </CardHeader>
                         <CardContent>
                             <DeliveriesTable freightStatus={FreightStatus.Completed} page={page} />
                         </CardContent>
-                        <CardFooter></CardFooter>
+                        {/* <CardFooter></CardFooter> */}
                     </Card>
                 </TabsContent>
                 <TabsContent value="active">
                     <Card x-chunk="dashboard-06-chunk-0">
                         <CardHeader>
-                            <CardTitle>Envios Activos</CardTitle>
+                            <CardTitle>Active Deliveries</CardTitle>
                         </CardHeader>
                         <CardContent>
                             <DeliveriesTable freightStatus={FreightStatus.Active} page={page} />
                         </CardContent>
-                        <CardFooter></CardFooter>
+                        {/* <CardFooter></CardFooter> */}
                     </Card>
                 </TabsContent>
             </Tabs>

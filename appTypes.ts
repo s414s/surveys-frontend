@@ -16,7 +16,7 @@ export interface User {
     role: UserRoles;
 }
 
-export type Thread = {
+export interface Thread {
     id: number;
     subject: string;
     teaser: string;
@@ -26,7 +26,7 @@ export type Thread = {
     date: string; // Date
 };
 
-export type TruckIcon = {
+export interface TruckIcon {
     id: number,
     name: string,
     plate: string,
@@ -64,23 +64,22 @@ export type PagedResult<T> = {
     hasPreviousPage: boolean;
 };
 
-export interface Pallet {
+export interface Parcel {
     id: number;
-    length: number;
-    width: number;
-    height: number;
     weight: number;
-    code: string;
     origin: string;
     destination: string;
-    dueDate: Date;
+    contactEmail: string;
+    eta: string;
+    etd: string;
+    guid: string;
 }
 
 export interface Truck {
     id: number;
     plate: string;
     mileage: number;
-    //driverName: string;
+    mark: string;
     consumption: number; // l/km
     manufactoringDateUnix: number;
     lastMaintenenceDateUnix: number;
@@ -94,7 +93,7 @@ export interface Trailer {
     width: string;
     height: string;
     plate: string;
-    load: Pallet[];
+    load: Parcel[];
     totalWeight: number;
     maxWeight: number; // 36 toneladas para 2 ejes
 }
@@ -190,17 +189,6 @@ export interface CreateNewUserResponse {
 
 // =============== mock data ==============
 
-export const mockUsers: User[] = [
-    { "id": 1, "name": "Alice", "surname": "Smith", "email": "alice@example.com", "role": "Admin" },
-    { "id": 2, "name": "Bob", "surname": "Jones", "email": "bob@example.com", "role": "Driver" },
-    { "id": 3, "name": "Charlie", "surname": "Brown", "email": "charlie@example.com", "role": "Admin" }
-];
-
-export const mockPallets: Pallet[] = [
-    { "length": 1.2, "width": 0.8, "height": 1.5, "weight": 500, "code": "P12345", "origin": "MAD", "destination": "BCN", "id": 1, "dueDate": new Date() },
-    { "length": 1.2, "width": 0.8, "height": 1.5, "weight": 450, "code": "P67890", "origin": "MAD", "destination": "BCN", "id": 1, "dueDate": new Date() }
-];
-
 export const mockWarehouses: WareHouse[] = [
     { "lat": 40.7128, "lon": -74.0060, "name": "NYC Warehouse", "unloadTime": 120 },
     { "lat": 34.0522, "lon": -118.2437, "name": "LA Warehouse", "unloadTime": 90 }
@@ -238,15 +226,3 @@ export const mockPaginatedUsers = {
     "hasNextPage": false,
     "hasPreviousPage": false,
 };
-
-export const mockTrailers: Trailer[] = [
-    {
-        "length": "13.6m",
-        "width": "2.5m",
-        "height": "2.7m",
-        "plate": "TR123",
-        "load": mockPallets,
-        "totalWeight": 950,
-        "maxWeight": 36000
-    }
-];
