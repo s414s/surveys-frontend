@@ -3,13 +3,7 @@
 import { PageProps } from "@/.next/types/app/layout";
 import { type PagedResult, type User } from "@/appTypes";
 import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from "../ui/table";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuTrigger
-} from "../ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import { Button } from "../ui/button";
 import { ArrowLeft, ArrowRight, MoreHorizontal } from "lucide-react";
 import { useFetch } from "@/hooks/useFetch";
@@ -19,26 +13,19 @@ import { useState } from "react";
 
 export default function UsersTable(props: PageProps) {
     const [pageIndex, setPageIndex] = useState<number>(props.searchParams?.pageIndex ?? 1);
-    const { data, error, loading } = useFetch<PagedResult<User>>("GET", `/users?pageIndex=${pageIndex}&pageSize=10`);
-    console.log(data);
+    const { data, error, loading } = useFetch<PagedResult<User>>("GET", `/users?role=1&pageIndex=${pageIndex}&pageSize=10`);
 
     return (
         <Table className="w-full">
             <TableHeader>
                 <TableRow>
-                    <TableHead>Id</TableHead>
+                    <TableHead className="hidden md:table-cell">Id</TableHead>
                     <TableHead>Name</TableHead>
                     <TableHead>Surname</TableHead>
-                    <TableHead>Email</TableHead>
-                    <TableHead>Role</TableHead>
+                    <TableHead className="hidden md:table-cell">Email</TableHead>
 
-                    {/*
-                    <TableHead className="hidden md:table-cell"> Mileage <br /> (Km)</TableHead>
-                    <TableHead className="hidden md:table-cell"> Consumo <br /> (l/100Km)</TableHead>
-                    <TableHead className="hidden md:table-cell"> Marca </TableHead>
-                    <TableHead className="hidden md:table-cell"> Última revisión </TableHead>
-                    <TableHead> <span className="sr-only">Actions</span></TableHead>
-                    */}
+                    {/* <TableHead>Role</TableHead> */}
+                    {/* <TableHead> <span className="sr-only">Actions</span></TableHead> */}
 
                 </TableRow>
             </TableHeader>
@@ -53,7 +40,6 @@ export default function UsersTable(props: PageProps) {
                             <TableCell>{capitalizeWord(x.name)}</TableCell>
                             <TableCell>{capitalizeWord(x.surname)}</TableCell>
                             <TableCell>{x.email}</TableCell>
-                            <TableCell>{x.role}</TableCell>
 
                             {/*
                             <TableCell className="hidden md:table-cell"> {numberFormatter(2, 2).format(x.consumption)} </TableCell>

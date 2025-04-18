@@ -1,4 +1,4 @@
-import { AddParcelToFreightRequest, City, Freight, LoginRequest, LoginResponse, PagedResult } from "@/appTypes";
+import { AddParcelToFreightRequest, City, CreateNewUserRequest, CreateNewUserResponse, Freight, LoginRequest, LoginResponse, PagedResult } from "@/appTypes";
 import { fetchDataGeneric, QueryParams } from "./fetchDataGeneric";
 import { useAppStore } from "@/store/userStore";
 
@@ -50,5 +50,16 @@ export const logIn = async (request: LoginRequest): Promise<LoginResponse> => {
     } catch (error) {
         console.error("Error loging in:", error);
         throw new Error("Failed to log in");
+    }
+};
+
+export const createNewDriver = async (request: CreateNewUserRequest): Promise<CreateNewUserResponse> => {
+    try {
+        const jwtToken = useAppStore.getState().jwtToken;
+        const endpoint = `/users`;
+        return await fetchDataGeneric<CreateNewUserResponse>("POST", endpoint, null, request, jwtToken);
+    } catch (error) {
+        console.error("Error creating new driver:", error);
+        throw new Error("Failed to create a new driver");
     }
 };

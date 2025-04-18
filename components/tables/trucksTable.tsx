@@ -3,13 +3,7 @@
 import { PageProps } from "@/.next/types/app/layout";
 import { type PagedResult, type Truck } from "@/appTypes";
 import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from "../ui/table";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuTrigger
-} from "../ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import { Button } from "../ui/button";
 import { ArrowLeft, ArrowRight, MoreHorizontal } from "lucide-react";
 import { useFetch } from "@/hooks/useFetch";
@@ -20,7 +14,6 @@ import { useState } from "react";
 export default function TrucksTable(props: PageProps) {
     const [pageIndex, setPageIndex] = useState<number>(props.searchParams?.pageIndex ?? 1);
     const { data, error, loading } = useFetch<PagedResult<Truck>>("GET", `/trucks?pageIndex=${pageIndex}&pageSize=10`);
-    console.log(data);
 
     return (
         <Table className="w-full">

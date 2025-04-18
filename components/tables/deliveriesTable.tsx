@@ -19,10 +19,9 @@ import { capitalizeWord } from "@/utils/utils";
 
 export default function DeliveriesTable({ freightStatus, page }: { freightStatus: FreightStatus | null; page: number; }) {
     const url = `/freights?status=${freightStatus}&pageIndex=${page}&pageSize=10`;
-    // console.log("URL", url);
     const { data, error, loading } = useFetch<PagedResult<Freight>>("GET", url);
 
-    if (error) { return (<div>{error.message}</div>); }
+    if (error) return <div>{error.message}</div>;
     if (loading) return <LoadingComponent isAdminOnly={false} />;
 
     return (
@@ -106,20 +105,16 @@ export default function DeliveriesTable({ freightStatus, page }: { freightStatus
             </TableBody>
 
             <TableFooter>
-
                 {/* <div className="text-xs text-muted-foreground">
                     Mostrando <strong>1-10</strong> de <strong>32</strong>{" "}envios
                 </div> */}
-
-                {
-                    data &&
+                {data &&
                     <div className="text-xs text-muted-foreground">
                         Mostrando <strong>
                             {((data.pageIndex - 1) * data.pageSize + 1)}-
                             {Math.min(data.pageIndex * data.pageSize, data.totalResults)}
                         </strong> de <strong>{data.totalResults ?? 0}</strong>{" "}envios
-                    </div>
-                }
+                    </div>}
             </TableFooter>
         </Table>
     );

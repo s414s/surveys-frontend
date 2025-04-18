@@ -14,7 +14,7 @@ export const adminRoutes = [
         description: "Dashboard",
     },
     {
-        label: "Flota",
+        label: "Fleet",
         icon: Truck,
         href: "/cargotrack/fleet",
         description: "fleet",
@@ -25,17 +25,17 @@ export const adminRoutes = [
         href: "/cargotrack/deliveries",
         description: "Deliveries",
     },
+    // {
+    //     label: "Clients",
+    //     icon: Users,
+    //     href: "/cargotrack/clients",
+    //     description: "Clients",
+    // },
     {
-        label: "Clients",
+        label: "Drivers",
         icon: Users,
-        href: "/cargotrack/clients",
-        description: "Clients",
-    },
-    {
-        label: "Users",
-        icon: Users,
-        href: "/cargotrack/users",
-        description: "Users",
+        href: "/cargotrack/drivers",
+        description: "Drivers",
     },
     {
         label: "Messages",

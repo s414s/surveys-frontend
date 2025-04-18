@@ -8,7 +8,6 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import DeliveriesTable from "@/components/tables/deliveriesTable";
 import { FreightStatus } from "@/appTypes";
 import { useState } from "react";
-// import LoadingComponent from "@/components/common/loader";
 
 export default function Page() {
     const [page,] = useState(1);
@@ -21,33 +20,32 @@ export default function Page() {
             <Tabs defaultValue="active">
                 <div className="flex items-center">
                     <TabsList>
-                        <TabsTrigger value="active">Activos</TabsTrigger>
-                        <TabsTrigger value="planned">Planificados</TabsTrigger>
-                        <TabsTrigger value="completed" className="hidden sm:flex">
-                            Completados
-                        </TabsTrigger>
-                        <TabsTrigger value="all">Todos</TabsTrigger>
+                        <TabsTrigger value="active">Active</TabsTrigger>
+                        <TabsTrigger value="planned">Planned</TabsTrigger>
+                        <TabsTrigger value="completed" className="hidden sm:flex">Completed</TabsTrigger>
+                        <TabsTrigger value="all">All</TabsTrigger>
                     </TabsList>
+
                     <div className="ml-auto flex items-center gap-2">
                         <Button size="sm" variant="outline" className="h-8 gap-1">
                             <File className="h-3.5 w-3.5" />
                             <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                                Exportar
+                                Export
                             </span>
                         </Button>
                         <Button size="sm" className="h-8 gap-1" asChild>
                             <Link href={"/cargotrack/deliveries/new"}>
                                 <PlusCircle className="h-3.5 w-3.5" />
                                 <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                                    Crear Envio
+                                    New Freight
                                 </span>
                             </Link>
                         </Button>
                     </div>
+
                 </div>
 
                 <TabsContent value="all">
-                    {/* <ShiftCardContent shiftStatus={null} /> */}
                     <Card x-chunk="dashboard-06-chunk-0">
                         <CardHeader>
                             <CardTitle>Envios</CardTitle>

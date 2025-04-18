@@ -43,8 +43,8 @@ import MouseMoveEffect from "@/components/landing/mouse-move-effect";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Amane Soft - Cutting-Edge Software Solutions",
-  description: "Amane Soft delivers innovative, high-performance software solutions for businesses of the future.",
+  title: "Cargo Tracker - Cutting-Edge Logistics Software Solutions",
+  description: "Cargo Tracker delivers innovative, high-performance software solutions for businesses of the future.",
 };
 
 export default function RootLayout({

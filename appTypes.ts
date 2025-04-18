@@ -176,6 +176,17 @@ export interface AddParcelToFreightRequest {
     parcelWeight: number,
 }
 
+export interface CreateNewUserRequest {
+    name: string;
+    surname: string;
+    dateOfBirth: string;
+    email: string;
+}
+
+export interface CreateNewUserResponse {
+    id: number;
+    password: string;
+}
 
 // =============== mock data ==============
 
