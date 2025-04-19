@@ -73,6 +73,7 @@ export interface Parcel {
     eta: string;
     etd: string;
     guid: string;
+    price: number;
 }
 
 export interface Truck {
@@ -181,6 +182,7 @@ export interface AddParcelToFreightRequest {
     originId: number,
     destinationId: number,
     parcelWeight: number,
+    contactEmail: string,
 }
 
 export interface CreateNewUserRequest {

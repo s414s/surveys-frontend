@@ -17,7 +17,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { formatDate } from "date-fns";
 import { capitalizeWord } from "@/utils/utils";
-import { addParcelToFreight, getCities, getFreights } from "@/utils/endpoints";
+import { getCities } from "@/utils/endpoints/routesEndpoints";
+import { addParcelToFreight, getFreights } from "@/utils/endpoints/freightsEndpoints";
 
 const formSchema = z.object({
   origin: z.string().min(1, {
@@ -35,6 +36,7 @@ const formSchema = z.object({
     }),
   ]),
   freightId: z.string().optional(),
+  contactEmail: z.string(),
 })
   .refine((data) => data.origin !== data.destination || data.destination === "" || data.origin === "", {
     message: "Origin and destination cannot be the same location.",
@@ -163,18 +165,21 @@ export default function DeliveryForm() {
       originId: originId,
       destinationId: destinationId,
       parcelWeight: values.weight === "" ? 0 : Number(values.weight),
+      contactEmail: values.contactEmail,
     };
+
+    console.log("REQUEST", request);
 
     try {
       await addParcelToFreight(Number(selectedFreightId), request);
       setIsSuccess(true);
     } catch (error) {
+      console.error(error);
       setFetchError(error instanceof Error ? error.message : "Failed to fetch locations");
       setIsSuccess(false);
     } finally {
       setIsSubmitting(false);
     }
-    // Convert weight to number for submission
     // const formData = {
     //   ...values,
     //   weight: values.weight === "" ? 0 : Number(values.weight),
@@ -185,7 +190,7 @@ export default function DeliveryForm() {
   }
 
   return (
-    <Card>
+    <Card className="w-full max-w-3xl mx-auto"  >
       <CardContent className="pt-6">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -338,6 +343,20 @@ export default function DeliveryForm() {
               )}
             />
 
+            <FormField
+              control={form.control}
+              name="contactEmail"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Contact Email</FormLabel>
+                  <FormControl>
+                    <Input type="email" placeholder="Enter contact email" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
             {/* Freights Section */}
             {origin && destination && origin !== destination && (
               <div className="mt-6">
@@ -401,7 +420,7 @@ export default function DeliveryForm() {
               <div className="bg-green-100 text-green-800 p-3 rounded-md">Delivery created successfully!</div>
             )}
 
-            <Button type="submit" className="w-full" disabled={isSubmitting}>
+            <Button type="submit" className="w-full" disabled={isSubmitting || isSuccess}>
               {isSubmitting ? "Creating..." : "Create Delivery"}
             </Button>
 

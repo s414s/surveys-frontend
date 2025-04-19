@@ -14,16 +14,14 @@ import { useFetch } from "@/hooks/useFetch";
 import type { Settings } from "@/appTypes";
 import LoadingComponent from "@/components/common/loader";
 
-// Define the schema for form validation
 const settingsFormSchema = z.object({
     pricePerKilogram: z.coerce.number().positive("Price must be a positive number").max(1000, "Price cannot exceed 1000"),
     pricePerLiterFuel: z.coerce.number().positive("Price must be a positive number").max(100, "Price cannot exceed 100"),
-    pricePerHourDriver: z.coerce.number().positive("Price must be a positive number").max(500, "Price cannot exceed 500"),
+    pricePerHourDriver: z.coerce.number().positive("Price must be a positive number").max(100, "Price cannot exceed 100"),
 });
 
 type SettingsFormValues = z.infer<typeof settingsFormSchema>;
 
-// Fallback default values in case API fails
 const fallbackValues: SettingsFormValues = {
     pricePerKilogram: 2.5,
     pricePerLiterFuel: 1.75,
@@ -75,10 +73,6 @@ export default function SettingsPage() {
                 title: "Settings updated",
                 description: "Your pricing settings have been saved successfully.",
             });
-
-            // Refresh data from the server
-            // refetch();
-            // TODO - refresh page or show ok
         } catch (error) {
             console.error(error);
             toast({

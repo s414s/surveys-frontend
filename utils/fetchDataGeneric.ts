@@ -37,6 +37,7 @@ export const fetchDataGeneric = async <T>(
     const response = await fetch(`${BASE_URL}${endpoint}${queryString}`, requestOptions);
 
     if (!response.ok) {
+        console.error(response);
         throw new Error(`HTTP error! status: ${response.status}`);
     }
 

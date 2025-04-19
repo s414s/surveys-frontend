@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 import { useAppStore } from "@/store/userStore";
 import LoadingComponent from "@/components/common/loader";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, } from "@/components/ui/card";
-import { logIn } from "@/utils/endpoints";
+import { logIn } from "@/utils/endpoints/authEndpoints";
 
 export default function LoginForm() {
     const router = useRouter();

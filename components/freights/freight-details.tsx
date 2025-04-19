@@ -28,11 +28,10 @@ export function FreightDetails({ freight }: FreightDetailsProps) {
 
     const { data, error, loading } = useFetch<Parcel[]>("GET", `/freights/${freight.id}/parcels`);
     if (error) { console.log("error", error); }
+    console.log("PARCELS", data);
 
-    // Function to generate and download PDF
     const generatePDF = async () => {
         if (!parcelCardRef.current) return;
-        console.log("GG");
 
         try {
             // Dynamically import the libraries to reduce initial bundle size
@@ -136,6 +135,8 @@ export function FreightDetails({ freight }: FreightDetailsProps) {
                         </p>
                     </div>
 
+                    <Separator />
+
                     <div className="space-y-2">
                         <div className="flex items-center text-sm text-muted-foreground">
                             <Package className="h-4 w-4 mr-2" />
@@ -144,9 +145,9 @@ export function FreightDetails({ freight }: FreightDetailsProps) {
                         <p className="font-medium text-xs md:text-sm font-mono">
                             {loading
                                 ? <LoadingComponent isAdminOnly={false} />
-                                : data?.map(x => (
-                                    <div key={x.id}>{x.guid} {x.weight}Kg</div>
-                                ))}
+                                : data
+                                    ? data?.map(x => (<div key={x.id}>{x.guid} - {x.weight}Kg - {x.price}€</div>))
+                                    : <div>No Parcels</div>}
                         </p>
                     </div>
 

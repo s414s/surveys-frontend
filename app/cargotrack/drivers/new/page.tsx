@@ -6,9 +6,9 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
-import { createNewDriver } from "@/utils/endpoints";
 import { CreateNewUserRequest } from "@/appTypes";
 import { useRouter } from "next/navigation";
+import { createNewDriver } from "@/utils/endpoints/userEndpoints";
 
 export default function UserCreationForm() {
   const router = useRouter();
