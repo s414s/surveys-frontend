@@ -1,6 +1,10 @@
-// import { PageProps } from "@/.next/types/app/layout";
+"use client";
 
-import { ParcelDetails } from "@/components/parcel/parcel-details";
+import { PageProps } from "@/.next/types/app/layout";
+import { Freight } from "@/appTypes";
+import LoadingComponent from "@/components/common/loader";
+import { FreightDetails } from "@/components/freights/freight-details";
+import { useFetch } from "@/hooks/useFetch";
 
 // export default function Page({ params }: PageProps) {
 //     return (
@@ -10,23 +14,16 @@ import { ParcelDetails } from "@/components/parcel/parcel-details";
 //     );
 // }
 
-// Sample parcel data
-const sampleParcel = {
-    id: 12345,
-    weight: 5.2,
-    origin: "New York, NY",
-    destination: "San Francisco, CA",
-    contactEmail: "shipper@example.com",
-    eta: "2025-04-25T14:30:00",
-    etd: "2025-04-18T09:00:00",
-    guid: "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
-};
+export default function Page({ params }: PageProps) {
+    const { data, error, loading } = useFetch<Freight>("GET", `/freights/${params.slug}`);
+    if (error) { console.log("error", error); }
 
-export default function Page() {
     return (
         <div className="container mx-auto py-10 px-4">
             {/* <h1 className="text-3xl font-bold mb-8">Parcel Tracking</h1> */}
-            <ParcelDetails parcel={sampleParcel} />
+            {loading
+                ? <LoadingComponent isAdminOnly={false} />
+                : <FreightDetails freight={data as Freight} />}
         </div>
     );
 }

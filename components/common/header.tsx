@@ -1,28 +1,10 @@
 'use client';
 
 import Link from "next/link";
-import {
-    Bell,
-    CircleUser,
-    Menu,
-    Package2,
-} from "lucide-react";
+import { Bell, CircleUser, Menu, Package2, } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+// import { Card, CardContent, CardDescription, CardHeader, CardTitle, } from "@/components/ui/card";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger, } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useAppStore } from "@/store/userStore";
 import { usePathname } from "next/navigation";
@@ -74,7 +56,8 @@ export default function Header() {
                             );
                         })}
                     </nav>
-                    <div className="mt-auto">
+
+                    {/* <div className="mt-auto">
                         <Card>
                             <CardHeader>
                                 <CardTitle>Upgrade to Pro</CardTitle>
@@ -89,7 +72,8 @@ export default function Header() {
                                 </Button>
                             </CardContent>
                         </Card>
-                    </div>
+                    </div> */}
+
                 </SheetContent>
             </Sheet>
 
@@ -106,7 +90,7 @@ export default function Header() {
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                    <DropdownMenuLabel>Mi Cuenta</DropdownMenuLabel>
+                    <DropdownMenuLabel>My Profile</DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem>
                         <Link href={'/cargotrack/me'}>

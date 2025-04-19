@@ -19,18 +19,18 @@ export default function TrucksTable(props: PageProps) {
         <Table className="w-full">
             <TableHeader>
                 <TableRow>
-                    <TableHead>Matrícula</TableHead>
+                    <TableHead>Plate</TableHead>
                     <TableHead className="hidden md:table-cell">
                         Mileage <br /> (Km)
                     </TableHead>
                     <TableHead className="hidden md:table-cell">
-                        Consumo <br /> (l/100Km)
+                        Consumption <br /> (l/100Km)
                     </TableHead>
                     <TableHead className="hidden md:table-cell">
-                        Marca
+                        Mark
                     </TableHead>
                     <TableHead className="hidden md:table-cell">
-                        Última revisión
+                        Last revision
                     </TableHead>
                     <TableHead>
                         <span className="sr-only">Actions</span>
@@ -54,7 +54,7 @@ export default function TrucksTable(props: PageProps) {
                                 {numberFormatter(2, 2).format(x.consumption)}
                             </TableCell>
                             <TableCell className="hidden md:table-cell">
-                                {capitalizeWord("TODO - marca")}
+                                {capitalizeWord(x.mark)}
                             </TableCell>
                             <TableCell className="hidden md:table-cell">
                                 {dateFormatter.format(x.lastMaintenenceDateUnix)}

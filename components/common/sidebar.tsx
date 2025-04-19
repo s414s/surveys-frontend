@@ -1,6 +1,6 @@
 "use client";
 
-import { LineChart, Package, Truck, Users, MessageSquare, WaypointsIcon } from "lucide-react";
+import { LineChart, Package, Truck, Users, MessageSquare, WaypointsIcon, Settings } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
@@ -42,6 +42,12 @@ export const adminRoutes = [
         icon: MessageSquare,
         href: "/cargotrack/messages",
         description: "Messages",
+    },
+    {
+        label: "Settings",
+        icon: Settings,
+        href: "/cargotrack/settings",
+        description: "Settings",
     },
 ];
 

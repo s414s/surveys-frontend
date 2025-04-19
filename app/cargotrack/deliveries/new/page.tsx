@@ -115,7 +115,7 @@ export default function DeliveryForm() {
 
           const freightsWithDates = responseData.data.map((freight) => ({
             ...freight,
-            dueStart: new Date(freight.dueStart),
+            dueStart: new Date(freight.etd),
           }));
 
           setFreights(freightsWithDates);
@@ -380,7 +380,7 @@ export default function DeliveryForm() {
                                       {capitalizeWord(freight.origin)} - {capitalizeWord(freight.destination)}
                                     </label>
                                     <p className="text-sm text-muted-foreground">
-                                      Date: {formatDate(freight.dueStart, "dd-MM-yyyy")} • Driver: {capitalizeWord(freight.driver.name)}
+                                      Date: {formatDate(freight.etd, "dd-MM-yyyy")} • Driver: {capitalizeWord(freight.driver.name)}
                                     </p>
                                   </div>
                                 </div>

@@ -2,13 +2,7 @@
 
 import { PagedResult, FreightStatus, type Freight } from "@/appTypes";
 import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from "../ui/table";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuTrigger
-} from "../ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import { Button } from "../ui/button";
 import { MoreHorizontal } from "lucide-react";
 import StatusBadge from "../statusBadge";
@@ -21,9 +15,7 @@ import Link from "next/link";
 export default function DeliveriesTable({ freightStatus, page }: { freightStatus: FreightStatus | null; page: number; }) {
     const url = `/freights?status=${freightStatus}&pageIndex=${page}&pageSize=10`;
     const { data, error, loading } = useFetch<PagedResult<Freight>>("GET", url);
-
     if (error) return <div>{error.message}</div>;
-    if (loading) return <LoadingComponent isAdminOnly={false} />;
 
     return (
         <Table>
@@ -38,10 +30,13 @@ export default function DeliveriesTable({ freightStatus, page }: { freightStatus
                         Distance
                     </TableHead>
                     <TableHead className="hidden md:table-cell">
-                        Duration
+                        Origin
                     </TableHead>
                     <TableHead className="hidden md:table-cell">
-                        Date
+                        Destination
+                    </TableHead>
+                    <TableHead className="hidden md:table-cell">
+                        Departure
                     </TableHead>
                     <TableHead>
                         <span className="sr-only">Actions</span>
@@ -49,12 +44,12 @@ export default function DeliveriesTable({ freightStatus, page }: { freightStatus
                 </TableRow>
             </TableHeader>
             <TableBody>
+                {loading && <LoadingComponent isAdminOnly={false} />}
+
                 {data?.data.map(x => {
                     return (
                         <TableRow key={x.id}>
-                            <TableCell className="font-medium">
-                                {x.id}
-                            </TableCell>
+                            <TableCell>{x.id}</TableCell>
                             <TableCell>
                                 <StatusBadge status={x.status} />
                             </TableCell>
@@ -65,10 +60,13 @@ export default function DeliveriesTable({ freightStatus, page }: { freightStatus
                                 {x.totalDistance} Km
                             </TableCell>
                             <TableCell className="hidden md:table-cell">
-                                {x.durationMinutes} Hr
+                                {x.origin}
                             </TableCell>
                             <TableCell className="hidden md:table-cell">
-                                {formatDate(x.finishTime, "dd-MM-yyyy")}
+                                {x.destination}
+                            </TableCell>
+                            <TableCell className="hidden md:table-cell">
+                                {formatDate(x.etd, "dd-MM-yyyy")}
                             </TableCell>
                             <TableCell>
                                 <DropdownMenu>
@@ -107,7 +105,6 @@ export default function DeliveriesTable({ freightStatus, page }: { freightStatus
                         </TableRow>
                     );
                 })}
-
             </TableBody>
 
             <TableFooter>
