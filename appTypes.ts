@@ -167,8 +167,13 @@ export interface IGeographicCoordiantes {
     lon: number;
 }
 
-// DTOs
+export interface SettingsEntity {
+    pricePerKilogram: number;
+    PricePerLiterFuel: number;
+    PricePerHourDriver: number;
+}
 
+// DTOs
 export interface LoginRequest {
     email: string,
     password: string,

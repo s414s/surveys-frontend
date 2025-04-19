@@ -11,8 +11,9 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { useFetch } from "@/hooks/useFetch";
-import type { Settings } from "@/appTypes";
+import type { Settings, SettingsEntity } from "@/appTypes";
 import LoadingComponent from "@/components/common/loader";
+import { updateSettings } from "@/utils/endpoints/settingsEndpoints";
 
 const settingsFormSchema = z.object({
     pricePerKilogram: z.coerce.number().positive("Price must be a positive number").max(1000, "Price cannot exceed 1000"),
@@ -51,23 +52,15 @@ export default function SettingsPage() {
         }
     }, [data, form]);
 
-    // Handle form submission
     async function onSubmit(formData: SettingsFormValues) {
         setIsSaving(true);
-
         try {
-            // Make API call to save settings
-            const response = await fetch("/api/settings", {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(formData),
-            });
-
-            if (!response.ok) {
-                throw new Error("Failed to save settings");
-            }
+            var request: SettingsEntity = {
+                pricePerKilogram: formData.pricePerKilogram,
+                PricePerHourDriver: formData.pricePerHourDriver,
+                PricePerLiterFuel: formData.pricePerLiterFuel,
+            };
+            await updateSettings(request);
 
             toast({
                 title: "Settings updated",
@@ -117,7 +110,7 @@ export default function SettingsPage() {
                                 name="pricePerKilogram"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Price per Kilogram ($)</FormLabel>
+                                        <FormLabel>Price per Kilogram (€)</FormLabel>
                                         <FormControl>
                                             <Input type="number" step="0.01" placeholder="0.00" {...field} />
                                         </FormControl>
@@ -132,7 +125,7 @@ export default function SettingsPage() {
                                 name="pricePerLiterFuel"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Price per Liter of Fuel ($)</FormLabel>
+                                        <FormLabel>Price per Liter of Fuel (€)</FormLabel>
                                         <FormControl>
                                             <Input type="number" step="0.01" placeholder="0.00" {...field} />
                                         </FormControl>
@@ -147,12 +140,12 @@ export default function SettingsPage() {
                                 name="pricePerHourDriver"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Price per Hour of Worker ($)</FormLabel>
+                                        <FormLabel>Price per Hour of Worker (€)</FormLabel>
                                         <FormControl>
                                             <Input type="number" step="0.01" placeholder="0.00" {...field} />
                                         </FormControl>
                                         <FormDescription>
-                                            The hourly rate for labor costs associated with handling packages.
+                                            The hourly rate associated with driving the truck.
                                         </FormDescription>
                                         <FormMessage />
                                     </FormItem>

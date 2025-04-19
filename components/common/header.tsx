@@ -1,9 +1,8 @@
 'use client';
 
 import Link from "next/link";
-import { Bell, CircleUser, Menu, Package2, } from "lucide-react";
+import { CircleUser, Menu, Package2, } from "lucide-react";
 import { Button } from "@/components/ui/button";
-// import { Card, CardContent, CardDescription, CardHeader, CardTitle, } from "@/components/ui/card";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger, } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useAppStore } from "@/store/userStore";
@@ -77,31 +76,33 @@ export default function Header() {
                 </SheetContent>
             </Sheet>
 
-            <Button variant="outline" size="icon" className="ml-auto h-8 w-8">
+            {/* <Button variant="outline" size="icon" className="ml-auto h-8 w-8">
                 <Bell className="h-4 w-4" />
                 <span className="sr-only">Toggle notifications</span>
-            </Button>
+            </Button> */}
 
-            <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                    <Button variant="secondary" size="icon" className="rounded-full">
-                        <CircleUser className="h-5 w-5" />
-                        <span className="sr-only">Toggle menu de usuario</span>
-                    </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                    <DropdownMenuLabel>My Profile</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem>
-                        <Link href={'/cargotrack/me'}>
-                            MY Profile
-                        </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>Soporte</DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem>Logout</DropdownMenuItem>
-                </DropdownMenuContent>
-            </DropdownMenu>
+            <div className="ml-auto">
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button variant="secondary" size="icon" className="rounded-full">
+                            <CircleUser className="h-5 w-5" />
+                            <span className="sr-only">Toggle menu de usuario</span>
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                        <DropdownMenuLabel>My Profile</DropdownMenuLabel>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem>
+                            <Link href={'/cargotrack/me'}>
+                                MY Profile
+                            </Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>Soporte</DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem>Logout</DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            </div>
         </header>
     );
 }
