@@ -49,8 +49,8 @@ export default function RouteForm() {
     defaultValues: {},
   });
 
-  const origin = form.watch("origin");
-  const destination = form.watch("destination");
+  // const origin = form.watch("origin");
+  // const destination = form.watch("destination");
 
   // Fetch origins
   useEffect(() => {

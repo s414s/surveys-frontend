@@ -55,7 +55,7 @@ export default function SettingsPage() {
     async function onSubmit(formData: SettingsFormValues) {
         setIsSaving(true);
         try {
-            var request: SettingsEntity = {
+            const request: SettingsEntity = {
                 pricePerKilogram: formData.pricePerKilogram,
                 PricePerHourDriver: formData.pricePerHourDriver,
                 PricePerLiterFuel: formData.pricePerLiterFuel,
