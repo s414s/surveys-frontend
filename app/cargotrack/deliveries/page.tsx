@@ -4,7 +4,7 @@ import { PlusCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger, } from "@/components/ui/tabs";
 import Link from "next/link";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import DeliveriesTable from "@/components/tables/deliveriesTable";
 import { FreightStatus } from "@/appTypes";
 import { useState } from "react";
@@ -23,7 +23,6 @@ export default function Page() {
                         <TabsTrigger value="active">Active</TabsTrigger>
                         <TabsTrigger value="planned">Planned</TabsTrigger>
                         <TabsTrigger value="completed" className="hidden sm:flex">Completed</TabsTrigger>
-                        <TabsTrigger value="all">All</TabsTrigger>
                     </TabsList>
 
                     <div className="ml-auto flex items-center gap-2">
@@ -41,21 +40,17 @@ export default function Page() {
                                 </span>
                             </Link>
                         </Button>
+                        <Button size="sm" className="h-8 gap-1" asChild>
+                            <Link href={"/cargotrack/deliveries/addParcel"}>
+                                <PlusCircle className="h-3.5 w-3.5" />
+                                <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+                                    Add Parcel
+                                </span>
+                            </Link>
+                        </Button>
                     </div>
-
                 </div>
 
-                <TabsContent value="all">
-                    <Card x-chunk="dashboard-06-chunk-0">
-                        <CardHeader>
-                            <CardTitle>Deliveries</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <DeliveriesTable freightStatus={null} page={page} />
-                        </CardContent>
-                        <CardFooter></CardFooter>
-                    </Card>
-                </TabsContent>
                 <TabsContent value="planned">
                     <Card x-chunk="dashboard-06-chunk-0">
                         <CardHeader>
@@ -64,7 +59,6 @@ export default function Page() {
                         <CardContent>
                             <DeliveriesTable freightStatus={FreightStatus.Scheduled} page={page} />
                         </CardContent>
-                        {/* <CardFooter></CardFooter> */}
                     </Card>
                 </TabsContent>
                 <TabsContent value="completed">
@@ -75,7 +69,6 @@ export default function Page() {
                         <CardContent>
                             <DeliveriesTable freightStatus={FreightStatus.Completed} page={page} />
                         </CardContent>
-                        {/* <CardFooter></CardFooter> */}
                     </Card>
                 </TabsContent>
                 <TabsContent value="active">

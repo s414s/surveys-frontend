@@ -1,4 +1,4 @@
-import { CreateNewUserRequest, CreateNewUserResponse } from "@/appTypes";
+import { CreateNewUserRequest, CreateNewUserResponse, User } from "@/appTypes";
 import { fetchDataGeneric } from "../fetchDataGeneric";
 import { useAppStore } from "@/store/userStore";
 
@@ -10,5 +10,17 @@ export const createNewDriver = async (request: CreateNewUserRequest): Promise<Cr
     } catch (error) {
         console.error("Error creating new driver:", error);
         throw new Error("Failed to create a new driver");
+    }
+};
+
+export const getDrivers = async (startDate?: Date, endDate?: Date): Promise<User[]> => {
+    try {
+        const endpoint = (!startDate && !endDate)
+            ? `/users`
+            : `/users?startDate=${startDate?.toISOString()}&endDate=${endDate?.toISOString()}`;
+        return await fetchDataGeneric<User[]>("GET", endpoint, null, null, useAppStore.getState().jwtToken);
+    } catch (error) {
+        console.error("Error getting drivers:", error);
+        throw new Error("Failed to get drivers");
     }
 };

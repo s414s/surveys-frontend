@@ -7,7 +7,7 @@ interface AppState {
     jwtToken?: string;
     setUser: (jwtToken?: string) => void,
     getUserInfo: () => UserInfo | undefined,
-    removeUser: () => void,
+    logOut: () => void,
     isAdmin: () => boolean,
     isUserLoggedIn: () => boolean,
 }
@@ -48,7 +48,7 @@ export const useAppStore = create<AppState>()(
 
                 return jwtDecode<UserInfo>(jwtToken);
             },
-            removeUser: () => {
+            logOut: () => {
                 set({ jwtToken: undefined });
             },
             isAdmin: () => get().getUserInfo()?.role === "Admin",

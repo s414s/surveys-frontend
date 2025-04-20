@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { CircleUser, Menu, Package2, } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger, } from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useAppStore } from "@/store/userStore";
 import { usePathname } from "next/navigation";
@@ -12,7 +12,8 @@ import { cn } from "@/lib/utils";
 
 export default function Header() {
     const pathname = usePathname();
-    const isUserAdmin = useAppStore().isAdmin();
+    const userStore = useAppStore();
+    const isUserAdmin = userStore.isAdmin();
     const menuItems = isUserAdmin ? adminRoutes : driverRoutes;
 
     return (
@@ -90,16 +91,20 @@ export default function Header() {
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>My Profile</DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem>
-                            <Link href={'/cargotrack/me'}>
-                                MY Profile
-                            </Link>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>Soporte</DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem>Logout</DropdownMenuItem>
+                        {/* <DropdownMenuLabel>My Profile</DropdownMenuLabel> */}
+                        {/* <DropdownMenuSeparator /> */}
+                        <Link href={'/cargotrack/me'}>
+                            <DropdownMenuItem>
+                                My Profile
+                            </DropdownMenuItem>
+                        </Link>
+                        {/* <DropdownMenuItem>Soporte</DropdownMenuItem> */}
+                        {/* <DropdownMenuSeparator /> */}
+                        <Link href={'/'} onClick={userStore.logOut}>
+                            <DropdownMenuItem>
+                                Logout
+                            </DropdownMenuItem>
+                        </Link>
                     </DropdownMenuContent>
                 </DropdownMenu>
             </div>

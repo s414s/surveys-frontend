@@ -54,7 +54,7 @@ export default function DeliveriesTable({ freightStatus, page }: { freightStatus
                                 <StatusBadge status={x.status} />
                             </TableCell>
                             <TableCell className="hidden md:table-cell">
-                                {capitalizeWord(x.driver.name)}
+                                {`${capitalizeWord(x.driver.name)} ${capitalizeWord(x.driver.surname)}`}
                             </TableCell>
                             <TableCell className="hidden md:table-cell">
                                 {x.totalDistance} Km
