@@ -1,22 +1,30 @@
-'use client';
+"use client";
 
-import { PageProps } from "@/.next/types/app/layout";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { Save } from "lucide-react";
+import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import { useFetch } from "@/hooks/useFetch";
-import LoadingComponent from "@/components/common/loader";
-import { Truck, UpdateTruckRequest } from "@/appTypes";
-import { dateFormatter, dateStringToUnix, isDateInFuture } from "@/utils/utils";
-import { updateTruck } from "@/utils/endpoints/trucksEndpoints";
+import { useRouter } from "next/navigation";
+import { CreateNewTruckRequest } from "@/appTypes";
+import { createNewTruck } from "@/utils/endpoints/trucksEndpoints";
+import { delay, isDateInFuture } from "@/utils/utils";
 
+// Helper function to convert date string to Unix timestamp
+// const dateStringToUnix = (dateString: string): number => {
+//     return Math.floor(new Date(dateString).getTime() / 1000);
+// };
+
+const getTodayDateString = (): string => {
+    return new Date().toISOString().split("T")[0];
+};
+
+// Create a schema for form validation
 const truckFormSchema = z.object({
     plate: z.string().min(2, "Plate must be at least 2 characters").max(20, "Plate cannot exceed 20 characters"),
     mileage: z.coerce.number().nonnegative("Mileage must be a non-negative number"),
@@ -49,107 +57,75 @@ const truckFormSchema = z.object({
 
 type TruckFormValues = z.infer<typeof truckFormSchema>;
 
-const fallbackValues: TruckFormValues = {
+// Default values for a new truck
+const defaultValues: TruckFormValues = {
     plate: "",
-    mileage: 100,
-    maxWeight: 200,
+    mileage: 0,
     mark: "",
     consumption: 0,
-    manufactoringDate: "",
-    lastMaintenenceDate: "",
+    maxWeight: 0,
+    manufactoringDate: getTodayDateString(),
+    lastMaintenenceDate: getTodayDateString(),
 };
 
-// export default function TruckEditForm({ truckId }: { truckId: number; }) {
-export default function Page({ params }: PageProps) {
-    const truckId = params.slug;
-
+export default function Page() {
     const { toast } = useToast();
-    const [isSaving, setIsSaving] = useState(false);
-    const { data, error, loading } = useFetch<Truck>("GET", `/trucks/${truckId}`);
+    const router = useRouter();
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
-    // Initialize form with empty defaults first
+    // Initialize form with default values
     const form = useForm<TruckFormValues>({
         resolver: zodResolver(truckFormSchema),
-        defaultValues: fallbackValues,
+        defaultValues,
     });
 
-    // Update form values when data is loaded
-    useEffect(() => {
-        if (data) {
-            // Reset the form with values from the API
-            // Convert Unix timestamps to date strings for the form
-            form.reset({
-                plate: data.plate,
-                mileage: data.mileage,
-                mark: data.mark,
-                maxWeight: data.maxWeight,
-                consumption: data.consumption,
-                // manufactoringDate: unixToDateString(data.manufactoringDateUnix),
-                manufactoringDate: dateFormatter.format(data.manufactoringDateUnix),
-                // lastMaintenenceDate: unixToDateString(data.lastMaintenenceDateUnix),
-                lastMaintenenceDate: dateFormatter.format(data.lastMaintenenceDateUnix),
-            });
-        }
-    }, [data, form]);
+    async function redirectToAddress(url: string) {
+        await delay(2000);
+        router.push(url);
+    }
 
     async function onSubmit(formData: TruckFormValues) {
-        setIsSaving(true);
+        setIsSubmitting(true);
         try {
-            // Convert date strings back to Unix timestamps
-            const request: UpdateTruckRequest = {
+            // Convert date strings to Unix timestamps
+            const request: CreateNewTruckRequest = {
                 plate: formData.plate,
                 mileage: formData.mileage,
                 mark: formData.mark,
-                maxWeight: formData.maxWeight,
                 consumption: formData.consumption,
-                manufactoringDateUnix: dateStringToUnix(formData.manufactoringDate), // TODO
-                lastMaintenenceDateUnix: dateStringToUnix(formData.lastMaintenenceDate), // TODO
+                maxWeight: formData.maxWeight,
+                manufacturingDate: new Date(formData.manufactoringDate),
+                lastMaintenance: new Date(formData.lastMaintenenceDate),
+                // manufactoringDateUnix: dateStringToUnix(formData.manufactoringDate),
+                // lastMaintenenceDateUnix: dateStringToUnix(formData.lastMaintenenceDate),
             };
 
-            await updateTruck(truckId, request);
+            await createNewTruck(request);
 
             toast({
-                title: "Truck updated",
-                description: "The truck information has been updated successfully.",
+                title: "Truck created",
+                description: "The new truck has been added successfully.",
             });
+
+            await redirectToAddress("/cargotrack/fleet");
         } catch (error) {
             console.error(error);
             toast({
                 title: "Error",
-                description: "Failed to update truck. Please try again.",
+                description: "Failed to create truck. Please try again.",
                 variant: "destructive",
             });
         } finally {
-            setIsSaving(false);
+            setIsSubmitting(false);
         }
-    }
-
-    if (loading) {
-        return (
-            <div className="container mx-auto py-10 px-4">
-                <LoadingComponent isAdminOnly={false} />
-            </div>
-        );
-    }
-
-    if (error) {
-        // Show error state but still render form with fallback values
-        toast({
-            title: "Error fetching truck",
-            description: "Unable to load truck information. You can still update the fields.",
-            variant: "destructive",
-        });
-
-        // TODO 
-        throw new Error();
     }
 
     return (
         <div className="container mx-auto py-4 px-4">
             <Card className="w-full max-w-2xl mx-auto">
                 <CardHeader>
-                    <CardTitle>Edit Truck</CardTitle>
-                    <CardDescription>Update the truck information and maintenance records.</CardDescription>
+                    <CardTitle>Add New Truck</CardTitle>
+                    <CardDescription>Enter the details to register a new truck in the system.</CardDescription>
                 </CardHeader>
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -163,7 +139,7 @@ export default function Page({ params }: PageProps) {
                                         <FormControl>
                                             <Input placeholder="Enter license plate" {...field} />
                                         </FormControl>
-                                        <FormDescription>The truck license plate number.</FormDescription>
+                                        <FormDescription>The trucks license plate number.</FormDescription>
                                         <FormMessage />
                                     </FormItem>
                                 )}
@@ -265,16 +241,16 @@ export default function Page({ params }: PageProps) {
                         </CardContent>
 
                         <CardFooter>
-                            <Button type="submit" className="ml-auto flex items-center gap-2" disabled={isSaving}>
-                                {isSaving ? (
+                            <Button type="submit" className="ml-auto flex items-center gap-2" disabled={isSubmitting}>
+                                {isSubmitting ? (
                                     <>
                                         <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent"></div>
-                                        <span>Saving...</span>
+                                        <span>Creating...</span>
                                     </>
                                 ) : (
                                     <>
-                                        <Save className="h-4 w-4" />
-                                        <span>Save Changes</span>
+                                        <Plus className="h-4 w-4" />
+                                        <span>Create Truck</span>
                                     </>
                                 )}
                             </Button>

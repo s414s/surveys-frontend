@@ -81,6 +81,7 @@ export interface Truck {
     plate: string;
     mileage: number;
     mark: string;
+    maxWeight: number;
     consumption: number; // l/km
     manufactoringDateUnix: number;
     lastMaintenenceDateUnix: number;
@@ -206,3 +207,24 @@ export interface UserUpdateRequest {
     name: string;
     surname: string;
 };
+
+export interface UpdateTruckRequest {
+    plate: string;
+    mileage: number;
+    mark: string;
+    consumption: number; // l/km
+    maxWeight: number;
+    manufactoringDateUnix: number;
+    lastMaintenenceDateUnix: number;
+}
+
+// type TruckCreateRequest = Omit<Truck, "id">
+export interface CreateNewTruckRequest {
+    plate: string;
+    mileage: number;
+    mark: string;
+    consumption: number;
+    maxWeight: number;
+    lastMaintenance: Date;
+    manufacturingDate: Date;
+}

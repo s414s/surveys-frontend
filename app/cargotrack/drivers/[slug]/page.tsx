@@ -17,14 +17,6 @@ import LoadingComponent from "@/components/common/loader";
 import { updateDriver } from "@/utils/endpoints/userEndpoints";
 import { capitalizeWord } from "@/utils/utils";
 
-// export default function Page({ params }: PageProps) {
-//     return (
-//         <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-//             Hello from {params.slug}
-//         </div>
-//     );
-// }
-
 const userFormSchema = z.object({
     name: z.string().min(2, "Name must be at least 2 characters").max(50, "Name cannot exceed 50 characters"),
     surname: z.string().min(2, "Surname must be at least 2 characters").max(50, "Surname cannot exceed 50 characters"),

@@ -10,6 +10,7 @@ import { useFetch } from "@/hooks/useFetch";
 import LoadingComponent from "../common/loader";
 import { capitalizeWord, dateFormatter, numberFormatter } from "@/utils/utils";
 import { useState } from "react";
+import Link from "next/link";
 
 export default function TrucksTable(props: PageProps) {
     const [pageIndex, setPageIndex] = useState<number>(props.searchParams?.pageIndex ?? 1);
@@ -76,7 +77,9 @@ export default function TrucksTable(props: PageProps) {
                                             Actions
                                         </DropdownMenuLabel>
                                         <DropdownMenuItem>
-                                            Edit
+                                            <Link href={`/cargotrack/fleet/${x.id}`}>
+                                                Edit
+                                            </Link>
                                         </DropdownMenuItem>
                                     </DropdownMenuContent>
                                 </DropdownMenu>

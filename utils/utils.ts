@@ -24,3 +24,23 @@ export function numberFormatter(minDigits: number, maxDigits: number) {
         maximumFractionDigits: maxDigits,
     });
 }
+
+export const unixToDateString = (unix: number): string => {
+    const date = new Date(unix * 1000);
+    return date.toISOString().split("T")[0];
+};
+
+export const dateStringToUnix = (dateString: string): number => {
+    return Math.floor(new Date(dateString).getTime() / 1000);
+};
+
+export function delay(ms: number) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+export const isDateInFuture = (dateString: string): boolean => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Set to beginning of day for accurate comparison
+    const date = new Date(dateString);
+    return date > today;
+};
