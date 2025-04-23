@@ -10,10 +10,12 @@ import { useFetch } from "@/hooks/useFetch";
 import LoadingComponent from "../common/loader";
 import { capitalizeWord } from "@/utils/utils";
 import { useState } from "react";
+import Link from "next/link";
 
 export default function UsersTable(props: PageProps) {
+    const pageSize = 10;
     const [pageIndex, setPageIndex] = useState<number>(props.searchParams?.pageIndex ?? 1);
-    const { data, error, loading } = useFetch<PagedResult<User>>("GET", `/users?role=1&pageIndex=${pageIndex}&pageSize=10`);
+    const { data, error, loading } = useFetch<PagedResult<User>>("GET", `/users?role=1&pageIndex=${pageIndex}&pageSize=${pageSize}`);
 
     return (
         <Table className="w-full">
@@ -59,7 +61,9 @@ export default function UsersTable(props: PageProps) {
                                             Actions
                                         </DropdownMenuLabel>
                                         <DropdownMenuItem>
-                                            Edit
+                                            <Link href={`/cargotrack/drivers/${x.id}`}>
+                                                Edit
+                                            </Link>
                                         </DropdownMenuItem>
                                     </DropdownMenuContent>
                                 </DropdownMenu>

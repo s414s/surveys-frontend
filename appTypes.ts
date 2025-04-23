@@ -201,3 +201,8 @@ export interface CreateNewUserResponse {
     id: number;
     password: string;
 }
+
+export interface UserUpdateRequest {
+    name: string;
+    surname: string;
+};

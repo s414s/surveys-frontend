@@ -1,4 +1,4 @@
-import { CreateNewUserRequest, CreateNewUserResponse, User } from "@/appTypes";
+import { CreateNewUserRequest, CreateNewUserResponse, User, UserUpdateRequest } from "@/appTypes";
 import { fetchDataGeneric } from "../fetchDataGeneric";
 import { useAppStore } from "@/store/userStore";
 
@@ -22,5 +22,16 @@ export const getDrivers = async (startDate?: Date, endDate?: Date): Promise<User
     } catch (error) {
         console.error("Error getting drivers:", error);
         throw new Error("Failed to get drivers");
+    }
+};
+
+export const updateDriver = async (userId: number, request: UserUpdateRequest): Promise<boolean> => {
+    try {
+        const jwtToken = useAppStore.getState().jwtToken;
+        const endpoint = `/users/${userId}`;
+        return await fetchDataGeneric<boolean>("PUT", endpoint, null, request, jwtToken);
+    } catch (error) {
+        console.error("Error updating driver info:", error);
+        throw new Error("Failed to update driver info");
     }
 };
