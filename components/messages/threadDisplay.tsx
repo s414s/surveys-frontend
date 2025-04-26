@@ -1,42 +1,39 @@
 'use-client';
 
-import {
-    format,
-    // addDays,
-    // addHours,
-    // nextSaturday
-} from "date-fns";
-import { Archive, Forward, Reply, Trash2, } from "lucide-react";
+import { format } from "date-fns";
+import { Trash2 } from "lucide-react";
 import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
 import { Textarea } from "../ui/textarea";
-import {
-    Tooltip,
-    TooltipContent,
-    TooltipProvider,
-    TooltipTrigger,
-} from "../ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Message } from "@/appTypes";
 import { useState } from "react";
 import { useFetch } from "@/hooks/useFetch";
 import LoadingComponent from "../common/loader";
+import { capitalizeWord } from "@/utils/utils";
+import { replyToThreadMessage } from "@/utils/endpoints/threadsEndpoints";
 
 export function ThreadDisplay({ threadId }: { threadId: number; }) {
     const [reply, setReply] = useState("");
     const { data, error, loading } = useFetch<Message[]>("GET", `/threads/${threadId}/messages`);
-
-    console.log("FETCHING ID", threadId);
-    console.table(data);
-    // if (loading) { <LoadingComponent isAdminOnly={false} />; }
     if (error) { console.log(error); }
+
+    async function handleSendMessage(message: string, threadId: number) {
+        try {
+            await replyToThreadMessage(threadId, { text: message });
+        } catch (err) {
+            console.error(err);
+        }
+    }
 
     return (
         <div className="flex h-full flex-col">
             <div className="flex items-center p-2">
                 <div className="flex items-center gap-2">
                     <TooltipProvider>
-                        <Tooltip>
+
+                        {/* <Tooltip>
                             <TooltipTrigger asChild>
                                 <Button
                                     variant="ghost"
@@ -48,7 +45,7 @@ export function ThreadDisplay({ threadId }: { threadId: number; }) {
                                 </Button>
                             </TooltipTrigger>
                             <TooltipContent>Archive</TooltipContent>
-                        </Tooltip>
+                        </Tooltip> */}
 
                         <Tooltip>
                             <TooltipTrigger asChild>
@@ -56,6 +53,7 @@ export function ThreadDisplay({ threadId }: { threadId: number; }) {
                                     variant="ghost"
                                     size="icon"
                                     disabled={false}
+                                    onClick={() => console.log("Click")}
                                 >
                                     <Trash2 className="h-4 w-4" />
                                     <span className="sr-only">Move to trash</span>
@@ -63,13 +61,12 @@ export function ThreadDisplay({ threadId }: { threadId: number; }) {
                             </TooltipTrigger>
                             <TooltipContent>Move to trash</TooltipContent>
                         </Tooltip>
-
                     </TooltipProvider>
-                    <Separator orientation="vertical" className="mx-1 h-6" />
-
+                    {/* <Separator orientation="vertical" className="mx-1 h-6" /> */}
                 </div>
-                <div className="ml-auto flex items-center gap-2">
-                    <TooltipProvider>
+
+                {/* <div className="ml-auto flex items-center gap-2">
+                     <TooltipProvider>
                         <Tooltip>
                             <TooltipTrigger asChild>
                                 <Button
@@ -98,10 +95,9 @@ export function ThreadDisplay({ threadId }: { threadId: number; }) {
                             </TooltipTrigger>
                             <TooltipContent>Forward</TooltipContent>
                         </Tooltip>
-                    </TooltipProvider>
-                </div>
-
-                <Separator orientation="vertical" className="mx-2 h-6" />
+                    </TooltipProvider> 
+                </div> */}
+                {/* <Separator orientation="vertical" className="mx-2 h-6" /> */}
             </div>
             <Separator />
 
@@ -119,7 +115,7 @@ export function ThreadDisplay({ threadId }: { threadId: number; }) {
                             </Avatar>
                             <div className="grid gap-1">
                                 <div className="font-semibold">
-                                    {x.name + " " + x.surname}
+                                    {capitalizeWord(x.name) + " " + capitalizeWord(x.surname)}
                                 </div>
                                 <div className="line-clamp-1 text-xs">
                                     {x.subject}
@@ -159,11 +155,9 @@ export function ThreadDisplay({ threadId }: { threadId: number; }) {
                         />
                         <div className="flex items-center">
                             <Button
-                                // onClick={(e) => e.preventDefault()}
                                 onClick={(e) => {
                                     e.preventDefault();
-                                    console.log(reply);
-                                    handleSendMessage(reply, 2);
+                                    handleSendMessage(reply, threadId);
                                 }}
                                 size="sm"
                                 className="ml-auto"
@@ -176,29 +170,4 @@ export function ThreadDisplay({ threadId }: { threadId: number; }) {
             </div>
         </div>
     );
-}
-
-async function handleSendMessage(message: string, threadId: number) {
-    try {
-        const BASE_URL = process.env.API_URL || 'http://localhost:5097';
-
-        const requestOptions: RequestInit = {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify({ message }),
-            // signal: controller.signal, // Attach the AbortSignal to the request
-            // credentials: 'include', // Includes cookies in the request
-        };
-
-        // const response = await fetch(BASE_URL + endpoint, controller);
-        const response = await fetch(`${BASE_URL}/threads/${threadId}`, requestOptions);
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-    } catch (err) {
-        console.error(err);
-    }
 }

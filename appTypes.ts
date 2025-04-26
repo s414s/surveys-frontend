@@ -228,3 +228,13 @@ export interface CreateNewTruckRequest {
     lastMaintenance: Date;
     manufacturingDate: Date;
 }
+
+export interface CreateNewThreadRequest {
+    toEmail: string,
+    subject: string,
+    text: string,
+};
+
+export interface ReplyToThreadRequest {
+    text: string,
+};

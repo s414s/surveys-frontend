@@ -59,7 +59,6 @@ const fallbackValues: TruckFormValues = {
     lastMaintenenceDate: "",
 };
 
-// export default function TruckEditForm({ truckId }: { truckId: number; }) {
 export default function Page({ params }: PageProps) {
     const truckId = params.slug;
 

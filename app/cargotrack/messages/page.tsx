@@ -8,9 +8,10 @@ import { formatDistanceToNow } from "date-fns";
 import { useFetch } from "@/hooks/useFetch";
 import LoadingComponent from "@/components/common/loader";
 import { useState } from "react";
-import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
+import { PlusCircle } from "lucide-react";
 import { capitalizeWord } from "@/utils/utils";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 // import { useRouter } from "next/navigation";
 
 export default function Page() {
@@ -25,14 +26,25 @@ export default function Page() {
         <div className="flex border">
             <ScrollArea className="h-screen">
 
-                <div className="bg-background/95 p-4 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+                <div className="ml-auto flex gap-2 p-4">
+                    <Button size="sm" className="h-8 gap-1" asChild>
+                        <Link href={"/cargotrack/messages/new"}>
+                            <PlusCircle className="h-3.5 w-3.5" />
+                            <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+                                New Thread
+                            </span>
+                        </Link>
+                    </Button>
+                </div>
+
+                {/* <div className="bg-background/95 p-4 backdrop-blur supports-[backdrop-filter]:bg-background/60">
                     <form>
                         <div className="relative">
                             <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
                             <Input placeholder="Search" className="pl-8" />
                         </div>
                     </form>
-                </div>
+                </div> */}
 
                 <div className="flex flex-col gap-2 p-4 pt-0">
                     {data?.data.map((item) => (
@@ -74,7 +86,7 @@ export default function Page() {
                 </div>
             </ScrollArea>
 
-            {/* Messages */}
+            {/* Message Display */}
             <div className="border flex-1">
                 {
                     selectedThreadId
