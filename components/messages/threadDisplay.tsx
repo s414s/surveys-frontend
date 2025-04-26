@@ -21,6 +21,7 @@ export function ThreadDisplay({ threadId }: { threadId: number; }) {
 
     async function handleSendMessage(message: string, threadId: number) {
         try {
+            if (!message) return;
             await replyToThreadMessage(threadId, { text: message });
         } catch (err) {
             console.error(err);
@@ -104,7 +105,8 @@ export function ThreadDisplay({ threadId }: { threadId: number; }) {
             {loading && <LoadingComponent isAdminOnly={false} />}
 
             {data?.map(x => (
-                <div key={x.id} className="flex-1 flex-col border">
+                // <div key={x.id} className="flex-1 flex-col border">
+                <div key={x.id} className="w-full flex-col border">
                     <div className="flex items-start p-4">
                         <div className="flex items-start gap-4 text-sm">
                             <Avatar>
@@ -131,9 +133,9 @@ export function ThreadDisplay({ threadId }: { threadId: number; }) {
                             </div>
                         )}
                     </div>
-
                     <Separator />
-                    <div className="flex-1 whitespace-pre-wrap p-4 text-sm">
+                    {/* <div className="flex-1 whitespace-pre-wrap p-4 text-sm"> */}
+                    <div className="whitespace-pre-wrap p-4 text-sm">
                         {x.text}
                     </div>
                 </div>
