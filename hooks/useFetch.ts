@@ -1,5 +1,6 @@
 import { useAppStore } from "@/store/userStore";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
+
 
 const BASE_URL = process.env.API_URL || 'http://localhost:5097';
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
@@ -17,81 +18,81 @@ interface Params<T> {
     error: Error | null;
 }
 
-export const useFetch = <T>(
-    method: HttpMethod,
-    endpoint: string,
-    queryParams: QueryParams = null,
-    body: unknown = null
-): Params<T> => {
-    const [data, setData] = useState<T | null>(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<ErrorType>(null);
+// export const useFetch = <T>(
+//     method: HttpMethod,
+//     endpoint: string,
+//     queryParams: QueryParams = null,
+//     body: unknown = null
+// ): Params<T> => {
+//     const [data, setData] = useState<T | null>(null);
+//     const [loading, setLoading] = useState(true);
+//     const [error, setError] = useState<ErrorType>(null);
 
-    const jwtToken = useAppStore(state => state.jwtToken);
+//     const jwtToken = useAppStore(state => state.jwtToken);
 
-    useEffect(() => {
-        // const controller = new AbortController();
-        // Get the JWT token from your Zustand store
+//     useEffect(() => {
+//         // const controller = new AbortController();
+//         // Get the JWT token from your Zustand store
 
-        // Set timeout to abort the request
-        // const timeoutId = setTimeout(() => {
-        //     controller.abort();
-        // }, TIMEOUT);
+//         // Set timeout to abort the request
+//         // const timeoutId = setTimeout(() => {
+//         //     controller.abort();
+//         // }, TIMEOUT);
 
-        // Map queryParams to URL if provided
-        const queryString = queryParams ? mapQueryParams(queryParams) : "";
-        // const fullUrl = `${url}${queryString}`;
+//         // Map queryParams to URL if provided
+//         const queryString = queryParams ? mapQueryParams(queryParams) : "";
+//         // const fullUrl = `${url}${queryString}`;
 
-        const requestOptions: RequestInit = {
-            method,
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                ...(jwtToken && { 'Authorization': `Bearer ${jwtToken}` })
-            },
-            body: body ? JSON.stringify(body) : undefined,
-            // signal: controller.signal, // Attach the AbortSignal to the request
-            // credentials: 'include', // Includes cookies in the request
-        };
+//         const requestOptions: RequestInit = {
+//             method,
+//             headers: {
+//                 'Content-Type': 'application/json',
+//                 'Accept': 'application/json',
+//                 ...(jwtToken && { 'Authorization': `Bearer ${jwtToken}` })
+//             },
+//             body: body ? JSON.stringify(body) : undefined,
+//             // signal: controller.signal, // Attach the AbortSignal to the request
+//             // credentials: 'include', // Includes cookies in the request
+//         };
 
-        setLoading(true);
+//         setLoading(true);
 
-        const fetchData = async () => {
-            try {
-                // const response = await fetch(BASE_URL + endpoint, controller);
-                const response = await fetch(`${BASE_URL}${endpoint}${queryString}`, requestOptions);
+//         const fetchData = async () => {
+//             try {
+//                 // const response = await fetch(BASE_URL + endpoint, controller);
+//                 const response = await fetch(`${BASE_URL}${endpoint}${queryString}`, requestOptions);
 
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
+//                 if (!response.ok) {
+//                     throw new Error(`HTTP error! status: ${response.status}`);
+//                 }
 
-                const jsonData: T = await response.json();
-                console.table(jsonData);
+//                 const jsonData: T = await response.json();
+//                 console.table(jsonData);
 
-                setData(jsonData);
-                setError(null);
-            } catch (err) {
-                console.error(err);
-                const error = err instanceof Error ? err : new Error('An unknown error occurred');
-                // if (error.name === 'AbortError') {
-                //     throw new Error('Request timed out');
-                // }
+//                 setData(jsonData);
+//                 setError(null);
+//             } catch (err) {
+//                 console.error(err);
+//                 const error = err instanceof Error ? err : new Error('An unknown error occurred');
+//                 // if (error.name === 'AbortError') {
+//                 //     throw new Error('Request timed out');
+//                 // }
 
-                setError(error);
-            } finally {
-                // clearTimeout(timeoutId);
-                setLoading(false);
-            }
-        };
+//                 setError(error);
+//             } finally {
+//                 // clearTimeout(timeoutId);
+//                 setLoading(false);
+//             }
+//         };
 
-        fetchData();
+//         fetchData();
 
-        // return () => { controller.abort(); };
+//         // return () => { controller.abort(); };
 
-    }, [endpoint, method, body, queryParams, jwtToken]);
+//     }, [endpoint, method, body, queryParams, jwtToken]);
 
-    return { data, loading, error };
-};
+//     return { data, loading, error };
+// };
 
 const mapQueryParams = (params?: QueryParams): string => {
     if (!params) return "";
@@ -106,4 +107,48 @@ const mapQueryParams = (params?: QueryParams): string => {
     return queryString
         ? `?${queryString}`
         : "";
+};
+
+
+export const useFetch = <T>(
+    method: HttpMethod,
+    endpoint: string,
+    queryParams: QueryParams = null,
+    body: unknown = null
+): Params<T> & { refetch: () => void; } => {
+    const [data, setData] = useState<T | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<ErrorType>(null);
+    const jwtToken = useAppStore((s) => s.jwtToken);
+
+    const fetchData = useCallback(async () => {
+        setLoading(true);
+        try {
+            const qs = queryParams ? mapQueryParams(queryParams) : "";
+            const res = await fetch(`${BASE_URL}${endpoint}${qs}`, {
+                method,
+                headers: {
+                    "Content-Type": "application/json",
+                    Accept: "application/json",
+                    ...(jwtToken && { Authorization: `Bearer ${jwtToken}` }),
+                },
+                body: body ? JSON.stringify(body) : undefined,
+            });
+            if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+            const json: T = await res.json();
+            setData(json);
+            setError(null);
+        } catch (err) {
+            const e = err instanceof Error ? err : new Error("Unknown error");
+            setError(e);
+        } finally {
+            setLoading(false);
+        }
+    }, [method, endpoint, queryParams, body, jwtToken]);
+
+    useEffect(() => {
+        fetchData();
+    }, [fetchData]);
+
+    return { data, loading, error, refetch: fetchData };
 };

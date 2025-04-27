@@ -23,8 +23,11 @@ export default function Page() {
     if (error) { console.log("error", error); }
 
     return (
-        <div className="flex border">
-            <ScrollArea className="h-screen">
+        // <div className="flex border">
+        <div className="flex flex-1 border">
+
+            {/* <ScrollArea className="h-screen"> */}
+            <ScrollArea className="flex flex-1">
 
                 <div className="ml-auto flex gap-2 p-4">
                     <Button size="sm" className="h-8 gap-1" asChild>
@@ -86,16 +89,17 @@ export default function Page() {
                 </div>
             </ScrollArea>
 
+            {/* <ScrollArea className="flex flex-1"> */}
             {/* Message Display */}
             <div className="border flex-1">
                 {
                     selectedThreadId
                         ? <ThreadDisplay threadId={selectedThreadId} />
-                        : <div className="flex items-center justify-center text-center text-sm">
-                            No Thread Selected
-                        </div>
+                        : <div className="text-center text-sm py-40">No Thread Selected</div>
                 }
             </div>
+            {/* </ScrollArea> */}
+
         </div>
     );
 }

@@ -1,4 +1,4 @@
-'use-client';
+'use client';
 
 import { format } from "date-fns";
 import { Trash2 } from "lucide-react";
@@ -16,117 +16,67 @@ import { replyToThreadMessage } from "@/utils/endpoints/threadsEndpoints";
 
 export function ThreadDisplay({ threadId }: { threadId: number; }) {
     const [reply, setReply] = useState("");
-    const { data, error, loading } = useFetch<Message[]>("GET", `/threads/${threadId}/messages`);
-    if (error) { console.log(error); }
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
-    async function handleSendMessage(message: string, threadId: number) {
+    const { data, error, loading, refetch } = useFetch<Message[]>("GET", `/threads/${threadId}/messages`);
+    if (error) console.log(error);
+
+    async function handleSendMessage() {
+        if (!reply.trim()) return; // Don't submit empty replies
         try {
-            if (!message) return;
-            await replyToThreadMessage(threadId, { text: message });
+            setIsSubmitting(true);
+            await replyToThreadMessage(threadId, { text: reply });
+            setReply("");
+            refetch?.();
         } catch (err) {
             console.error(err);
+            alert(err);
+        } finally {
+            setIsSubmitting(false);
         }
     }
 
     return (
         <div className="flex h-full flex-col">
+            {/* Toolbar */}
             <div className="flex items-center p-2">
-                <div className="flex items-center gap-2">
-                    <TooltipProvider>
-
-                        {/* <Tooltip>
-                            <TooltipTrigger asChild>
-                                <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    disabled={false}
-                                >
-                                    <Archive className="h-4 w-4" />
-                                    <span className="sr-only">Archive</span>
-                                </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>Archive</TooltipContent>
-                        </Tooltip> */}
-
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    disabled={false}
-                                    onClick={() => console.log("Click")}
-                                >
-                                    <Trash2 className="h-4 w-4" />
-                                    <span className="sr-only">Move to trash</span>
-                                </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>Move to trash</TooltipContent>
-                        </Tooltip>
-                    </TooltipProvider>
-                    {/* <Separator orientation="vertical" className="mx-1 h-6" /> */}
-                </div>
-
-                {/* <div className="ml-auto flex items-center gap-2">
-                     <TooltipProvider>
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    // disabled={!email}
-                                    disabled={false}
-                                >
-                                    <Reply className="h-4 w-4" />
-                                    <span className="sr-only">Reply</span>
-                                </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>Reply</TooltipContent>
-                        </Tooltip>
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    // disabled={!email}
-                                    disabled={false}
-                                >
-                                    <Forward className="h-4 w-4" />
-                                    <span className="sr-only">Forward</span>
-                                </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>Forward</TooltipContent>
-                        </Tooltip>
-                    </TooltipProvider> 
-                </div> */}
-
-                {/* <Separator orientation="vertical" className="mx-2 h-6" /> */}
-
+                <TooltipProvider>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => console.log("Move to trash clicked")}
+                            >
+                                <Trash2 className="h-4 w-4" />
+                                <span className="sr-only">Move to trash</span>
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>Move to trash</TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
             </div>
             <Separator />
 
             {loading && <LoadingComponent isAdminOnly={false} />}
 
+            {/* Display messages */}
             {data?.map(x => (
-                // <div key={x.id} className="flex-1 flex-col border">
                 <div key={x.id} className="w-full flex-col border">
                     <div className="flex items-start p-4">
                         <div className="flex items-start gap-4 text-sm">
                             <Avatar>
-                                <AvatarImage alt={x.name + x.surname} />
+                                <AvatarImage alt={`${x.name} ${x.surname}`} />
                                 <AvatarFallback>
                                     {x.name[0].toUpperCase() + x.surname[0].toUpperCase()}
                                 </AvatarFallback>
                             </Avatar>
                             <div className="grid gap-1">
                                 <div className="font-semibold">
-                                    {capitalizeWord(x.name) + " " + capitalizeWord(x.surname)}
+                                    {capitalizeWord(x.name)} {capitalizeWord(x.surname)}
                                 </div>
-                                <div className="line-clamp-1 text-xs">
-                                    {x.subject}
-                                </div>
-                                <div className="line-clamp-1 text-xs">
-                                    {x.email}
-                                </div>
+                                <div className="line-clamp-1 text-xs">{x.subject}</div>
+                                <div className="line-clamp-1 text-xs">{x.email}</div>
                             </div>
                         </div>
                         {x.date && (
@@ -136,37 +86,29 @@ export function ThreadDisplay({ threadId }: { threadId: number; }) {
                         )}
                     </div>
                     <Separator />
-                    {/* <div className="flex-1 whitespace-pre-wrap p-4 text-sm"> */}
-                    <div className="whitespace-pre-wrap p-4 text-sm">
-                        {x.text}
-                    </div>
+                    <div className="whitespace-pre-wrap p-4 text-sm">{x.text}</div>
                 </div>
             ))}
 
+            {/* Reply form pinned to bottom */}
             <Separator className="mt-auto" />
             <div className="p-4">
-                <form>
+                <form onSubmit={(e) => { e.preventDefault(); handleSendMessage(); }}>
                     <div className="grid gap-4">
                         <Textarea
                             className="p-4"
-                            // placeholder={`Reply to ${x.name}...`}
-                            placeholder={`Reply...`}
-                            onChange={(e) => {
-                                if (e.target.value) {
-                                    setReply(e.target.value);
-                                }
-                            }}
+                            placeholder="Reply..."
+                            value={reply}
+                            onChange={(e) => setReply(e.target.value)}
                         />
                         <div className="flex items-center">
                             <Button
-                                onClick={(e) => {
-                                    e.preventDefault();
-                                    handleSendMessage(reply, threadId);
-                                }}
+                                type="submit"
                                 size="sm"
                                 className="ml-auto"
+                                disabled={isSubmitting || !reply.trim()}
                             >
-                                Send
+                                {isSubmitting ? "Sending..." : "Send"}
                             </Button>
                         </div>
                     </div>
