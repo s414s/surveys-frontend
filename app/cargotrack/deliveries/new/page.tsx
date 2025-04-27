@@ -113,8 +113,6 @@ export default function RouteForm() {
     }
 
     try {
-      // const request = { originId, destinationId, date: values.date, };
-      // console.log("Creating freight:", request);
       await createFreight(originId, destinationId, values.date);
       setIsSuccess(true);
       form.reset();
@@ -307,7 +305,10 @@ export default function RouteForm() {
               )}
             />
 
-            {isSuccess && <div className="bg-green-100 text-green-800 p-3 rounded-md">Route created successfully!</div>}
+            {isSuccess &&
+              <div className="bg-green-100 text-green-800 p-3 rounded-md">
+                Route created successfully!
+              </div>}
 
             <Button type="submit" className="w-full" disabled={isSubmitting || isSuccess}>
               {isSubmitting ? "Creating..." : "Create Route"}

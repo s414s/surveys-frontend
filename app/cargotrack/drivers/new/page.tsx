@@ -12,6 +12,7 @@ import { createNewDriver } from "@/utils/endpoints/userEndpoints";
 
 export default function UserCreationForm() {
   const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     surname: "",
@@ -26,6 +27,7 @@ export default function UserCreationForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
 
     try {
       const request: CreateNewUserRequest = {
@@ -37,9 +39,12 @@ export default function UserCreationForm() {
 
       const result = await createNewDriver(request);
       alert(`new user created successfully. Random password is: ${result.password}`);
+
       router.push("/cargotrack/drivers");
     } catch (error) {
       console.error(error);
+    } finally {
+      setIsSubmitting(false);
     }
 
     setFormData({ name: "", surname: "", dateOfBirth: "", email: "" });
@@ -105,8 +110,8 @@ export default function UserCreationForm() {
         </CardContent>
 
         <CardFooter>
-          <Button type="submit" className="w-full">
-            Create Driver
+          <Button type="submit" className="w-full" disabled={isSubmitting}>
+            {isSubmitting ? "Creating..." : "Create Driver"}
           </Button>
         </CardFooter>
       </form>

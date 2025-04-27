@@ -98,7 +98,9 @@ export function ThreadDisplay({ threadId }: { threadId: number; }) {
                         </Tooltip>
                     </TooltipProvider> 
                 </div> */}
+
                 {/* <Separator orientation="vertical" className="mx-2 h-6" /> */}
+
             </div>
             <Separator />
 
