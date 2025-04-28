@@ -34,3 +34,12 @@ export const markThreadAsRead = async (threadId: number, request: ReplyToThreadR
     }
 };
 
+export const deleteThread = async (threadId: number): Promise<boolean> => {
+    try {
+        const endpoint = `/threads/${threadId}`;
+        return await fetchDataGeneric<boolean>("DELETE", endpoint, null, null, useAppStore.getState().jwtToken);
+    } catch (error) {
+        console.error("Error deleteing thread:", error);
+        throw new Error("Failed to delete thread");
+    }
+};

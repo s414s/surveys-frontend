@@ -31,7 +31,7 @@ export default function LoginForm() {
             }
 
             store.setUser(response.token);
-            router.push(store.isAdmin() ? "cargotrack/dashboard" : "cargotrack/routes");
+            router.push(store.isAdmin() ? "cargotrack/dashboard" : "cargotrack/messages");
         } catch (e) {
             setError("user or password incorrect");
             console.error(e);

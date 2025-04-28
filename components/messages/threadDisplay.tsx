@@ -12,17 +12,24 @@ import { useState } from "react";
 import { useFetch } from "@/hooks/useFetch";
 import LoadingComponent from "../common/loader";
 import { capitalizeWord } from "@/utils/utils";
-import { replyToThreadMessage } from "@/utils/endpoints/threadsEndpoints";
+import { deleteThread, replyToThreadMessage } from "@/utils/endpoints/threadsEndpoints";
 
-export function ThreadDisplay({ threadId }: { threadId: number; }) {
+export function ThreadDisplay(
+    {
+        threadId,
+        canUserDeleteThread
+    }: {
+        threadId: number;
+        canUserDeleteThread: boolean;
+    }) {
     const [reply, setReply] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
-
     const { data, error, loading, refetch } = useFetch<Message[]>("GET", `/threads/${threadId}/messages`);
     if (error) console.log(error);
 
     async function handleSendMessage() {
-        if (!reply.trim()) return; // Don't submit empty replies
+        if (!reply.trim()) return;
+
         try {
             setIsSubmitting(true);
             await replyToThreadMessage(threadId, { text: reply });
@@ -36,25 +43,46 @@ export function ThreadDisplay({ threadId }: { threadId: number; }) {
         }
     }
 
+    async function handleDeleteThread() {
+        try {
+            setIsSubmitting(true);
+            alert("are you shure you want to delete this thread?");
+            await deleteThread(threadId);
+            window.location.reload();
+        } catch (err) {
+            console.error(err);
+            alert(err);
+        } finally {
+            setIsSubmitting(false);
+        }
+    }
+
     return (
         <div className="flex h-full flex-col">
             {/* Toolbar */}
             <div className="flex items-center p-2">
-                <TooltipProvider>
-                    <Tooltip>
-                        <TooltipTrigger asChild>
-                            <Button
-                                variant="ghost"
-                                size="icon"
-                                onClick={() => console.log("Move to trash clicked")}
-                            >
-                                <Trash2 className="h-4 w-4" />
-                                <span className="sr-only">Move to trash</span>
-                            </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>Move to trash</TooltipContent>
-                    </Tooltip>
-                </TooltipProvider>
+                {
+                    canUserDeleteThread && (
+                        <TooltipProvider>
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            handleDeleteThread();
+                                        }}
+                                    >
+                                        <Trash2 className="h-4 w-4" />
+                                        <span className="sr-only">Move to trash</span>
+                                    </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>Move to trash</TooltipContent>
+                            </Tooltip>
+                        </TooltipProvider>
+                    )
+                }
             </div>
             <Separator />
 
@@ -93,7 +121,10 @@ export function ThreadDisplay({ threadId }: { threadId: number; }) {
             {/* Reply form pinned to bottom */}
             <Separator className="mt-auto" />
             <div className="p-4">
-                <form onSubmit={(e) => { e.preventDefault(); handleSendMessage(); }}>
+                <form onSubmit={(e) => {
+                    e.preventDefault();
+                    handleSendMessage();
+                }}>
                     <div className="grid gap-4">
                         <Textarea
                             className="p-4"

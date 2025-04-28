@@ -12,23 +12,27 @@ import { PlusCircle } from "lucide-react";
 import { capitalizeWord } from "@/utils/utils";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-// import { useRouter } from "next/navigation";
+import { useAppStore } from "@/store/userStore";
 
 export default function Page() {
-    // const router = useRouter();
     const [selectedThreadId, setSelectedThreadId] = useState<number | null>(null);
     const { data, error, loading } = useFetch<PagedResult<Thread>>("GET", "/threads");
+    const store = useAppStore();
+    const activeUserId = store.getUserInfo()?.id ?? -1;
+
+    if (selectedThreadId && data?.data) {
+        const selectedThread = data.data.find(x => x.id == selectedThreadId);
+        if (selectedThread) {
+            selectedThread.isRead = true;
+        }
+    }
 
     if (loading) return <LoadingComponent isAdminOnly={false} />;
     if (error) { console.log("error", error); }
 
     return (
-        // <div className="flex border">
         <div className="flex flex-1 border">
-
-            {/* <ScrollArea className="h-screen"> */}
             <ScrollArea className="flex flex-1">
-
                 <div className="ml-auto flex gap-2 p-4">
                     <Button size="sm" className="h-8 gap-1" asChild>
                         <Link href={"/cargotrack/messages/new"}>
@@ -89,17 +93,17 @@ export default function Page() {
                 </div>
             </ScrollArea>
 
-            {/* <ScrollArea className="flex flex-1"> */}
             {/* Message Display */}
             <div className="border flex-1">
                 {
                     selectedThreadId
-                        ? <ThreadDisplay threadId={selectedThreadId} />
+                        ? <ThreadDisplay
+                            canUserDeleteThread={Number(activeUserId) === data?.data.find(x => x.id === selectedThreadId)?.authorId}
+                            threadId={selectedThreadId}
+                        />
                         : <div className="text-center text-sm py-40">No Thread Selected</div>
                 }
             </div>
-            {/* </ScrollArea> */}
-
         </div>
     );
 }

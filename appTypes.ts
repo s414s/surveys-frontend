@@ -24,6 +24,7 @@ export interface Thread {
     name: string;
     surname: string;
     date: string; // Date
+    authorId: number;
 };
 
 export interface TruckIcon {
