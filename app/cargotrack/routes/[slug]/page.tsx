@@ -10,8 +10,8 @@ import { ArrowLeft, CalendarClock, MapPin, Navigation, Package, Phone, Timer, Tr
 import Link from "next/link";
 
 export default function Page({ params }: PageProps) {
-    const truckId = params.slug;
-    console.log(truckId);
+    const freightId = params.slug;
+    console.log(freightId);
 
     const [activeTab, setActiveTab] = useState("overview");
 

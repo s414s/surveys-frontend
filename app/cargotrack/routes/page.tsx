@@ -1,10 +1,14 @@
 "use client";
 
+import { Freight, FreightStatus, PagedResult } from "@/appTypes";
+import LoadingComponent from "@/components/common/loader";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
-// import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useFetch } from "@/hooks/useFetch";
 import { CalendarClock, MapPin, Navigation, Route, Timer } from "lucide-react";
+import { useRouter } from "next/navigation";
+// import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export interface Route {
     id: string;
@@ -17,7 +21,14 @@ export interface Route {
 }
 
 export default function Page() {
-    // TODO - coger las rutas
+    const freightStatus: FreightStatus = FreightStatus.Scheduled;
+    const page = 1;
+    const url = `/freights?status=${freightStatus}&pageIndex=${page}&pageSize=100`;
+
+    const { data, error, loading } = useFetch<PagedResult<Freight>>("GET", url);
+    if (error) return <div>{error.message}</div>;
+
+    console.log(data);
 
     const routes: Route[] = [
         {
@@ -52,7 +63,7 @@ export default function Page() {
     return (
         <div className="flex w-full flex-col space-y-6">
             <div className="flex items-center justify-between">
-                <h2 className="text-3xl font-bold tracking-tight">Next Routes</h2>
+                <h2 className="text-3xl font-bold tracking-tight">Routes</h2>
                 {/* <div className="flex gap-2">
                     <Button variant="outline" size="sm">
                         <Route className="mr-2 h-4 w-4" />
@@ -64,6 +75,8 @@ export default function Page() {
                     </Button>
                 </div> */}
             </div>
+
+            {loading && <LoadingComponent isAdminOnly={false} />}
 
             {routes.map((route) => (
                 <RouteCard key={route.id} route={route} />
@@ -99,6 +112,8 @@ export default function Page() {
 }
 
 function RouteCard({ route }: { route: Route; }) {
+    const router = useRouter();
+
     return (
         <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
@@ -141,10 +156,10 @@ function RouteCard({ route }: { route: Route; }) {
                 </div>
             </CardContent>
             <CardFooter className="flex justify-between pt-2">
-                <Button variant="outline" size="sm">
+                <Button variant="outline" size="sm" onClick={() => router.push(`routes/${route.id}`)}>
                     View Details
                 </Button>
-                <Button size="sm">Start Route</Button>
+                {/* <Button size="sm">Start Route</Button> */}
             </CardFooter>
         </Card>
     );
