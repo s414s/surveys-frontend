@@ -2,94 +2,41 @@
 
 import { PageProps } from "@/.next/types/app/layout";
 import { useState } from "react";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+// import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowLeft, CalendarClock, MapPin, Navigation, Package, Phone, Timer, Truck, User } from "lucide-react";
-import Link from "next/link";
+import { MapPin, Package, User } from "lucide-react";
+import { Parcel } from "@/appTypes";
+import { useFetch } from "@/hooks/useFetch";
+import LoadingComponent from "@/components/common/loader";
 
 export default function Page({ params }: PageProps) {
     const freightId = params.slug;
-    console.log(freightId);
+    const [activeTab, setActiveTab] = useState("parcels");
 
-    const [activeTab, setActiveTab] = useState("overview");
-
-    // Mock data for the specific route
-    const route = {
-        id: "RT-1234",
-        pickup: "123 Main St, Springfield",
-        destination: "456 Oak Ave, Shelbyville",
-        scheduledTime: "2:30 PM",
-        estimatedDuration: "45 min",
-        distance: "12.5 miles",
-        status: "upcoming",
-        driver: {
-            name: "John Doe",
-            phone: "(555) 123-4567",
-            vehicle: "Toyota Prius",
-            licensePlate: "ABC-1234"
-        },
-        parcels: [
-            {
-                id: "PCL-1001",
-                recipient: "Sarah Johnson",
-                address: "456 Oak Ave, Shelbyville, Apt 2B",
-                phone: "(555) 234-5678",
-                size: "Medium",
-                weight: "3.2 lbs",
-                priority: "Standard",
-                deliveryNotes: "Leave at front door if no answer",
-                status: "In transit"
-            },
-            {
-                id: "PCL-1002",
-                recipient: "Mark Wilson",
-                address: "456 Oak Ave, Shelbyville, Apt 4C",
-                phone: "(555) 345-6789",
-                size: "Small",
-                weight: "1.5 lbs",
-                priority: "Express",
-                deliveryNotes: "Signature required",
-                status: "In transit"
-            },
-            {
-                id: "PCL-1003",
-                recipient: "Emma Davis",
-                address: "458 Oak Ave, Shelbyville",
-                phone: "(555) 456-7890",
-                size: "Large",
-                weight: "8.7 lbs",
-                priority: "Standard",
-                deliveryNotes: "Call upon arrival",
-                status: "In transit"
-            }
-        ],
-        routeNotes: "Multiple deliveries at Oak Ave apartment complex. Access code for building: 4321#"
-    };
+    const url = `/freights/${freightId}/parcels`;
+    const { data, error, loading } = useFetch<Parcel[]>("GET", url);
+    if (error) console.log(error);
+    console.log("DATA", data);
 
     return (
         <div className="flex w-full flex-col space-y-6">
             <div className="flex items-center space-x-2">
-                <Link href="/">
-                    <Button variant="outline" size="icon">
-                        <ArrowLeft className="h-4 w-4" />
-                    </Button>
-                </Link>
-                <h2 className="text-3xl font-bold tracking-tight">Route {route.id}</h2>
-                <Badge variant="outline" className="bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-400">
+                <h2 className="text-3xl font-bold tracking-tight">Freight {freightId}</h2>
+                {/* <Badge variant="outline" className="bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-400">
                     {route.status}
-                </Badge>
+                </Badge> */}
             </div>
 
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
                 <TabsList className="mb-4">
-                    <TabsTrigger value="overview">Overview</TabsTrigger>
-                    <TabsTrigger value="parcels">Parcels ({route.parcels.length})</TabsTrigger>
+                    <TabsTrigger value="parcels">Parcels ({data?.length ?? 0})</TabsTrigger>
                     <TabsTrigger value="map">Map</TabsTrigger>
                 </TabsList>
 
-                <TabsContent value="overview" className="space-y-6">
+                {loading && <LoadingComponent isAdminOnly={false} />}
+
+                {/* <TabsContent value="overview" className="space-y-6">
                     <Card>
                         <CardHeader className="pb-2">
                             <h3 className="text-lg font-semibold">Route Information</h3>
@@ -125,10 +72,10 @@ export default function Page({ params }: PageProps) {
                                     </div>
                                 </div>
                             </div>
-                            {/* <div className="pt-2">
+                             <div className="pt-2">
                                 <h4 className="mb-2 text-sm font-semibold">Route Notes</h4>
                                 <p className="text-sm">{route.routeNotes}</p>
-                            </div> */}
+                            </div> 
                         </CardContent>
                     </Card>
 
@@ -169,9 +116,13 @@ export default function Page({ params }: PageProps) {
                             </div>
                         </CardContent>
                     </Card>
-                </TabsContent>
+                </TabsContent> */}
 
                 <TabsContent value="parcels" className="space-y-4">
+                    {data?.map((parcel) => <ParcelCard key={parcel.id} parcel={parcel} />)}
+                </TabsContent>
+
+                {/* <TabsContent value="parcels" className="space-y-4">
                     {route.parcels.map((parcel) => (
                         <Card key={parcel.id}>
                             <CardHeader className="flex flex-row items-center justify-between pb-2">
@@ -220,22 +171,78 @@ export default function Page({ params }: PageProps) {
                             </CardContent>
                         </Card>
                     ))}
-                </TabsContent>
+                </TabsContent> */}
 
-                <TabsContent value="map">
+                {/* <TabsContent value="map">
                     <Card>
                         <CardContent className="p-6">
                             <div className="flex h-80 items-center justify-center rounded-md border border-dashed">
                                 <div className="text-center">
                                     <MapPin className="mx-auto h-8 w-8 text-muted-foreground" />
                                     <p className="mt-2 text-muted-foreground">Map view would be displayed here</p>
-                                    <p className="text-sm text-muted-foreground">Showing route from {route.pickup} to {route.destination}</p>
+                                    <p className="text-sm text-muted-foreground">Showing route from {route.origin} to {route.destination}</p>
                                 </div>
                             </div>
                         </CardContent>
                     </Card>
-                </TabsContent>
+                </TabsContent> */}
+
             </Tabs>
         </div>
+    );
+}
+
+function ParcelCard({ parcel }: { parcel: Parcel; }) {
+    return (
+        <Card key={parcel.id}>
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <div className="flex items-center space-x-2">
+                    <h3 className="font-semibold">ID - {parcel.id}</h3>
+                </div>
+                {/* <Badge variant="outline">
+                    In transit
+                </Badge> */}
+            </CardHeader>
+            <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                    <div className="flex items-start space-x-3">
+                        <User className="mt-0.5 h-4 w-4 text-muted-foreground" />
+                        <div className="space-y-1">
+                            <p className="text-xs font-medium text-muted-foreground">Recipient</p>
+                            <p className="text-sm">{parcel.contactEmail}</p>
+                        </div>
+                    </div>
+
+                    {/* <div className="flex items-start space-x-3">
+                        <Phone className="mt-0.5 h-4 w-4 text-muted-foreground" />
+                        <div className="space-y-1">
+                            <p className="text-xs font-medium text-muted-foreground">Contact</p>
+                            <p className="text-sm">{parcel.phone}</p>
+                        </div>
+                    </div> */}
+
+                    <div className="flex items-start space-x-3">
+                        <MapPin className="mt-0.5 h-4 w-4 text-muted-foreground" />
+                        <div className="space-y-1">
+                            <p className="text-xs font-medium text-muted-foreground">Address</p>
+                            <p className="text-sm">{parcel.destination}</p>
+                        </div>
+                    </div>
+                    <div className="flex items-start space-x-3">
+                        <Package className="mt-0.5 h-4 w-4 text-muted-foreground" />
+                        <div className="space-y-1">
+                            <p className="text-xs font-medium text-muted-foreground">Package Details</p>
+                            <p className="text-sm">{parcel.weight} Kg</p>
+                        </div>
+                    </div>
+                </div>
+                {/* {parcel.deliveryNotes && (
+                    <div>
+                        <p className="text-xs font-medium text-muted-foreground">Delivery Notes</p>
+                        <p className="text-sm">{parcel.deliveryNotes}</p>
+                    </div>
+                )} */}
+            </CardContent>
+        </Card>
     );
 }

@@ -12,7 +12,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Card, CardContent } from "@/components/ui/card";
-import { AddParcelToFreightRequest, City, Freight } from "@/appTypes";
+import { AddParcelToFreightRequest, City, Freight, FreightStatus } from "@/appTypes";
 import { Skeleton } from "@/components/ui/skeleton";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { formatDate } from "date-fns";
@@ -113,7 +113,7 @@ export default function DeliveryForm() {
           if (!originId || !destinationId)
             return;
 
-          const responseData = await getFreights(originId, destinationId);
+          const responseData = await getFreights(originId, destinationId, FreightStatus.Scheduled);
 
           const freightsWithDates = responseData.data.map((freight) => ({
             ...freight,

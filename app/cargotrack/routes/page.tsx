@@ -6,59 +6,17 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { useFetch } from "@/hooks/useFetch";
-import { CalendarClock, MapPin, Navigation, Route, Timer } from "lucide-react";
+import { useAppStore } from "@/store/userStore";
+import { differenceInHours } from "date-fns";
+import { CalendarClock, MapPin, Navigation, Timer } from "lucide-react";
 import { useRouter } from "next/navigation";
-// import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-
-export interface Route {
-    id: string;
-    pickup: string;
-    destination: string;
-    scheduledTime: string;
-    estimatedDuration: string;
-    distance: string;
-    status: "upcoming" | "inProgress" | "completed" | "cancelled";
-}
 
 export default function Page() {
-    const freightStatus: FreightStatus = FreightStatus.Scheduled;
-    const page = 1;
-    const url = `/freights?status=${freightStatus}&pageIndex=${page}&pageSize=100`;
-
+    const store = useAppStore();
+    const userId = store.getUserInfo()?.id ?? null;
+    const url = `/freights?status=${FreightStatus.Scheduled}&driverId=${userId}&pageIndex=1&pageSize=100`;
     const { data, error, loading } = useFetch<PagedResult<Freight>>("GET", url);
     if (error) return <div>{error.message}</div>;
-
-    console.log(data);
-
-    const routes: Route[] = [
-        {
-            id: "RT-1234",
-            pickup: "123 Main St, Springfield",
-            destination: "456 Oak Ave, Shelbyville",
-            scheduledTime: "2:30 PM",
-            estimatedDuration: "45 min",
-            distance: "12.5 miles",
-            status: "upcoming",
-        },
-        {
-            id: "RT-5678",
-            pickup: "789 Pine Rd, Capital City",
-            destination: "321 Maple Dr, Cypress Creek",
-            scheduledTime: "4:15 PM",
-            estimatedDuration: "30 min",
-            distance: "8.2 miles",
-            status: "upcoming",
-        },
-        {
-            id: "RT-9012",
-            pickup: "555 Cedar Ln, North Haverbrook",
-            destination: "777 Elm St, Ogdenville",
-            scheduledTime: "5:45 PM",
-            estimatedDuration: "55 min",
-            distance: "15.8 miles",
-            status: "upcoming",
-        },
-    ];
 
     return (
         <div className="flex w-full flex-col space-y-6">
@@ -78,10 +36,7 @@ export default function Page() {
 
             {loading && <LoadingComponent isAdminOnly={false} />}
 
-            {routes.map((route) => (
-                <RouteCard key={route.id} route={route} />
-            ))}
-
+            {data?.data.map((route) => <RouteCard key={route.id} route={route} />)}
 
 
             {/* <Tabs defaultValue="upcoming" className="w-full">
@@ -111,23 +66,24 @@ export default function Page() {
     );
 }
 
-function RouteCard({ route }: { route: Route; }) {
+function RouteCard({ route }: { route: Freight; }) {
     const router = useRouter();
 
     return (
         <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <div className="flex items-center space-x-2">
-                    <h3 className="font-semibold">{route.id}</h3>
+                    <h3 className="font-semibold">ID - {route.id}</h3>
                     <Badge variant="outline" className="bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-400">
-                        {route.status}
+                        {/* {route.status} */}
+                        upcoming
                     </Badge>
                 </div>
                 <div className="flex items-center space-x-1 text-sm text-muted-foreground">
                     <Timer className="h-4 w-4" />
-                    <span>{route.estimatedDuration}</span>
+                    <span>{differenceInHours(new Date(route.eta), new Date(route.etd))} Hours</span>
                     <span className="mx-1">•</span>
-                    <span>{route.distance}</span>
+                    <span>{route.totalDistance} Km</span>
                 </div>
             </CardHeader>
             <CardContent className="pb-2">
@@ -136,7 +92,7 @@ function RouteCard({ route }: { route: Route; }) {
                         <MapPin className="mt-0.5 h-4 w-4 text-muted-foreground" />
                         <div className="space-y-1">
                             <p className="text-xs font-medium text-muted-foreground">Pickup</p>
-                            <p className="text-sm">{route.pickup}</p>
+                            <p className="text-sm">{route.origin}</p>
                         </div>
                     </div>
                     <div className="flex items-start space-x-3">
@@ -150,7 +106,7 @@ function RouteCard({ route }: { route: Route; }) {
                         <CalendarClock className="mt-0.5 h-4 w-4 text-muted-foreground" />
                         <div className="space-y-1">
                             <p className="text-xs font-medium text-muted-foreground">Scheduled Time</p>
-                            <p className="text-sm">{route.scheduledTime}</p>
+                            <p className="text-sm">{new Date(route.eta).toISOString()}</p>
                         </div>
                     </div>
                 </div>
