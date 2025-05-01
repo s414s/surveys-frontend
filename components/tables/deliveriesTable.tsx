@@ -15,6 +15,7 @@ import Link from "next/link";
 export default function DeliveriesTable({ freightStatus, page }: { freightStatus: FreightStatus | null; page: number; }) {
     const pageSize = 10;
     const url = `/freights?status=${freightStatus}&pageIndex=${page}&pageSize=${pageSize}`;
+
     const { data, error, loading } = useFetch<PagedResult<Freight>>("GET", url);
     if (error) return <div>{error.message}</div>;
 

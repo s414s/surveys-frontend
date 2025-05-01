@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { useFetch } from "@/hooks/useFetch";
 import { useAppStore } from "@/store/userStore";
-import { differenceInHours } from "date-fns";
+import { differenceInHours, format } from "date-fns";
 import { CalendarClock, MapPin, Navigation, Timer } from "lucide-react";
 import { useRouter } from "next/navigation";
 
@@ -75,7 +75,6 @@ function RouteCard({ route }: { route: Freight; }) {
                 <div className="flex items-center space-x-2">
                     <h3 className="font-semibold">ID - {route.id}</h3>
                     <Badge variant="outline" className="bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-400">
-                        {/* {route.status} */}
                         upcoming
                     </Badge>
                 </div>
@@ -106,7 +105,8 @@ function RouteCard({ route }: { route: Freight; }) {
                         <CalendarClock className="mt-0.5 h-4 w-4 text-muted-foreground" />
                         <div className="space-y-1">
                             <p className="text-xs font-medium text-muted-foreground">Scheduled Time</p>
-                            <p className="text-sm">{new Date(route.eta).toISOString()}</p>
+                            {/* <p className="text-sm">{new Date(route.eta).toISOString()}</p> */}
+                            <p className="text-sm">{format(new Date(route.eta), 'dd-MM-yyyy HH:mm')}</p>
                         </div>
                     </div>
                 </div>

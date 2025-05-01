@@ -4,19 +4,21 @@ import { PagedResult, Thread } from "@/appTypes";
 import { ThreadDisplay } from "@/components/messages/threadDisplay";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
-import { formatDistanceToNow } from "date-fns";
 import { useFetch } from "@/hooks/useFetch";
 import LoadingComponent from "@/components/common/loader";
 import { useState } from "react";
-import { PlusCircle } from "lucide-react";
-import { capitalizeWord } from "@/utils/utils";
+import { ChevronLeft, ChevronRight, PlusCircle } from "lucide-react";
+import { capitalizeWord, prettyDate } from "@/utils/utils";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useAppStore } from "@/store/userStore";
 
 export default function Page() {
     const [selectedThreadId, setSelectedThreadId] = useState<number | null>(null);
-    const { data, error, loading } = useFetch<PagedResult<Thread>>("GET", "/threads");
+    const [pageIndex, setPageIndex] = useState(1);
+    const PAGE_SIZE = 10;
+    const { data, error, loading } = useFetch<PagedResult<Thread>>("GET", `/threads?pageIndex=${pageIndex}&pageSize=${PAGE_SIZE}`);
+
     const store = useAppStore();
     const activeUserId = store.getUserInfo()?.id ?? -1;
 
@@ -78,9 +80,7 @@ export default function Page() {
                                                 : "text-muted-foreground"
                                         )}
                                     >
-                                        {formatDistanceToNow(new Date(item.date), {
-                                            addSuffix: true,
-                                        })}
+                                        {prettyDate(item.date)}
                                     </div>
                                 </div>
                                 <div className="text-xs font-medium">{item.subject}</div>
@@ -90,6 +90,27 @@ export default function Page() {
                             </div>
                         </button>
                     ))}
+                </div>
+
+                {/* Pagination Controls */}
+                <div className="flex justify-between items-center p-4">
+                    <Button
+                        size="sm"
+                        onClick={() => setPageIndex(prev => Math.max(prev - 1, 1))}
+                        disabled={!data?.hasPreviousPage}
+                    >
+                        <ChevronLeft />
+                    </Button>
+                    <span className="text-sm text-muted-foreground">
+                        Page {data?.pageIndex} of {data?.totalPages}
+                    </span>
+                    <Button
+                        size="sm"
+                        onClick={() => setPageIndex(prev => prev + 1)}
+                        disabled={!data?.hasNextPage}
+                    >
+                        <ChevronRight />
+                    </Button>
                 </div>
             </ScrollArea>
 

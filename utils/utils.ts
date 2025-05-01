@@ -1,3 +1,5 @@
+import { differenceInCalendarDays, isToday, isYesterday } from "date-fns";
+
 export function rangeArray(min: number, max: number): number[] {
     if (min > max) {
         throw new Error("Start value must be less than or equal to end value");
@@ -44,3 +46,19 @@ export const isDateInFuture = (dateString: string): boolean => {
     const date = new Date(dateString);
     return date > today;
 };
+
+export function prettyDate(dateString: string) {
+    const date = new Date(dateString);
+    const now = new Date();
+
+    if (isToday(date)) {
+        return 'today';
+    }
+
+    if (isYesterday(date)) {
+        return 'yesterday';
+    }
+
+    const days = differenceInCalendarDays(now, date);
+    return `${days} days ago`;
+}

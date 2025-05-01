@@ -27,15 +27,6 @@ export interface Thread {
     authorId: number;
 };
 
-export interface TruckIcon {
-    id: number,
-    name: string,
-    plate: string,
-    speed: number,
-    lon: number,
-    lat: number,
-};
-
 export interface Message {
     id: number;
     name: string;

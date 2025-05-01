@@ -13,6 +13,6 @@ export default function StatusBadge({ status }: { status: FreightStatus; }) {
             return <Badge variant="outline">Completed</Badge>;
 
         default:
-            return <Badge variant="outline">Archived</Badge>;
+            return <Badge variant="outline">Canceled</Badge>;
     }
 }

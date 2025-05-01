@@ -9,20 +9,20 @@ import XYZ from "ol/source/XYZ";
 import { fromLonLat, transform } from "ol/proj";
 import Point from "ol/geom/Point";
 import { Style, Circle, Fill, Stroke } from 'ol/style';
-import Feature from 'ol/Feature';
+import Feature, { FeatureLike } from 'ol/Feature';
 import { Vector as VectorLayer } from 'ol/layer';
 import { Vector as VectorSource } from 'ol/source';
 import TileLayer from "ol/layer/tile";
 import KML from 'ol/format/KML';
-import { TruckIcon } from "@/appTypes";
 import LineString from "ol/geom/LineString";
+import { StyleFunction } from "ol/style/Style";
 // import OSM from "ol/source/OSM";
 
 const FreightsMap = () => {
     const mapDivRef = useRef<HTMLDivElement>(null);
 
     const [, setOlMap] = useState<Map>();
-    const [, setSelectedFeature] = useState<Feature | null>(null);
+    // const [, setSelectedFeature] = useState<Feature | null>(null);
     const intervalIdRef = useRef<number | null>(null);
     // const [, setLocation] = useState<Coordinate | null>(null);
 
@@ -33,43 +33,58 @@ const FreightsMap = () => {
             })
         });
 
-        const kmlLayers = ["/itinerarios1.kml", "/itinerarios2.kml"].map(url => new VectorLayer({
-            source: new VectorSource({
-                url,
-                format: new KML({ extractStyles: false }),
-            }),
 
-            style: new Style({
-                fill: new Fill({
-                    color: 'rgba(0, 0, 255, 0.1)',
+        // styleFunction: pick cityStyle for Points, pathStyle for LineStrings
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const styleFunction: StyleFunction = (feature: FeatureLike, resolution: number) => {
+            const geom = feature.getGeometry();
+            if (!geom) return;
+
+            switch (geom.getType()) {
+                case 'Point':
+                    return cityStyle;
+                case 'LineString':
+                    return pathStyle;
+                default:
+                    return;
+            }
+        };
+
+        const kmlLayers = ["/itinerarios1.kml", "/itinerarios2.kml"]
+            .map(url => new VectorLayer({
+                source: new VectorSource({
+                    url,
+                    format: new KML({ extractStyles: false }),
                 }),
-                stroke: new Stroke({
-                    color: '#FF00FF',
-                    width: 2,
-                }),
-            }),
+                style: styleFunction,
+            }));
 
-        }));
-
-        const allFreights = freightsData?.map(x => {
-            const feat = new Feature({
-                geometry: new Point(fromLonLat([x.lon, x.lat])),
-                name: x.name,
-            });
-
-            feat.setStyle(truckStyle);
-            feat.setId(x.id ?? 0);
-            feat.setProperties({
-                "name": x.name,
-                "plate": x.plate,
-                "speed": x.speed,
-            });
-            // feat.set("myProperty", `${point.c}-${point.name}`);
-            return feat;
+        const trucksPointsSource = new VectorSource();
+        const trucksPointsLayer = new VectorLayer({
+            source: trucksPointsSource,
+            style: truckStyle
         });
 
-        const vectorSource = new VectorSource({ features: allFreights });
-        const trucksLayer = new VectorLayer({ source: vectorSource });
+        // const allFreights = freightsData?.map(x => {
+        //     const feat = new Feature({
+        //         geometry: new Point(fromLonLat([x.lon, x.lat])),
+        //         name: x.name,
+        //     });
+
+        //     feat.setStyle(truckStyle);
+        //     feat.setId(x.id ?? 0);
+        //     feat.setProperties({
+        //         "name": x.name,
+        //         "plate": x.plate,
+        //         "speed": x.speed,
+        //     });
+        //     // feat.set("myProperty", `${point.c}-${point.name}`);
+        //     return feat;
+        // });
+
+        // const vectorSource = new VectorSource({ features: allFreights });
+        // const trucksLayer = new VectorLayer({ source: vectorSource });
+
         const myLocationLayer = new VectorLayer({ source: new VectorSource() });
 
         myLocationLayer.set('name', 'myLocationLayer');
@@ -85,9 +100,11 @@ const FreightsMap = () => {
             layers: [
                 // new TileLayer({ source: new OSM() })
                 baseLayer,
-                trucksLayer,
+                // trucksLayer,
                 myLocationLayer,
-                ...kmlLayers
+                ...kmlLayers,
+
+                trucksPointsLayer
             ],
             view: new View({
                 center: fromLonLat([-0.8891, 41.6488]), // Note: OpenLayers uses [lon, lat] order
@@ -95,43 +112,41 @@ const FreightsMap = () => {
             })
         });
 
-        map.on("singleclick", (e: MapBrowserEvent<MouseEvent>) => {
-            const toleranceInPixels = 20;
-            const vectorSource = trucksLayer.getSource();
-            if (!vectorSource) throw new Error("no points source found");
+        // map.on("singleclick", (e: MapBrowserEvent<MouseEvent>) => {
+        //     const toleranceInPixels = 20;
+        //     const vectorSource = trucksLayer.getSource();
+        //     if (!vectorSource) throw new Error("no points source found");
 
-            // Find the closest feature to the clicked coordinate.
-            const closestFeature = vectorSource.getClosestFeatureToCoordinate(e.coordinate);
-            if (!closestFeature) return;
+        //     // Find the closest feature to the clicked coordinate.
+        //     const closestFeature = vectorSource.getClosestFeatureToCoordinate(e.coordinate);
+        //     if (!closestFeature) return;
 
-            const featureCoordinate = (closestFeature.getGeometry() as Point).getCoordinates();
+        //     const featureCoordinate = (closestFeature.getGeometry() as Point).getCoordinates();
 
-            // Convert the feature's coordinate to pixel values.
-            const featurePixel = map.getPixelFromCoordinate(featureCoordinate);
+        //     // Convert the feature's coordinate to pixel values.
+        //     const featurePixel = map.getPixelFromCoordinate(featureCoordinate);
 
-            const distanceClickToFeature = Math.sqrt(
-                Math.pow(e.pixel[0] - featurePixel[0], 2) +
-                Math.pow(e.pixel[1] - featurePixel[1], 2)
-            );
+        //     const distanceClickToFeature = Math.sqrt(
+        //         Math.pow(e.pixel[0] - featurePixel[0], 2) +
+        //         Math.pow(e.pixel[1] - featurePixel[1], 2)
+        //     );
 
-            if (distanceClickToFeature <= toleranceInPixels) {
-                setSelectedFeature(closestFeature);
-                console.log("point located");
-            }
-        });
+        //     if (distanceClickToFeature <= toleranceInPixels) {
+        //         setSelectedFeature(closestFeature);
+        //     }
+        // });
 
         setOlMap(map);
 
         intervalIdRef.current = window.setInterval(() => {
-            // Loop through each KML layer
             kmlLayers.forEach(layer => {
-                // Get all features loaded from the KML
                 layer.getSource()?.getFeatures().forEach(feature => {
                     const geometry = feature.getGeometry();
                     if (geometry?.getType() === 'LineString') {
+
                         // Cast the geometry to LineString so TypeScript knows about getCoordinates()
-                        const lineString = geometry as LineString;
-                        const coordinates = lineString.getCoordinates();
+                        // const lineString = geometry as LineString;
+                        // const coordinates = lineString.getCoordinates();
 
                         // Map each coordinate from EPSG:3857 (default map projection) to EPSG:4326 (lon/lat)
                         // const lonLatCoordinates = coordinates.map(coord => transform(coord, 'EPSG:3857', 'EPSG:4326'));
@@ -139,12 +154,59 @@ const FreightsMap = () => {
                         // Now each element in lonLatCoordinates is in the format [longitude, latitude]
                         // lonLatCoordinates.forEach(([lon, lat]) => { console.log('Longitude:', lon, 'Latitude:', lat); });
 
-                        console.table(transform(coordinates[0], 'EPSG:3857', 'EPSG:4326'));
-                        console.table(transform(coordinates[1], 'EPSG:3857', 'EPSG:4326'));
+                        // console.table(transform(coordinates[0], 'EPSG:3857', 'EPSG:4326'));
+                        // console.table(transform(coordinates[1], 'EPSG:3857', 'EPSG:4326'));
                     }
                 });
             });
         }, 3000);
+
+        // Get features to represent cities and lorries
+        kmlLayers.forEach(layer => {
+            const src = layer.getSource()!;
+
+            src.once('change', () => {
+                if (src.getState() !== 'ready') return;
+
+                src.getFeatures().forEach(feature => {
+                    const geom = feature.getGeometry();
+                    if (!geom) return;
+
+                    // Cities
+                    // if (geom.getType() === 'Point') {
+                    // const point = geom as Point;
+                    // const coord3857 = point.getCoordinates(); // Coordinates in map projection (EPSG:3857)
+                    // const [lon, lat] = transform(coord3857, 'EPSG:3857', 'EPSG:4326');
+                    // }
+
+                    // Paths
+                    if (geom.getType() === 'LineString') {
+                        const line = geom as LineString;
+
+                        // line.getCoordinates().forEach((c, i) => {
+                        //     const [lon, lat] = transform(c, 'EPSG:3857', 'EPSG:4326');
+                        //     console.log(`Line point #${i}:`, { lon, lat });
+                        // });
+
+                        const numberOfRandomPoints = 20;
+
+                        for (let i = 0; i < numberOfRandomPoints; i++) {
+                            // choose a random fraction between 0 and 1
+                            const frac = Math.random();
+                            // get the projected coordinate at that fraction
+                            const coord = line.getCoordinateAt(frac);
+
+                            // create a point feature and add it
+                            const pt = new Feature({
+                                geometry: new Point(coord)
+                            });
+                            pt.setStyle(truckStyle);
+                            trucksPointsSource.addFeature(pt);
+                        }
+                    }
+                });
+            });
+        });
 
         return () => {
             if (intervalIdRef.current) {
@@ -167,26 +229,6 @@ const FreightsMap = () => {
 
 export default FreightsMap;
 
-// const treeStyle = new Style({
-//     image: new Circle({
-//         radius: 6,
-//         fill: new Fill({
-//             color: 'green'
-//         }),
-//         stroke: new Stroke({
-//             color: 'white',
-//             width: 2
-//         })
-//     }),
-//     // Add text label if name is provided
-//     text: new Text({
-//         // text: "hola",
-//         offsetY: -15,
-//         fill: new Fill({ color: 'black' }),
-//         stroke: new Stroke({ color: 'white', width: 3 })
-//     })
-// });
-
 const truckStyle = new Style({
     image: new Circle({
         radius: 6,
@@ -197,6 +239,29 @@ const truckStyle = new Style({
             color: 'white',
             width: 2
         })
+    }),
+});
+
+const cityStyle = new Style({
+    image: new Circle({
+        radius: 6,
+        fill: new Fill({
+            color: 'red' // Lighter blue color
+        }),
+        stroke: new Stroke({
+            color: 'white',
+            width: 2
+        })
+    }),
+});
+
+const pathStyle = new Style({
+    fill: new Fill({
+        color: 'rgba(0, 0, 255, 0.1)',
+    }),
+    stroke: new Stroke({
+        color: '#FF00FF',
+        width: 2,
     }),
 });
 
@@ -223,11 +288,3 @@ export function wgs84ToUtm(longitude: number, latitude: number) {
         northing: utmCoords[1]
     };
 }
-
-const freightsData: TruckIcon[] = [
-    { id: 1, name: "Freightliner Cascadia", plate: "ABC123", speed: 60, lon: -122.4194, lat: 37.7749 },
-    { id: 2, name: "Volvo VNL", plate: "DEF456", speed: 55, lon: -118.2437, lat: 34.0522 },
-    { id: 3, name: "Peterbilt 579", plate: "GHI789", speed: 65, lon: -87.6298, lat: 41.8781 },
-    { id: 4, name: "Kenworth T680", plate: "JKL012", speed: 70, lon: -95.3698, lat: 29.7604 },
-    { id: 5, name: "Mack Anthem", plate: "MNO345", speed: 62, lon: -80.1918, lat: 25.7617 },
-];
