@@ -12,8 +12,10 @@ import { createNewThread } from "@/utils/endpoints/threadsEndpoints";
 import { Textarea } from "@/components/ui/textarea";
 import { useFetch } from "@/hooks/useFetch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useAppStore } from "@/store/userStore";
 
 export default function MessageCreationForm() {
+  const activeUserInfo = useAppStore().getUserInfo();
   const router = useRouter();
   const [formData, setFormData] = useState({
     email: "",
@@ -25,9 +27,7 @@ export default function MessageCreationForm() {
 
   if (error) console.error(error);
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
@@ -59,15 +59,9 @@ export default function MessageCreationForm() {
     }
 
     try {
-      const request: CreateNewThreadRequest = {
-        toEmail: email,
-        subject,
-        text: message,
-      };
-
-      console.log("REQUEST", request);
-
+      const request: CreateNewThreadRequest = { toEmail: email, subject, text: message };
       await createNewThread(request);
+
       alert(`Message sent successfully!`);
       router.push("/cargotrack/messages");
     } catch (error) {
@@ -101,7 +95,7 @@ export default function MessageCreationForm() {
                 />
               </SelectTrigger>
               <SelectContent>
-                {data?.map(email => (
+                {data?.filter(x => x != activeUserInfo?.email).map(email => (
                   <SelectItem key={email} value={email}>
                     {email}
                   </SelectItem>
