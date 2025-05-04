@@ -4,19 +4,14 @@ import type React from "react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { CreateNewThreadRequest } from "@/appTypes";
 import { createNewThread } from "@/utils/endpoints/threadsEndpoints";
 import { Textarea } from "@/components/ui/textarea";
+import { useFetch } from "@/hooks/useFetch";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export default function MessageCreationForm() {
   const router = useRouter();
@@ -26,11 +21,19 @@ export default function MessageCreationForm() {
     message: "",
   });
 
+  const { data, error, loading } = useFetch<string[]>("GET", "/users/email");
+
+  if (error) console.error(error);
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleEmailChange = (value: string) => {
+    setFormData(prev => ({ ...prev, email: value }));
   };
 
   const isValidEmail = (email: string) => {
@@ -62,6 +65,8 @@ export default function MessageCreationForm() {
         text: message,
       };
 
+      console.log("REQUEST", request);
+
       await createNewThread(request);
       alert(`Message sent successfully!`);
       router.push("/cargotrack/messages");
@@ -83,15 +88,26 @@ export default function MessageCreationForm() {
         <CardContent className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              name="email"
-              type="email"
+            <Select
               value={formData.email}
-              onChange={handleChange}
-              placeholder="recipient@example.com"
+              onValueChange={handleEmailChange}
+              name="email"
               required
-            />
+              disabled={loading}
+            >
+              <SelectTrigger id="email">
+                <SelectValue
+                  placeholder={loading ? "Loading emails" : error ? "Failed to get emails" : "Select an email"}
+                />
+              </SelectTrigger>
+              <SelectContent>
+                {data?.map(email => (
+                  <SelectItem key={email} value={email}>
+                    {email}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           <div className="space-y-2">

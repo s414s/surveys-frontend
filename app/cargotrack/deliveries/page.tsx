@@ -7,11 +7,8 @@ import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import DeliveriesTable from "@/components/tables/deliveriesTable";
 import { FreightStatus } from "@/appTypes";
-import { useState } from "react";
 
 export default function Page() {
-    const [page,] = useState(1);
-
     return (
         // <div className="flex min-h-screen w-full flex-col bg-muted/40">
         <div className="flex w-full flex-col bg-muted/40">
@@ -57,7 +54,7 @@ export default function Page() {
                             <CardTitle>Planned Deliveries</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <DeliveriesTable freightStatus={FreightStatus.Scheduled} page={page} />
+                            <DeliveriesTable freightStatus={FreightStatus.Scheduled} />
                         </CardContent>
                     </Card>
                 </TabsContent>
@@ -67,7 +64,7 @@ export default function Page() {
                             <CardTitle>Completed Deliveries</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <DeliveriesTable freightStatus={FreightStatus.Completed} page={page} />
+                            <DeliveriesTable freightStatus={FreightStatus.Completed} />
                         </CardContent>
                     </Card>
                 </TabsContent>
@@ -77,7 +74,7 @@ export default function Page() {
                             <CardTitle>Active Deliveries</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <DeliveriesTable freightStatus={FreightStatus.Active} page={page} />
+                            <DeliveriesTable freightStatus={FreightStatus.Active} />
                         </CardContent>
                         {/* <CardFooter></CardFooter> */}
                     </Card>

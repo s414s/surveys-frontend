@@ -40,10 +40,8 @@ export default function UsersTable(props: PageProps) {
                             <TableCell>{capitalizeWord(x.name)}</TableCell>
                             <TableCell>{capitalizeWord(x.surname)}</TableCell>
                             <TableCell>{x.email}</TableCell>
-                            {/*
-                            <TableCell className="hidden md:table-cell"> {numberFormatter(2, 2).format(x.consumption)} </TableCell>
-                            <TableCell className="hidden md:table-cell"> {dateFormatter.format(x.lastMaintenenceDateUnix)} </TableCell>
-                            */}
+                            {/* <TableCell className="hidden md:table-cell"> {numberFormatter(2, 2).format(x.consumption)} </TableCell>
+                            <TableCell className="hidden md:table-cell"> {dateFormatter.format(x.lastMaintenenceDateUnix)} </TableCell> */}
                             <TableCell>
                                 <DropdownMenu>
                                     <DropdownMenuTrigger asChild>

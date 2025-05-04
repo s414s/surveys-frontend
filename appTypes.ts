@@ -85,9 +85,6 @@ export interface Settings {
     pricePerHourDriver: number,
 }
 
-// https://www.sertrans.es/peso-maximo-autorizado-en-camiones/#:~:text=Para%20tr%C3%A1ilers%20o%20remolques%20con,l%C3%ADmite%20es%20de%2040%20toneladas.
-// https://app.croneri.co.uk/topics/vehicle-weights-and-weight-limits/indepth?topic=4461#:~:text=Determining%20Maximum%20Authorised%20Weight,laid%20down%20in%20the%20regulations.
-
 export interface Trailer {
     length: string;
     width: string;
@@ -109,13 +106,6 @@ export enum FreightStatus {
     Completed = 3,
     Canceled = 4,
 }
-
-// export interface Driver {
-//     name: string;
-//     surname: string;
-//     birthdate: Date;
-//     lastShiftEnd: Date;
-// }
 
 export interface Freight {
     id: number;

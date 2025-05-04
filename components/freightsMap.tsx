@@ -2,7 +2,7 @@
 
 import "ol/ol.css";
 import { useEffect, useRef, useState } from "react";
-import { Map, MapBrowserEvent, View } from "ol";
+import { Map, View } from "ol";
 import { ScaleLine, defaults as defaultControls } from 'ol/control.js';
 import { defaults as defaultInteractions } from 'ol/interaction';
 import XYZ from "ol/source/XYZ";
@@ -22,8 +22,8 @@ const FreightsMap = () => {
     const mapDivRef = useRef<HTMLDivElement>(null);
 
     const [, setOlMap] = useState<Map>();
-    // const [, setSelectedFeature] = useState<Feature | null>(null);
     const intervalIdRef = useRef<number | null>(null);
+    // const [, setSelectedFeature] = useState<Feature | null>(null);
     // const [, setLocation] = useState<Coordinate | null>(null);
 
     useEffect(() => {
@@ -103,8 +103,7 @@ const FreightsMap = () => {
                 // trucksLayer,
                 myLocationLayer,
                 ...kmlLayers,
-
-                trucksPointsLayer
+                trucksPointsLayer,
             ],
             view: new View({
                 center: fromLonLat([-0.8891, 41.6488]), // Note: OpenLayers uses [lon, lat] order
@@ -188,7 +187,7 @@ const FreightsMap = () => {
                         //     console.log(`Line point #${i}:`, { lon, lat });
                         // });
 
-                        const numberOfRandomPoints = 20;
+                        const numberOfRandomPoints = 5;
 
                         for (let i = 0; i < numberOfRandomPoints; i++) {
                             // choose a random fraction between 0 and 1
@@ -244,7 +243,7 @@ const truckStyle = new Style({
 
 const cityStyle = new Style({
     image: new Circle({
-        radius: 6,
+        radius: 10,
         fill: new Fill({
             color: 'red' // Lighter blue color
         }),
