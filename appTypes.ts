@@ -2,10 +2,12 @@ type UserRoles = 'Admin' | 'Driver';
 
 export interface UserInfo {
     id: number;
-    name: string;
-    surname: string;
+    given_name: string;
+    family_name: string;
     email: string;
     role: UserRoles;
+    exp: number;
+    iat: number;
 }
 
 export interface User {

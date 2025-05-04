@@ -4,22 +4,21 @@ import * as React from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
-import { CalendarIcon, Loader2 } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Calendar } from '@/components/ui/calendar';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Popover, PopoverContent, PopoverTrigger, } from '@/components/ui/popover';
-import { cn } from '@/lib/utils';
-import { format } from 'date-fns';
 import { useToast } from "@/hooks/use-toast";
 import { useAppStore } from '@/store/userStore';
+import { capitalizeWord } from '@/utils/utils';
+import { updateProfile } from '@/utils/endpoints/userEndpoints';
+// import { format } from 'date-fns';
 
 const formSchema = z.object({
   name: z.string().min(2, { message: 'Name must have at least 2 characters.' }),
   surname: z.string().min(2, { message: 'Surname must have at least 2 characters.' }),
-  email: z.string().email({ message: 'Please enter a valid email address.' }),
-  dob: z.date({ required_error: 'Date of birth is needed.' })
+  // email: z.string().email({ message: 'Please enter a valid email address.' }),
+  // dob: z.date({ required_error: 'Date of birth is needed.' })
 });
 
 export default function UserInfoForm() {
@@ -28,10 +27,10 @@ export default function UserInfoForm() {
 
   const [isLoading, setIsLoading] = React.useState(false);
   const [userData, setUserData] = React.useState({
-    name: activeUserInfo?.name ?? "Name",
-    surname: activeUserInfo?.surname ?? "Surname",
-    email: activeUserInfo?.email ?? "Email",
-    dob: new Date('1990-01-01'), // TODO
+    name: activeUserInfo?.given_name ? capitalizeWord(activeUserInfo.given_name) : "Name",
+    surname: activeUserInfo?.family_name ? capitalizeWord(activeUserInfo.family_name) : "Surname",
+    // email: activeUserInfo?.email ?? "Email",
+    // dob: new Date('1990-01-01'), // TODO
   });
   const { toast } = useToast();
 
@@ -40,18 +39,22 @@ export default function UserInfoForm() {
     defaultValues: userData,
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    setIsLoading(true);
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    try {
+      setIsLoading(true);
+      await updateProfile({ name: values.name, surname: values.surname });
 
-    // TODO - Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
-      setUserData(values);
       toast({
         title: 'User info updated',
         description: 'Your profile was correctly updated.',
       });
-    }, 1000);
+
+      setUserData(values);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -89,7 +92,8 @@ export default function UserInfoForm() {
               </FormItem>
             )}
           />
-          <FormField
+
+          {/* <FormField
             disabled={false}
             control={form.control}
             name="email"
@@ -102,14 +106,15 @@ export default function UserInfoForm() {
                 <FormMessage />
               </FormItem>
             )}
-          />
-          <FormField
+          /> */}
+
+          {/* <FormField
             disabled={false}
             control={form.control}
             name="dob"
             render={({ field }) => (
               <FormItem className="flex flex-col">
-                <FormLabel>Fecha de nacimiento</FormLabel>
+                <FormLabel>Date Of Birth</FormLabel>
                 <Popover>
                   <PopoverTrigger asChild>
                     <FormControl>
@@ -133,9 +138,7 @@ export default function UserInfoForm() {
                       mode="single"
                       selected={field.value}
                       onSelect={field.onChange}
-                      disabled={(date) =>
-                        date > new Date() || date < new Date('1900-01-01')
-                      }
+                      disabled={(date) => date > new Date() || date < new Date('1900-01-01')}
                       initialFocus
                     />
                   </PopoverContent>
@@ -143,7 +146,7 @@ export default function UserInfoForm() {
                 <FormMessage />
               </FormItem>
             )}
-          />
+          /> */}
 
           <Button type="submit" disabled={isLoading}>
             {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
@@ -161,26 +164,29 @@ export default function UserInfoForm() {
             <dt className="font-medium text-muted-foreground text-sm">
               Name
             </dt>
-            <dd>{userData.name}</dd>
+            <dd>  {capitalizeWord(userData.name)}</dd>
           </div>
           <div>
             <dt className="font-medium text-muted-foreground text-sm">
               Surname
             </dt>
-            <dd>{userData.surname}</dd>
+            <dd>{capitalizeWord(userData.surname)}</dd>
           </div>
+
           <div>
             <dt className="font-medium text-muted-foreground text-sm">
               Email
             </dt>
-            <dd>{userData.email}</dd>
+            <dd>{activeUserInfo?.email}</dd>
           </div>
-          <div>
+
+          {/* <div>
             <dt className="font-medium text-muted-foreground text-sm">
               Date Of Birth
             </dt>
             <dd>{format(userData.dob, 'PPP')}</dd>
-          </div>
+          </div> */}
+
         </dl>
       </div>
     </div>

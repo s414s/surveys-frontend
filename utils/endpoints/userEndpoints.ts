@@ -35,3 +35,13 @@ export const updateDriver = async (userId: number, request: UserUpdateRequest): 
         throw new Error("Failed to update driver info");
     }
 };
+
+export const updateProfile = async (request: { name: string; surname: string; }): Promise<boolean> => {
+    try {
+        const endpoint = `/users/me`;
+        return await fetchDataGeneric<boolean>("PUT", endpoint, null, request, useAppStore.getState().jwtToken);
+    } catch (error) {
+        console.error("Error updating profile info:", error);
+        throw new Error("Failed to update profile info");
+    }
+};

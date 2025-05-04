@@ -12,27 +12,6 @@ interface AppState {
     isUserLoggedIn: () => boolean,
 }
 
-// export const useAppStore = create<AppState>()((set, get) => ({
-//     jwtToken: undefined,
-//     setUser: (jwtToken?: string) => {
-//         set({ jwtToken });
-//     },
-//     getUserInfo: () => {
-//         const { jwtToken } = get();
-
-//         if (!jwtToken)
-//             return undefined;
-
-//         return jwtDecode<UserInfo>(jwtToken);
-//     },
-//     removeUser: () => {
-//         set({ jwtToken: undefined });
-//     },
-//     isAdmin: () => get().getUserInfo()?.role === "Admin",
-//     isUserLoggedIn: () => get().getUserInfo() !== undefined,
-// }));
-
-
 export const useAppStore = create<AppState>()(
     persist(
         (set, get) => ({
@@ -43,10 +22,7 @@ export const useAppStore = create<AppState>()(
             getUserInfo: () => {
                 const { jwtToken } = get();
 
-                if (!jwtToken)
-                    return undefined;
-
-                return jwtDecode<UserInfo>(jwtToken);
+                return !jwtToken ? undefined : jwtDecode<UserInfo>(jwtToken);
             },
             logOut: () => {
                 set({ jwtToken: undefined });
