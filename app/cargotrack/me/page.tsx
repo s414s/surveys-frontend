@@ -164,7 +164,7 @@ export default function UserInfoForm() {
             <dt className="font-medium text-muted-foreground text-sm">
               Name
             </dt>
-            <dd>  {capitalizeWord(userData.name)}</dd>
+            <dd>{capitalizeWord(userData.name)}</dd>
           </div>
           <div>
             <dt className="font-medium text-muted-foreground text-sm">

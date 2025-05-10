@@ -1,7 +1,6 @@
 import { useAppStore } from "@/store/userStore";
 import { useEffect, useState, useCallback } from "react";
 
-
 const BASE_URL = process.env.API_URL || 'http://localhost:5097';
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
 // const TIMEOUT = 10_000; // milliseconds timeout
@@ -77,7 +76,6 @@ interface Params<T> {
 //                 // if (error.name === 'AbortError') {
 //                 //     throw new Error('Request timed out');
 //                 // }
-
 //                 setError(error);
 //             } finally {
 //                 // clearTimeout(timeoutId);
@@ -86,9 +84,7 @@ interface Params<T> {
 //         };
 
 //         fetchData();
-
 //         // return () => { controller.abort(); };
-
 //     }, [endpoint, method, body, queryParams, jwtToken]);
 
 //     return { data, loading, error };
