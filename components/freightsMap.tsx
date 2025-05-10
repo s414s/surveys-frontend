@@ -1,21 +1,43 @@
 'use client';
 
+// import "ol/ol.css";
+// import { useEffect, useRef, useState } from "react";
+// import { Map, View } from "ol";
+// import TileLayer from "ol/layer/tile";
+// import { ScaleLine, defaults as defaultControls } from 'ol/control.js';
+// import { defaults as defaultInteractions } from 'ol/interaction';
+// import XYZ from "ol/source/XYZ";
+// import { fromLonLat, transform } from "ol/proj";
+// import Point from "ol/geom/Point";
+// import { Style, Circle, Fill, Stroke } from 'ol/style';
+// import Feature, { FeatureLike } from 'ol/Feature';
+// import { Vector as VectorLayer } from 'ol/layer';
+// import { Vector as VectorSource } from 'ol/source';
+// import KML from 'ol/format/KML';
+// import LineString from "ol/geom/LineString";
+// import { StyleFunction } from "ol/style/Style";
+// import OSM from "ol/source/OSM";
+
 import "ol/ol.css";
 import { useEffect, useRef, useState } from "react";
 import { Map, View } from "ol";
-import { ScaleLine, defaults as defaultControls } from 'ol/control.js';
-import { defaults as defaultInteractions } from 'ol/interaction';
+import { ScaleLine, defaults as defaultControls } from "ol/control";
+import { defaults as defaultInteractions } from "ol/interaction";
 import XYZ from "ol/source/XYZ";
 import { fromLonLat, transform } from "ol/proj";
 import Point from "ol/geom/Point";
-import { Style, Circle, Fill, Stroke } from 'ol/style';
-import Feature, { FeatureLike } from 'ol/Feature';
-import { Vector as VectorLayer } from 'ol/layer';
-import { Vector as VectorSource } from 'ol/source';
-import TileLayer from "ol/layer/tile";
-import KML from 'ol/format/KML';
+import { Style, Circle, Fill, Stroke } from "ol/style";
+import Feature, { FeatureLike } from "ol/Feature";
+import VectorLayer from "ol/layer/Vector";
+import VectorSource from "ol/source/Vector";
+import KML from "ol/format/KML";
 import LineString from "ol/geom/LineString";
 import { StyleFunction } from "ol/style/Style";
+import TileLayer from "ol/layer/Tile";
+
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+
 // import OSM from "ol/source/OSM";
 
 const FreightsMap = () => {
@@ -89,7 +111,7 @@ const FreightsMap = () => {
 
         myLocationLayer.set('name', 'myLocationLayer');
 
-        const map = new Map({
+        const freightsMap = new Map({
             target: mapDivRef.current as HTMLDivElement,
             interactions: defaultInteractions({ pinchRotate: false }),
             controls: defaultControls({ zoom: false, rotate: false })
@@ -135,7 +157,7 @@ const FreightsMap = () => {
         //     }
         // });
 
-        setOlMap(map);
+        setOlMap(freightsMap);
 
         intervalIdRef.current = window.setInterval(() => {
             kmlLayers.forEach(layer => {
@@ -212,7 +234,7 @@ const FreightsMap = () => {
                 clearInterval(intervalIdRef.current);
             }
 
-            map.setTarget(undefined);
+            freightsMap.setTarget(undefined);
         };
     }, []);
 

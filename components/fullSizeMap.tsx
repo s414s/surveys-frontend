@@ -1,9 +1,9 @@
 'use client';
 
 import "ol/ol.css";
-import Map from "ol/map";
+import Map from "ol/Map";
 import View from "ol/View";
-import TileLayer from "ol/layer/tile";
+import TileLayer from "ol/layer/Tile";
 import { OSM } from "ol/source";
 import { defaults as defaultControls, ScaleLine } from 'ol/control';
 import { useEffect } from "react";
@@ -13,7 +13,7 @@ import { Circle as CircleStyle, Fill, Stroke, Style } from 'ol/style';
 import VectorSource from "ol/source/Vector";
 import { Vector as VectorLayer } from 'ol/layer';
 
-export default function Page() {
+export default function FullSizeMap() {
 
     useEffect(() => {
         const redDotFeature = new Feature({
