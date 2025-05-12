@@ -71,7 +71,6 @@ export default function UsersTable(props: PageProps) {
                         );
                     })}
                 </TableBody>
-                {/* <TableFooter className="w-full flex justify-between items-center"></TableFooter> */}
             </Table >
             <div>
                 {

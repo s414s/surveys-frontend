@@ -1,8 +1,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Package, MapPin, Calendar, File, User } from "lucide-react";
+import { Package, MapPin, Calendar, File, User, ShipWheel, PercentCircleIcon } from "lucide-react";
 import { Freight, Parcel } from "@/appTypes";
-import { capitalizeWord } from "@/utils/utils";
+import { capitalizeWord, numberFormatter } from "@/utils/utils";
 import { useFetch } from "@/hooks/useFetch";
 import LoadingComponent from "../common/loader";
 import { Button } from "../ui/button";
@@ -13,6 +13,7 @@ interface FreightDetailsProps {
 }
 
 export function FreightDetails({ freight }: FreightDetailsProps) {
+    const numFormatter = numberFormatter(2, 2);
     const formatDate = (dateString: string) => {
         const date = new Date(dateString);
         return new Intl.DateTimeFormat("en-US", {
@@ -135,22 +136,76 @@ export function FreightDetails({ freight }: FreightDetailsProps) {
                         </p>
                     </div>
 
-                    <Separator />
+                </div>
 
-                    <div className="space-y-2">
-                        <div className="flex items-center text-sm text-muted-foreground">
-                            <Package className="h-4 w-4 mr-2" />
-                            <span>Parcels</span>
+                <Separator />
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 print:text-black print:bg-white">
+                    <div className="space-y-4">
+                        <div className="space-y-2">
+                            <div className="flex items-center text-sm text-muted-foreground  print:text-black print:bg-white">
+                                <ShipWheel className="h-4 w-4 mr-2" />
+                                <span>Driver Cost</span>
+                            </div>
+                            <p className="font-medium">
+                                {numFormatter.format(freight.driverCost)} $
+                            </p>
                         </div>
-                        <p className="font-medium text-xs md:text-sm font-mono">
-                            {loading
-                                ? <LoadingComponent isAdminOnly={false} />
-                                : data
-                                    ? data?.map(x => (<div key={x.id}>{x.guid} - {x.weight}Kg - {x.price}€</div>))
-                                    : <div>No Parcels</div>}
-                        </p>
+
+                        <div className="space-y-2">
+                            <div className="flex items-center text-sm text-muted-foreground print:text-black print:bg-white">
+                                <PercentCircleIcon className="h-4 w-4 mr-2" />
+                                <span>Fuel Cost</span>
+                            </div>
+                            <p className="font-medium">
+                                {numFormatter.format(freight.fuelCost)} $
+                            </p>
+                        </div>
                     </div>
 
+                    <div className="space-y-4">
+                        <div className="space-y-2">
+                            <div className="flex items-center text-sm text-muted-foreground print:text-black print:bg-white">
+                                <MapPin className="h-4 w-4 mr-2" />
+                                <span>Total Cost</span>
+                            </div>
+                            <p className="font-medium">
+                                {freight.totalCost} $
+                            </p>
+                        </div>
+
+                        <div className="space-y-2">
+                            <div className="flex items-center text-sm text-muted-foreground print:text-black print:bg-white">
+                                <Calendar className="h-4 w-4 mr-2" />
+                                <span>Money Generated</span>
+                            </div>
+                            <p className="font-medium">
+                                {numFormatter.format(freight.moneyGenerated)} $
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <Separator />
+
+                <div className="space-y-2">
+                    <div className="flex items-center text-sm text-muted-foreground">
+                        <Package className="h-4 w-4 mr-2" />
+                        <span>Parcels</span>
+                    </div>
+                    <p className="font-medium text-xs md:text-sm font-mono">
+                        {loading ? (
+                            <LoadingComponent isAdminOnly={false} />
+                        ) : data?.length ? (
+                            data.map(x => (
+                                <div key={x.id}>
+                                    {x.guid} - {x.weight}Kg - {x.price}€
+                                </div>
+                            ))
+                        ) : (
+                            <div>No Parcels</div>
+                        )}
+                    </p>
                 </div>
             </CardContent>
         </Card>
