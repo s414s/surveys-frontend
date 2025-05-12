@@ -120,6 +120,10 @@ export interface Freight {
     durationMinutes: number;
     etd: string;
     eta: string;
+    fuelCost: number;
+    driverCost: number;
+    totalCost: number;
+    moneyGenerated: number;
 }
 
 export interface WareHouse {
