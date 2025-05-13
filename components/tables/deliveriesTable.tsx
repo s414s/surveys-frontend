@@ -20,7 +20,6 @@ export default function DeliveriesTable({ freightStatus }: { freightStatus: Frei
 
     const url = `/freights?status=${freightStatus}&pageIndex=${pageIndex}&pageSize=${pageSize}`;
     const { data, error, loading } = useFetch<PagedResult<Freight>>("GET", url);
-    console.log(data);
 
     if (error) return <div>{error.message}</div>;
 

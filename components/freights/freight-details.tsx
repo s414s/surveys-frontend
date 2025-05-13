@@ -170,7 +170,7 @@ export function FreightDetails({ freight }: FreightDetailsProps) {
                                 <span>Total Cost</span>
                             </div>
                             <p className="font-medium">
-                                {freight.totalCost} $
+                                {numFormatter.format(freight.totalCost)} $
                             </p>
                         </div>
 

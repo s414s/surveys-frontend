@@ -1,6 +1,6 @@
 'use client';
 
-import { PlusCircle } from "lucide-react";
+import { Package, PlusCircle, Truck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger, } from "@/components/ui/tabs";
 import Link from "next/link";
@@ -10,10 +10,7 @@ import { FreightStatus } from "@/appTypes";
 
 export default function Page() {
     return (
-        // <div className="flex min-h-screen w-full flex-col bg-muted/40">
         <div className="flex w-full flex-col bg-muted/40">
-            {/* <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
-                <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8"> */}
             <Tabs defaultValue="active">
                 <div className="flex items-center">
                     <TabsList>
@@ -30,8 +27,16 @@ export default function Page() {
                             </span>
                         </Button> */}
                         <Button size="sm" className="h-8 gap-1" asChild>
+                            <Link href={"/cargotrack/deliveries/search"}>
+                                <Package className="h-3.5 w-3.5" />
+                                <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+                                    Search Parcel
+                                </span>
+                            </Link>
+                        </Button>
+                        <Button size="sm" className="h-8 gap-1" asChild>
                             <Link href={"/cargotrack/deliveries/new"}>
-                                <PlusCircle className="h-3.5 w-3.5" />
+                                <Truck className="h-3.5 w-3.5" />
                                 <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
                                     New Freight
                                 </span>
@@ -76,11 +81,9 @@ export default function Page() {
                         <CardContent>
                             <DeliveriesTable freightStatus={FreightStatus.Active} />
                         </CardContent>
-                        {/* <CardFooter></CardFooter> */}
                     </Card>
                 </TabsContent>
             </Tabs>
-            {/* <DeliveriesTable freightStatus={null} page={page} /> */}
         </div>
     );
 }
