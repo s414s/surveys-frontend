@@ -8,11 +8,8 @@ import LoadingComponent from "../common/loader";
 import { Button } from "../ui/button";
 import { useRef } from "react";
 
-interface FreightDetailsProps {
-    freight: Freight;
-}
-
-export function FreightDetails({ freight }: FreightDetailsProps) {
+//interface FreightDetailsProps { freight: Freight; }
+export function FreightDetails({ freight }: { freight: Freight; }) {
     const numFormatter = numberFormatter(2, 2);
     const formatDate = (dateString: string) => {
         const date = new Date(dateString);
@@ -29,7 +26,6 @@ export function FreightDetails({ freight }: FreightDetailsProps) {
 
     const { data, error, loading } = useFetch<Parcel[]>("GET", `/freights/${freight.id}/parcels`);
     if (error) { console.log("error", error); }
-    console.log("PARCELS", data);
 
     const generatePDF = async () => {
         if (!parcelCardRef.current) return;
@@ -37,16 +33,10 @@ export function FreightDetails({ freight }: FreightDetailsProps) {
         try {
             // Dynamically import the libraries to reduce initial bundle size
             const [jsPDF, html2canvas] = await Promise.all([import("jspdf"), import("html2canvas")]);
-
             const { default: JsPDF } = jsPDF;
             const { default: html2Canvas } = html2canvas;
 
-            const doc = new JsPDF({
-                orientation: "portrait",
-                unit: "mm",
-                format: "a4",
-            });
-
+            const doc = new JsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
             const canvas = await html2Canvas(parcelCardRef.current, {
                 scale: 2, // Higher scale for better quality
                 logging: false,
@@ -68,6 +58,29 @@ export function FreightDetails({ freight }: FreightDetailsProps) {
         }
     };
 
+    const generateCSV = async () => {
+        try {
+            const header = `id,origin,destination,driver,driverCost,fuelCost,eta,etd`;
+            const content = `${freight.id},${freight.origin},${freight.destination},${freight.driver},${freight.driverCost},${freight.fuelCost},${freight.eta},${freight.etd}`;
+            const csv = `${header}\r\n${content}`;
+
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `Freight-${freight.id}.csv`;
+            document.body.appendChild(link);
+            link.click();
+
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error("Error generating CSV:", error);
+            alert("Failed to generate CSV. Please try again.");
+        }
+    };
+
     return (
         <Card className="w-full max-w-3xl mx-auto print:text-black print:bg-white" ref={parcelCardRef} >
             <CardHeader className="pb-2 print:text-black print:bg-white">
@@ -75,10 +88,16 @@ export function FreightDetails({ freight }: FreightDetailsProps) {
                     <CardTitle className="text-2xl">Freight #{freight.id}</CardTitle>
                     {/* <Badge variant="outline" className="px-3 py-1"> {2} kg </Badge> */}
                     <div className="print:hidden">
+                        <Button size="sm" variant="outline" className="h-8 gap-1" onClick={generateCSV}>
+                            <File className="h-3.5 w-3.5" />
+                            <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+                                Export CSV
+                            </span>
+                        </Button>
                         <Button size="sm" variant="outline" className="h-8 gap-1" onClick={generatePDF}>
                             <File className="h-3.5 w-3.5" />
                             <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                                Export
+                                Export PDF
                             </span>
                         </Button>
                     </div>
@@ -135,7 +154,6 @@ export function FreightDetails({ freight }: FreightDetailsProps) {
                             {`${capitalizeWord(freight.driver.name)} ${capitalizeWord(freight.driver.surname)} - ${freight.driver.email}`}
                         </p>
                     </div>
-
                 </div>
 
                 <Separator />

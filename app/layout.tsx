@@ -43,8 +43,8 @@ import MouseMoveEffect from "@/components/landing/mouse-move-effect";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Cargo Tracker - Cutting-Edge Logistics Software Solutions",
-  description: "Cargo Tracker delivers innovative, high-performance software solutions for businesses of the future.",
+  title: "Cargo Track - Cutting-Edge Logistics Software Solutions",
+  description: "Cargo Track delivers innovative, high-performance software solutions for businesses of the future.",
 };
 
 export default function RootLayout({
