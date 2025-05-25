@@ -11,10 +11,10 @@ import { FreightStatus } from "@/appTypes";
 export default function Page() {
     return (
         <div className="flex w-full flex-col bg-muted/40">
-            <Tabs defaultValue="active">
+            <Tabs defaultValue="planned">
                 <div className="flex items-center">
                     <TabsList>
-                        <TabsTrigger value="active">Active</TabsTrigger>
+                        {/* <TabsTrigger value="active">Active</TabsTrigger> */}
                         <TabsTrigger value="planned">Planned</TabsTrigger>
                         <TabsTrigger value="completed" className="hidden sm:flex">Completed</TabsTrigger>
                     </TabsList>

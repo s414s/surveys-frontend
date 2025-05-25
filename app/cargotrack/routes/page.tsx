@@ -19,7 +19,7 @@ export default function Page() {
             <div className="flex items-center justify-between">
                 <h2 className="text-3xl font-bold tracking-tight">Routes</h2>
             </div>
-            <Tabs defaultValue="upcoming" className="w-full">
+            <Tabs defaultValue="upcoming">
                 <TabsList className="mb-4">
                     <TabsTrigger value="upcoming">Upcoming</TabsTrigger>
                     <TabsTrigger value="completed">Completed</TabsTrigger>
