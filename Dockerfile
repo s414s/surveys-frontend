@@ -2,6 +2,8 @@ FROM node:20-alpine
 
 WORKDIR /app
 
+ENV NEXT_PUBLIC_API_URL=http://ec2-3-88-185-85.compute-1.amazonaws.com
+
 # Copy lockfile + package.json → deterministic install
 COPY package*.json ./
 

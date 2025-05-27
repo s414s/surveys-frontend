@@ -1,7 +1,9 @@
 import { useAppStore } from "@/store/userStore";
 import { useEffect, useState, useCallback } from "react";
 
-const BASE_URL = process.env.API_URL || 'http://localhost:5097';
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5097';
+// const BASE_URL = 'http://ec2-54-162-145-215.compute-1.amazonaws.com';
+
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
 // const TIMEOUT = 10_000; // milliseconds timeout
 
@@ -105,7 +107,6 @@ const mapQueryParams = (params?: QueryParams): string => {
         : "";
 };
 
-
 export const useFetch = <T>(
     method: HttpMethod,
     endpoint: string,
@@ -121,7 +122,10 @@ export const useFetch = <T>(
         setLoading(true);
         try {
             const qs = queryParams ? mapQueryParams(queryParams) : "";
-            const res = await fetch(`${BASE_URL}${endpoint}${qs}`, {
+            const url = `${BASE_URL}${endpoint}${qs}`;
+            console.log("CALLING", url);
+
+            const res = await fetch(url, {
                 method,
                 headers: {
                     "Content-Type": "application/json",

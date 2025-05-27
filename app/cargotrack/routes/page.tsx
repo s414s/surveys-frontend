@@ -24,7 +24,6 @@ export default function Page() {
                     <TabsTrigger value="upcoming">Upcoming</TabsTrigger>
                     <TabsTrigger value="completed">Completed</TabsTrigger>
                 </TabsList>
-
                 <TabsContent value="upcoming" className="space-y-4">
                     <RouteCard status={FreightStatus.Scheduled} />
                 </TabsContent>
@@ -62,17 +61,9 @@ function RouteCard({ status }: { status: FreightStatus; }) {
                     <CardHeader className="flex flex-row items-center justify-between pb-2">
                         <div className="flex items-center space-x-2">
                             <h3 className="font-semibold">ID - {route.id}</h3>
-                            {status == FreightStatus.Scheduled
-                                ? (
-                                    <Badge variant="outline" className="bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-400">
-                                        Upcoming
-                                    </Badge>)
-                                : (
-                                    <Badge variant="outline" className="bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-400">
-                                        Completed
-                                    </Badge>
-                                )
-                            }
+                            <Badge variant="outline" className="bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-400">
+                                {status == FreightStatus.Scheduled ? "Upcoming" : "Completed"}
+                            </Badge>
                         </div>
                         <div className="flex items-center space-x-1 text-sm text-muted-foreground">
                             <Timer className="h-4 w-4" />

@@ -2,7 +2,8 @@ export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
 
 export type QueryParams = Record<string, string | number | boolean | undefined> | null;
 
-const BASE_URL = process.env.API_URL || 'http://localhost:5097';
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5097';
+// const BASE_URL = 'http://ec2-54-162-145-215.compute-1.amazonaws.com';
 
 const mapQueryParams = (params: QueryParams): string => {
     if (!params) return "";
@@ -34,7 +35,10 @@ export const fetchDataGeneric = async <T>(
         body: body ? JSON.stringify(body) : undefined,
     };
 
-    const response = await fetch(`${BASE_URL}${endpoint}${queryString}`, requestOptions);
+    const url = `${BASE_URL}${endpoint}${queryString}`;
+    console.log("CALLING", url);
+
+    const response = await fetch(url, requestOptions);
 
     if (!response.ok) {
         console.error(response);
