@@ -166,7 +166,7 @@ export function FreightDetails({ freight }: { freight: Freight; }) {
                                 <span>Driver Cost</span>
                             </div>
                             <p className="font-medium">
-                                {numFormatter.format(freight.driverCost)} $
+                                {numFormatter.format(freight.driverCost)} €
                             </p>
                         </div>
 
@@ -176,7 +176,7 @@ export function FreightDetails({ freight }: { freight: Freight; }) {
                                 <span>Fuel Cost</span>
                             </div>
                             <p className="font-medium">
-                                {numFormatter.format(freight.fuelCost)} $
+                                {numFormatter.format(freight.fuelCost)} €
                             </p>
                         </div>
                     </div>
@@ -188,17 +188,17 @@ export function FreightDetails({ freight }: { freight: Freight; }) {
                                 <span>Total Cost</span>
                             </div>
                             <p className="font-medium">
-                                {numFormatter.format(freight.totalCost)} $
+                                {numFormatter.format(freight.totalCost)} €
                             </p>
                         </div>
 
                         <div className="space-y-2">
                             <div className="flex items-center text-sm text-muted-foreground print:text-black print:bg-white">
                                 <Calendar className="h-4 w-4 mr-2" />
-                                <span>Money Generated</span>
+                                <span>Profit Generated</span>
                             </div>
                             <p className="font-medium">
-                                {numFormatter.format(freight.moneyGenerated)} $
+                                {numFormatter.format(freight.moneyGenerated - freight.totalCost)} €
                             </p>
                         </div>
                     </div>

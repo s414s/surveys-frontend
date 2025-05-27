@@ -230,7 +230,7 @@ export default function Page({ params }: PageProps) {
                                 )}
                             />
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <FormField
                                     control={form.control}
                                     name="manufactoringDate"
@@ -260,7 +260,8 @@ export default function Page({ params }: PageProps) {
                                         </FormItem>
                                     )}
                                 />
-                            </div>
+                            </div> */}
+
                         </CardContent>
 
                         <CardFooter>
