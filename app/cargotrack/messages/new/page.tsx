@@ -61,9 +61,7 @@ export default function MessageCreationForm() {
     try {
       const request: CreateNewThreadRequest = { toEmail: email, subject, text: message };
       await createNewThread(request);
-
-      alert(`Message sent successfully!`);
-      router.push("/cargotrack/messages");
+      router.back();
     } catch (error) {
       console.error(error);
       alert("Failed to send message. Please try again.");

@@ -17,6 +17,7 @@ import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { getCities } from "@/utils/endpoints/routesEndpoints";
 import { createFreight } from "@/utils/endpoints/freightsEndpoints";
+import { useRouter } from "next/navigation";
 
 const formSchema = z
   .object({
@@ -36,6 +37,7 @@ const formSchema = z
   });
 
 export default function RouteForm() {
+  const router = useRouter();
   const [origins, setOrigins] = useState<City[]>([]);
   const [destinations, setDestinations] = useState<City[]>([]);
 
@@ -116,6 +118,8 @@ export default function RouteForm() {
       await createFreight(originId, destinationId, values.date);
       setIsSuccess(true);
       form.reset();
+      // router.push("/cargotrack/deliveries");
+      router.back();
     } catch (error) {
       console.error(error);
       setFetchError(error instanceof Error ? error.message : "Failed to create route");

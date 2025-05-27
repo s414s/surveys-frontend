@@ -12,8 +12,11 @@ import { formatDate } from "date-fns";
 import { capitalizeWord } from "@/utils/utils";
 import Link from "next/link";
 import { useState } from "react";
+import { deleteFreight } from "@/utils/endpoints/freightsEndpoints";
+import { useRouter } from "next/navigation";
 
 export default function DeliveriesTable({ freightStatus }: { freightStatus: FreightStatus | null; }) {
+    const router = useRouter();
     const pageSize = 10;
     const [pageIndex, setPageIndex] = useState(1);
     // const [pageIndex, setPageIndex] = useState<number>(props.searchParams?.pageIndex ?? 1);
@@ -22,6 +25,15 @@ export default function DeliveriesTable({ freightStatus }: { freightStatus: Frei
     const { data, error, loading } = useFetch<PagedResult<Freight>>("GET", url);
 
     if (error) return <div>{error.message}</div>;
+
+    async function handleCancelFreight(freightId: number) {
+        try {
+            await deleteFreight(freightId);
+            router.refresh();
+        } catch (error) {
+            console.error(error);
+        }
+    }
 
     return (
         <>
@@ -46,7 +58,9 @@ export default function DeliveriesTable({ freightStatus }: { freightStatus: Frei
                             Departure
                         </TableHead>
                         <TableHead>
-                            <span className="sr-only">Actions</span>
+                            <span className="sr-only">
+                                Actions
+                            </span>
                         </TableHead>
                     </TableRow>
                 </TableHeader>
@@ -91,15 +105,13 @@ export default function DeliveriesTable({ freightStatus }: { freightStatus: Frei
                                             <DropdownMenuLabel>
                                                 Actions
                                             </DropdownMenuLabel>
-                                            {/* <DropdownMenuItem disabled={x.status !== FreightStatus.Scheduled}> */}
-                                            <DropdownMenuItem>
-                                                Edit
-                                            </DropdownMenuItem>
-                                            {/* <DropdownMenuItem disabled={x.status !== FreightStatus.Scheduled}> */}
-                                            <DropdownMenuItem>
+                                            {/* <DropdownMenuItem>Edit</DropdownMenuItem> */}
+                                            <DropdownMenuItem
+                                                disabled={x.status !== FreightStatus.Scheduled}
+                                                onClick={() => handleCancelFreight(x.id)}
+                                            >
                                                 Cancel
                                             </DropdownMenuItem>
-                                            {/* <DropdownMenuItem disabled={x.status !== FreightStatus.Scheduled}> */}
                                             <DropdownMenuItem>
                                                 {/* <Link href="/cargotrack" target="_blank" rel="noreferrer"> */}
                                                 <Link href={`/cargotrack/deliveries/${x.id}`}>

@@ -39,8 +39,8 @@ export default function UserCreationForm() {
 
       const result = await createNewDriver(request);
       alert(`new user created successfully. Random password is: ${result.password}`);
-
-      router.push("/cargotrack/drivers");
+      //router.push("/cargotrack/drivers");
+      router.back();
     } catch (error) {
       console.error(error);
     } finally {

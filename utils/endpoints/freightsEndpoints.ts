@@ -40,3 +40,12 @@ export const createFreight = async (originId: number, destinationId: number, sta
         throw new Error("Failed to create freight");
     }
 };
+
+export const deleteFreight = async (freightId: number): Promise<void> => {
+    try {
+        await fetchDataGeneric<unknown>("DELETE", `/freights/${freightId}`, null, null, useAppStore.getState().jwtToken);
+    } catch (error) {
+        console.error("Error deleting freight:", error);
+        throw new Error("Failed deleting freight");
+    }
+};

@@ -8,7 +8,6 @@ import LoadingComponent from "../common/loader";
 import { Button } from "../ui/button";
 import { useRef } from "react";
 
-//interface FreightDetailsProps { freight: Freight; }
 export function FreightDetails({ freight }: { freight: Freight; }) {
     const numFormatter = numberFormatter(2, 2);
     const formatDate = (dateString: string) => {
