@@ -22,7 +22,9 @@ import Navbar from "@/components/landing/navbar";
 
 export default function Home() {
   return (
-    <div className="relative min-h-screen">
+    // <div className="relative min-h-screen">
+    <div className="relative min-h-screen flex flex-col items-center justify-center">
+
       {/* Background gradients */}
       <div className="pointer-events-none fixed inset-0">
         <div className="absolute inset-0 bg-gradient-to-b from-background via-background/90 to-background" />
@@ -30,7 +32,8 @@ export default function Home() {
         <div className="absolute bottom-0 left-0 h-[500px] w-[500px] bg-purple-500/10 blur-[100px]" />
       </div>
 
-      <div className="relative z-10">
+      {/* <div className="relative z-10"> */}
+      <div className="relative z-10 flex flex-col items-center space-y-8">
         <Navbar />
         <Hero />
         <Features />

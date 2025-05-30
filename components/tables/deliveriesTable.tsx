@@ -135,7 +135,7 @@ export default function DeliveriesTable({ freightStatus }: { freightStatus: Frei
                         Showing <strong>
                             {((data.pageIndex - 1) * data.pageSize + 1)}-
                             {Math.min(data.pageIndex * data.pageSize, data.totalResults)}
-                        </strong> of <strong>{data.totalResults ?? 0}</strong>{" "}trucks
+                        </strong> of <strong>{data.totalResults ?? 0}</strong>{" "}deliveries
                     </div>
                 }
             </div>

@@ -79,7 +79,7 @@ export default function UsersTable(props: PageProps) {
                         Showing <strong>
                             {((data.pageIndex - 1) * data.pageSize + 1)}-
                             {Math.min(data.pageIndex * data.pageSize, data.totalResults)}
-                        </strong> of <strong>{data.totalResults ?? 0}</strong>{" "}trucks
+                        </strong> of <strong>{data.totalResults ?? 0}</strong>{" "}users
                     </div>
                 }
             </div>
