@@ -1,0 +1,102 @@
+"use client";
+
+import { PageProps } from "@/.next/types/app/layout";
+import { type PagedResult, type User } from "@/appTypes";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "../ui/dropdown-menu";
+import { Button } from "../ui/button";
+import { ArrowLeft, ArrowRight, MoreHorizontal } from "lucide-react";
+import { useFetch } from "@/hooks/useFetch";
+import LoadingComponent from "../common/loader";
+import { capitalizeWord } from "@/utils/utils";
+import { useState } from "react";
+import Link from "next/link";
+
+export default function UsersTable(props: PageProps) {
+    const pageSize = 10;
+    const [pageIndex, setPageIndex] = useState<number>(props.searchParams?.pageIndex ?? 1);
+    const { data, error, loading } = useFetch<PagedResult<User>>("GET", `/users?role=1&pageIndex=${pageIndex}&pageSize=${pageSize}`);
+
+    return (
+        <>
+            <Table className="w-full">
+                <TableHeader>
+                    <TableRow>
+                        <TableHead className="hidden md:table-cell">Id</TableHead>
+                        <TableHead>Name</TableHead>
+                        <TableHead>Surname</TableHead>
+                        <TableHead className="hidden md:table-cell">Email</TableHead>
+                        {/* <TableHead>Role</TableHead> */}
+                        {/* <TableHead> <span className="sr-only">Actions</span></TableHead> */}
+                    </TableRow>
+                </TableHeader>
+                <TableBody>
+                    {loading && <LoadingComponent isAdminOnly={true} />}
+                    {error && <div className="w-full text-center">{error.message}</div>}
+
+                    {data?.data.map(x => {
+                        return (
+                            <TableRow key={x.id}>
+                                <TableCell>{x.id}</TableCell>
+                                <TableCell>{capitalizeWord(x.name)}</TableCell>
+                                <TableCell>{capitalizeWord(x.surname)}</TableCell>
+                                <TableCell>{x.email}</TableCell>
+                                {/* <TableCell className="hidden md:table-cell"> {numberFormatter(2, 2).format(x.consumption)} </TableCell>
+                            <TableCell className="hidden md:table-cell"> {dateFormatter.format(x.lastMaintenenceDateUnix)} </TableCell> */}
+                                <TableCell>
+                                    <DropdownMenu>
+                                        <DropdownMenuTrigger asChild>
+                                            <Button
+                                                aria-haspopup="true"
+                                                size="icon"
+                                                variant="ghost"
+                                            >
+                                                <MoreHorizontal className="h-4 w-4" />
+                                                <span className="sr-only">Toggle menu</span>
+                                            </Button>
+                                        </DropdownMenuTrigger>
+                                        <DropdownMenuContent align="end">
+                                            <DropdownMenuLabel>
+                                                Actions
+                                            </DropdownMenuLabel>
+                                            <DropdownMenuItem>
+                                                <Link href={`/cargotrack/drivers/${x.id}`}>
+                                                    Edit
+                                                </Link>
+                                            </DropdownMenuItem>
+                                        </DropdownMenuContent>
+                                    </DropdownMenu>
+                                </TableCell>
+                            </TableRow>
+                        );
+                    })}
+                </TableBody>
+            </Table >
+            <div>
+                {
+                    data &&
+                    <div className="text-xs text-muted-foreground">
+                        Showing <strong>
+                            {((data.pageIndex - 1) * data.pageSize + 1)}-
+                            {Math.min(data.pageIndex * data.pageSize, data.totalResults)}
+                        </strong> of <strong>{data.totalResults ?? 0}</strong>{" "}users
+                    </div>
+                }
+            </div>
+            <div className="flex gap-2">
+                <Button
+                    disabled={!data?.hasPreviousPage}
+                    onClick={() => setPageIndex(pageIndex - 1)}
+                >
+                    <ArrowLeft />
+                </Button>
+                <Button
+                    disabled={!data?.hasNextPage}
+                    onClick={() => setPageIndex(pageIndex + 1)}
+                >
+                    <ArrowRight />
+                </Button>
+            </div>
+        </>
+    );
+}
