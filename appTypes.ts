@@ -1,181 +1,228 @@
-export type QuestionType = 'multiple-choice' | 'text' | 'rating' | 'boolean';
+type UserRoles = 'Admin' | 'Driver';
 
-export interface ChoiceOption {
-    id: string;
-    text: string;
-}
-
-export interface SurveyQuestionBase {
-    id: string;
-    questionText: string;
-    required: boolean;
-    type: QuestionType;
-}
-
-export interface MultipleChoiceQuestion extends SurveyQuestionBase {
-    type: 'multiple-choice';
-    options: ChoiceOption[];
-}
-
-export interface TextQuestion extends SurveyQuestionBase {
-    type: 'text';
-    placeholder?: string; // optional placeholder text for input field
-}
-
-export interface RatingQuestion extends SurveyQuestionBase {
-    type: 'rating';
-    minRating: number;
-    maxRating: number;
-}
-
-export interface BooleanQuestion extends SurveyQuestionBase {
-    type: 'boolean';
-}
-
-export type SurveyQuestion = MultipleChoiceQuestion | TextQuestion | RatingQuestion | BooleanQuestion;
-
-export interface Survey {
-    id: string;
-    title: string;
-    description: string;
-    createdAt: Date;
-    updatedAt: Date;
-    endsAt: Date;
-    createdBy: string; // User ID of the creator
-    questions: SurveyQuestion[];
-    isActive: boolean;
-}
-
-export interface MultipleChoiceResponse {
-    questionId: string;
-    selectedOptionId: string; // Refers to the ID of the selected choice
-}
-
-// Response to a text question
-export interface TextResponse {
-    questionId: string;
-    answer: string;
-}
-
-export interface RatingResponse {
-    questionId: string;
-    rating: number; // Rating value within the specified range
-}
-
-export interface BooleanResponse {
-    questionId: string;
-    answer: boolean;
-}
-
-export type SurveyResponse = MultipleChoiceResponse | TextResponse | RatingResponse | BooleanResponse;
-
-// Collection of responses by a single user
-export interface UserSurveyResponse {
-    userId: string;
-    surveyId: string;
-    responses: SurveyResponse[];
-    completedAt: Date;
+export interface UserInfo {
+    id: number;
+    given_name: string;
+    family_name: string;
+    email: string;
+    role: UserRoles;
+    exp: number;
+    iat: number;
 }
 
 export interface User {
-    id: string;
+    id: number;
     name: string;
+    surname: string;
     email: string;
-    role: 'user' | 'admin';
-    createdAt: Date;
+    role: UserRoles;
 }
 
-// State for a list of surveys
-interface SurveyState {
-    surveys: Survey[];
-    loading: boolean;
-    error?: string;
+export interface Thread {
+    id: number;
+    subject: string;
+    teaser: string;
+    isRead: boolean;
+    name: string;
+    surname: string;
+    date: string; // Date
+    authorId: number;
+};
+
+export interface Message {
+    id: number;
+    name: string;
+    surname: string;
+    email: string;
+    subject: string;
+    date: string;
+    text: string;
+    isRead: boolean;
+};
+
+export interface PaginatedRequestDto {
+    pageNumber?: number;
+    pageSize?: number;
+    searchTerm?: string; // search term for filtering results
+    sortBy?: string; // Field by which to sort the results
+    sortOrder?: "asc" | "desc";
 }
 
-// State for responses to a survey
-interface SurveyResponseState {
-    responses: UserSurveyResponse[];
-    submitting: boolean;
-    error?: string;
+export type PagedResult<T> = {
+    data: T[];
+    pageIndex: number;
+    pageSize: number;
+    totalResults: number;
+    totalPages: number;
+    hasNextPage: boolean;
+    hasPreviousPage: boolean;
+};
+
+export interface Parcel {
+    id: number;
+    weight: number;
+    origin: string;
+    destination: string;
+    contactEmail: string;
+    eta: string;
+    etd: string;
+    guid: string;
+    price: number;
 }
 
-export interface AppState {
-    user: User | null; // Currently authenticated user
-    surveyState: SurveyState;
-    surveyResponseState: SurveyResponseState;
+export interface Truck {
+    id: number;
+    plate: string;
+    mileage: number;
+    mark: string;
+    maxWeight: number;
+    consumption: number; // l/km
+    manufactoringDateUnix: number;
+    lastMaintenenceDateUnix: number;
 }
 
-export interface CreateSurveyRequest {
-    title: string;
-    description: string;
-    questions: SurveyQuestion[];
-    createdBy: string;
+export interface Settings {
+    pricePerKilogram: number,
+    pricePerLiterFuel: number,
+    pricePerHourDriver: number,
 }
 
-export interface SubmitSurveyResponseRequest {
-    surveyId: string;
-    userId: string;
-    responses: SurveyResponse[];
+export interface Trailer {
+    length: string;
+    width: string;
+    height: string;
+    plate: string;
+    load: Parcel[];
+    totalWeight: number;
+    maxWeight: number; // 36 toneladas para 2 ejes
 }
 
-export interface FetchSurveyResponse {
-    survey: Survey;
+export enum TrailerType {
+    Trailer,
+    SemiTrailer,
 }
 
-export interface SubmitSurveyResponse {
-    success: boolean;
-    message: string;
+export enum FreightStatus {
+    Scheduled = 1,
+    Active = 2,
+    Completed = 3,
+    Canceled = 4,
 }
 
-export interface SurveyAnalytics {
-    surveyId: string;
-    totalResponses: number;
-    questionAnalytics: QuestionAnalytics[];
+export interface Freight {
+    id: number;
+    status: FreightStatus;
+    origin: string;
+    destination: string;
+    truck: Truck;
+    driver: User;
+    totalDistance: number;
+    durationMinutes: number;
+    etd: string;
+    eta: string;
+    fuelCost: number;
+    driverCost: number;
+    totalCost: number;
+    moneyGenerated: number;
 }
 
-export interface QuestionAnalytics {
-    questionId: string;
-    totalResponses: number;
-    breakdown: {
-        [optionId: string]: number; // Number of responses for each option (for multiple-choice)
-    };
+export interface WareHouse {
+    lat: number;
+    lon: number;
+    name: string;
+    unloadTime: number;
 }
 
-interface ValidationError {
-    questionId: string;
-    message: string;
+export interface City {
+    id: number;
+    lat: number;
+    lon: number;
+    name: string;
+    code: string;
+};
+
+export interface Route {
+    distance: number;
+    code: number;
+    avgSpeed: number;
+    origin: City;
+    destination: City;
+
+    points: IGeographicCoordiantes[];
 }
 
-export interface SurveyValidationResult {
-    isValid: boolean;
-    errors: ValidationError[];
+export interface IGeographicCoordiantes {
+    lat: number;
+    lon: number;
 }
 
-// Mock data
-export const survey: Survey = {
-    id: 'survey123',
-    title: 'Customer Satisfaction Survey',
-    description: 'We would like to know your feedback!',
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    endsAt: new Date(),
-    createdBy: 'admin123',
-    questions: [
-        {
-            id: 'q1',
-            questionText: 'How would you rate our service?',
-            required: true,
-            type: 'rating',
-            minRating: 1,
-            maxRating: 5,
-        },
-        {
-            id: 'q2',
-            questionText: 'What could we improve?',
-            required: false,
-            type: 'text',
-            placeholder: 'Your feedback...',
-        },
-    ],
-    isActive: true,
+export interface SettingsEntity {
+    pricePerKilogram: number;
+    PricePerLiterFuel: number;
+    PricePerHourDriver: number;
+}
+
+// DTOs
+export interface LoginRequest {
+    email: string,
+    password: string,
+}
+
+export interface LoginResponse {
+    token: string;
+};
+
+export interface AddParcelToFreightRequest {
+    originId: number,
+    destinationId: number,
+    parcelWeight: number,
+    contactEmail: string,
+}
+
+export interface CreateNewUserRequest {
+    name: string;
+    surname: string;
+    dateOfBirth: string;
+    email: string;
+}
+
+export interface CreateNewUserResponse {
+    id: number;
+    password: string;
+}
+
+export interface UserUpdateRequest {
+    name: string;
+    surname: string;
+};
+
+export interface UpdateTruckRequest {
+    plate: string;
+    mileage: number;
+    mark: string;
+    consumption: number; // l/km
+    maxWeight: number;
+    manufactoringDateUnix: number;
+    lastMaintenenceDateUnix: number;
+}
+
+// type TruckCreateRequest = Omit<Truck, "id">
+export interface CreateNewTruckRequest {
+    plate: string;
+    mileage: number;
+    mark: string;
+    consumption: number;
+    maxWeight: number;
+    lastMaintenance: Date;
+    manufacturingDate: Date;
+}
+
+export interface CreateNewThreadRequest {
+    toEmail: string,
+    subject: string,
+    text: string,
+};
+
+export interface ReplyToThreadRequest {
+    text: string,
 };
