@@ -2,7 +2,7 @@ import { useAppStore } from "@/store/userStore";
 import { useEffect, useState, useCallback } from "react";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5097';
-// const BASE_URL = 'http://ec2-54-162-145-215.compute-1.amazonaws.com';
+// const BASE_URL = 'http://ec2-23-20-104-5.compute-1.amazonaws.com';
 
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
 // const TIMEOUT = 10_000; // milliseconds timeout
