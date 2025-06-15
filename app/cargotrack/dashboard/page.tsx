@@ -1,18 +1,10 @@
 'use client';
 
-import LoadingComponent from "@/components/common/loader";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useFetch } from "@/hooks/useFetch";
 import { AlertCircle, Truck, User, MapPin } from 'lucide-react';
 import { useAppStore } from "@/store/userStore";
 import { useRouter } from "next/navigation";
 import FreightsMap from "@/components/freightsMap";
-
-interface DashboardResponse {
-    name: string;
-    surname: string;
-    age: number;
-}
 
 export default function Page() {
     const router = useRouter();
@@ -21,17 +13,11 @@ export default function Page() {
     if (!store.isUserLoggedIn()) { router.push("/login"); }
     if (!store.isAdmin()) { router.push("/login"); }
 
-    const { data, error, loading } = useFetch<DashboardResponse>("GET", "/dashboard");
-
-    if (loading) return <LoadingComponent isAdminOnly={false} />;
-    if (error) { console.log("error", error); }
-    if (data) { console.log("data"); }
-
     return (
         <div className="flex flex-1 flex-col gap-4 px-4 ">
             {/* <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2> */}
-
             {/* <div className="grid auto-rows-min gap-4 md:grid-cols-3"> */}
+
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
 
                 <Card>
